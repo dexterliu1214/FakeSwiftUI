@@ -28,15 +28,29 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/youga/FakeSwiftUI.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '11.0'
 
-  s.source_files = 'FakeSwiftUI/Classes/**/*'
+  s.source_files = 'FakeSwiftUI/Classes/**/*.swift'
   
   # s.resource_bundles = {
   #   'FakeSwiftUI' => ['FakeSwiftUI/Assets/*.png']
   # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+   s.frameworks = 'UIKit'
+#   s.dependency 'AFNetworking', '~> 2.3'
+   s.dependency 'RxSwift'
+   s.dependency 'RxCocoa'
+   s.dependency 'RxBinding'
+   s.dependency 'RxAnimated'
+   s.dependency 'lottie-ios'
+   s.dependency 'InputBarAccessoryView'
+   s.dependency 'RxGesture'
+   s.dependency 'RxDataSources'
+   s.dependency "ReverseExtension"
+   s.dependency 'AwaitKit'
+   s.dependency 'UIImageViewAlignedSwift'
+   s.dependency 'ISEmojiView'
+   s.dependency 'SwiftIcons'
+   s.dependency 'UICircularProgressRing'
 end
