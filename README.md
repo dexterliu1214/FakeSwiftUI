@@ -17,12 +17,12 @@ FakeSwiftUI is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'FakeSwiftUI'
+pod 'FakeSwiftUI', git => 'https://github.com/dexterliu1214/FakeSwiftUI'
 ```
 
 ## Author
 
-youga, dexterliu1214@gmail.com
+dexterliu1214@gmail.com
 
 ## License
 
