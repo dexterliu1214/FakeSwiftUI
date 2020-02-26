@@ -16,11 +16,11 @@ import SwiftIcons
 
 open class CheckBox:View {
     
-    public init(_ isChecked$:BehaviorRelay<Bool>, checkIcon:FontType = FontType.googleMaterialDesign(.checkBox), uncheckIcon:FontType = FontType.googleMaterialDesign(.checkBoxOutlineBlank), text:String) {
+    public init(_ isChecked$:BehaviorRelay<Bool>, checkIcon:FontType = FontType.googleMaterialDesign(.checkBox), uncheckIcon:FontType = .googleMaterialDesign(.checkBoxOutlineBlank), text:String) {
         
         super.init()
         
-        let checkIcon$ = BehaviorRelay(value:isChecked$.value ? checkIcon : uncheckIcon)
+        let checkIcon$:BehaviorRelay<FontType> = .init(value:isChecked$.value ? checkIcon : uncheckIcon)
         
         _view = HStack(
             Icon(checkIcon$.asObservable(), size: 20, color:.green),

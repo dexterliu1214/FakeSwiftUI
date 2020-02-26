@@ -24,7 +24,7 @@ open class Grid<CellType:UICollectionViewCell>:View
             return __view
         }
         set {
-            if let newView = newValue as? UICollectionView {
+            if let newView:UICollectionView = newValue as? UICollectionView {
                 __view = newView
             } else {
                 print("incorrect chassis type for __view")
@@ -33,7 +33,7 @@ open class Grid<CellType:UICollectionViewCell>:View
     }
     
     var columns:Int
-    let layout = UICollectionViewFlowLayout()
+    let layout:UICollectionViewFlowLayout = .init()
     var scrollToIndexPath:(IndexPath, UICollectionView.ScrollPosition, Bool)?
     var ratio:CGFloat?
     
@@ -50,9 +50,9 @@ open class Grid<CellType:UICollectionViewCell>:View
         __view.register(CellType.self, forCellWithReuseIdentifier: "CELL")
         items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true).drive(__view.backgroundView!.rx.isShow) ~ disposeBag
         
-        items.asDriver(onErrorJustReturn: []).drive(__view.rx.items) { (cv, row, element) in
-            let indexPath = IndexPath(row: row, section: 0)
-            let cell = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: indexPath) as! CellType
+        items.asDriver(onErrorJustReturn: []).drive(__view.rx.items) { (cv:UICollectionView, row:Int, element:ModelType) in
+            let indexPath:IndexPath = .init(row: row, section: 0)
+            let cell:CellType = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: indexPath) as! CellType
             return builder(cell, element, row, cv)
         } ~ disposeBag
     }
@@ -84,15 +84,15 @@ open class Grid<CellType:UICollectionViewCell>:View
 
         items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true).drive(__view.backgroundView!.rx.isShow) ~ disposeBag
         
-        let dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, ModelType>>(configureCell: { ds, cv, ip, model in
-            let cell = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: ip) as! CellType
+        let dataSource:RxCollectionViewSectionedReloadDataSource<SectionModel<String, ModelType>> = .init(configureCell: { (ds:CollectionViewSectionedDataSource, cv:UICollectionView, ip:IndexPath, model:ModelType) in
+            let cell:CellType = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: ip) as! CellType
             return builder(cell, model, ip.item)
-        }, configureSupplementaryView: { ds, cv, kind, ip in
+        }, configureSupplementaryView: { (ds:CollectionViewSectionedDataSource, cv:UICollectionView, kind:String, ip:IndexPath) in
             if kind == UICollectionView.elementKindSectionHeader {
-                let section = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: ip) as! HeaderType
+                let section:HeaderType = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: ip) as! HeaderType
                 return headerBuilder(section, cv, ip, ds[ip.item].model)
             } else {
-                let section = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: ip) as! FooterType
+                let section:FooterType = cv.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Section", for: ip) as! FooterType
                 return footerBuilder(section, cv, ip, ds[ip.item].model)
             }
         })
@@ -106,10 +106,10 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     override public func layoutSubviews() {
         super.layoutSubviews()
-        let hSpacing = layout.minimumInteritemSpacing
-        let width = (self.bounds.width - __view.contentInset.left - __view.contentInset.right - (CGFloat(columns - 1) * hSpacing)) / CGFloat(columns)
+        let hSpacing:CGFloat = layout.minimumInteritemSpacing
+        let width:CGFloat = (self.bounds.width - __view.contentInset.left - __view.contentInset.right - (CGFloat(columns - 1) * hSpacing)) / CGFloat(columns)
         
-        if let ratio = ratio {
+        if let ratio:CGFloat = ratio {
             layout.itemSize = CGSize(width: width, height: width / ratio)
             return
         }
@@ -122,10 +122,10 @@ open class Grid<CellType:UICollectionViewCell>:View
             layout.itemSize = CGSize(width: width, height: width)
         } else {
             if columns == 1 && __view.isPagingEnabled {
-                let height =  self.bounds.height
+                let height:CGFloat =  self.bounds.height
                 layout.itemSize = CGSize(width: width, height: height)
             } else {
-                let width = self.bounds.height - __view.contentInset.top - __view.contentInset.bottom
+                let width:CGFloat = self.bounds.height - __view.contentInset.top - __view.contentInset.bottom
                 layout.itemSize = CGSize(width: width, height: width)
             }
         }
@@ -161,7 +161,7 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     @discardableResult
     public func onRefresh(_ callback:@escaping() -> (Promise<()>)) -> Self {
-        let refreshControl = UIRefreshControl()
+        let refreshControl:UIRefreshControl = .init()
         refreshControl.tintColor = .white
         refreshControl.rx.controlEvent(.valueChanged).subscribe(onNext:{
             async {
@@ -170,7 +170,7 @@ open class Grid<CellType:UICollectionViewCell>:View
                     refreshControl.endRefreshing()
                 }
             }
-        }).disposed(by: disposeBag)
+        }) ~ disposeBag
         __view.refreshControl = refreshControl
         return self
     }
@@ -181,8 +181,7 @@ open class Grid<CellType:UICollectionViewCell>:View
             .when(.recognized)
             .subscribe(onNext:{
                 callback($0.direction)
-            })
-            .disposed(by: disposeBag)
+            }) ~ disposeBag
         return self
     }
     

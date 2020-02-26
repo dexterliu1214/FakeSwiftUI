@@ -13,8 +13,8 @@ import RxBinding
 import RxGesture
 
 open class View:UIView {
-    public var _view:UIView?
-    public let disposeBag = DisposeBag()
+    public var _view:UIView!
+    public let disposeBag:DisposeBag = .init()
     var overlayShape:Shape?
     var clipShape:Shape?
     var centerX:CGFloat?
@@ -25,8 +25,22 @@ open class View:UIView {
     var bottom:CGFloat?
     var heightConstraint:NSLayoutConstraint?
     
+    public init(){
+        super.init(frame:.zero)
+        self.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    public func _init(){
+        _view.translatesAutoresizingMaskIntoConstraints = false
+        _view.append(to: self).fillSuperview()
+    }
+    
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     @discardableResult
-    public func on(_ superview:UIView) -> Self {
+    public func on(_ superview:UIView) -> View {
         superview.addSubview(self)
         setupConstraint()
         return self
@@ -38,7 +52,7 @@ open class View:UIView {
         self.heightConstraint?.isActive = true
         value.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] in
             guard let self = self else { return }
-            if let hs = self.heightConstraint {
+            if let hs:NSLayoutConstraint = self.heightConstraint {
                 hs.constant = $0
                 self.layoutIfNeeded()
             }
@@ -126,20 +140,6 @@ open class View:UIView {
         }
     }
     
-    public init(){
-        super.init(frame:.zero)
-        self.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    public func _init(){
-        _view?.translatesAutoresizingMaskIntoConstraints = false
-        _view?.append(to: self).fillSuperview()
-    }
-    
-    required public init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override public func layoutSubviews() {
         super.layoutSubviews()
         if let overlayShape = overlayShape {
@@ -152,8 +152,8 @@ open class View:UIView {
     }
     
     internal func layoutClipShape(_ clipShape:Shape){
-        let path = clipShape.getPath(self)
-        let layer = CAShapeLayer()
+        let path:UIBezierPath = clipShape.getPath(self)
+        let layer:CAShapeLayer = .init()
         layer.path = path.cgPath
         layer.frame = self.bounds
         self.layer.mask = layer
@@ -161,8 +161,8 @@ open class View:UIView {
     
     internal func layoutOverlay(_ overlayShape:Shape){
         _view?.layer.sublayers?.first{ $0.name == "border" }?.removeFromSuperlayer()
-        let path = overlayShape.getPath(self)
-        let borderLayer = CAShapeLayer()
+        let path:UIBezierPath = overlayShape.getPath(self)
+        let borderLayer:CAShapeLayer = .init()
         borderLayer.name = "border"
         borderLayer.path = path.cgPath
         borderLayer.lineWidth = overlayShape.lineWidth
@@ -219,21 +219,18 @@ open class View:UIView {
     
     @discardableResult
     public func background(_ color$:Observable<UIColor>) -> Self {
-        guard let _view = _view else { return self }
         color$.asDriver(onErrorJustReturn: .red) ~> _view.rx.backgroundColor ~ disposeBag
         return self
     }
     
     @discardableResult
     public func background(_ color:UIColor) -> Self {
-        guard let _view = _view else { return self }
         _view.backgroundColor = color
         return self
     }
     
     @discardableResult
     public func onTap(_ callback:@escaping(UIView) -> ()) -> Self {
-        guard let _view = _view else { return self }
         _view.rx.tapGesture().when(.recognized).asDriver(onErrorJustReturn: UITapGestureRecognizer())
             .drive(onNext:{[weak self] _ in
                 guard let self = self else { return }
@@ -245,7 +242,7 @@ open class View:UIView {
     
     @discardableResult
     public func height(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
-        let c = heightAnchor.constraint(equalToConstant: 0)
+        let c:NSLayoutConstraint = heightAnchor.constraint(equalToConstant: 0)
         constant$.asDriver(onErrorJustReturn: 0) ~> c.rx.constant ~ disposeBag
         isActive$.asDriver(onErrorJustReturn: false) ~> c.rx.active ~ disposeBag
         return self

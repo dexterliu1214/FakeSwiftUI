@@ -23,7 +23,7 @@ open class Button:View
             return __view
         }
         set {
-            if let newView = newValue as? UIButton {
+            if let newView:UIButton = newValue as? UIButton {
                 __view = newView
             } else {
                 print("incorrect chassis type for __view")
@@ -96,4 +96,30 @@ open class Button:View
         value$ ~> __view.rx.isEnabled ~ disposeBag
         return self
     }
+}
+
+extension Reactive where Base: UIButton {
+    public var isDisabled: Binder<Bool> {
+        return Binder(self.base) { control, value in
+            control.isEnabled = !value
+        }
+    }
+    
+    public var isEnabled: Binder<Bool> {
+        return Binder(self.base) { control, value in
+            control.isEnabled = value
+        }
+    }
+    
+    public var backgroundColor:Binder<UIColor> {
+        return Binder(self.base) { (control, value) -> () in
+            control.backgroundColor = value
+        }
+    }
+    
+    public func titleColor(for controlState: UIControl.State = []) -> Binder<UIColor?> {
+       return Binder(self.base) { button, color -> Void in
+           button.setTitleColor(color, for: controlState)
+       }
+   }
 }

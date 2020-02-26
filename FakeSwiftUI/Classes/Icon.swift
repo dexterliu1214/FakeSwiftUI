@@ -23,7 +23,7 @@ open class Icon:View
             return __view
         }
         set {
-            if let newView = newValue as? Label {
+            if let newView:Label = newValue as? Label {
                 __view = newView
             } else {
                 print("incorrect chassis type for __view")

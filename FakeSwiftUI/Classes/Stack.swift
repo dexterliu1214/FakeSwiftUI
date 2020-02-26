@@ -34,7 +34,7 @@ open class ZStack:View
     }
     
     public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil) -> Self {
-        backgroundView = GradientView.newInstance(colors: colors.map{ $0.cgColor }, locations: locations, degree: degree)
+        backgroundView = GradientView(colors: colors, locations: locations, degree: degree)
         insertSubview(backgroundView!, at: 0)
         backgroundView?.fillSuperview()
         return self
@@ -70,7 +70,7 @@ open class Stack:View {
             return __view
         }
         set {
-            if let newView = newValue as? UIStackView {
+            if let newView:UIStackView = newValue as? UIStackView {
                 __view = newView
             } else {
                 print("incorrect chassis type for __view")
@@ -106,15 +106,15 @@ open class Stack:View {
     }
     
     public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil) -> Self {
-        backgroundView = GradientView.newInstance(colors: colors.map{ $0.cgColor }, locations: locations, degree: degree)
+        backgroundView = GradientView(colors: colors, locations: locations, degree: degree)
         insertSubview(backgroundView!, at: 0)
         backgroundView?.fillSuperview()
         return self
     }
     
     override internal func layoutClipShape(_ clipShape: Shape) {
-         let path = clipShape.getPath(self)
-         let layer = CAShapeLayer()
+        let path:UIBezierPath = clipShape.getPath(self)
+        let layer:CAShapeLayer = .init()
          layer.path = path.cgPath
          layer.frame = self.bounds
         backgroundView?.layer.mask = layer
@@ -136,10 +136,8 @@ open class Spacer:View {
     public init(axis:NSLayoutConstraint.Axis = .horizontal) {
         super.init()
         _view = UIView()
-        guard let _view = _view else { return }
         _view.setContentHuggingPriority(.defaultLow, for: axis)
-        addSubview(_view)
-        _view.fillSuperview()
+        _view.append(to: self).fillSuperview()
     }
     
     public required init?(coder: NSCoder) {

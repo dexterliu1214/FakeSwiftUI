@@ -17,14 +17,14 @@ import AwaitKit
 import UIImageViewAlignedSwift
 
 open class Image:View {
-    public static var urlSession = URLSession.shared
+    public static var urlSession:URLSession = URLSession.shared
     var __view:UIImageViewAligned
     override public var _view: UIView! {
         get {
             return __view
         }
         set {
-            if let newView = newValue as? UIImageViewAligned {
+            if let newView:UIImageViewAligned = newValue as? UIImageViewAligned {
                 __view = newView
             } else {
                 print("incorrect chassis type for __view")
@@ -45,12 +45,12 @@ open class Image:View {
     }
     
     public convenience init(_ url$:Observable<String>, fadeDuration duration:TimeInterval = 0) {
-        let image$ = url$.flatMapLatest{
+        let image$:Observable<UIImage?> = url$.flatMapLatest{
             $0.get$(urlSession:Image.urlSession).catchErrorJustReturn(Data())
         }
         .map{UIImage(data:$0)}
-        .asDriver(onErrorJustReturn: nil)
-        self.init(image$, fadeDuration:duration)
+        
+        self.init(image$.asDriver(onErrorJustReturn: nil), fadeDuration:duration)
     }
     
     public convenience init(_ image$:Driver<UIImage?>, fadeDuration duration:TimeInterval = 0) {
@@ -63,8 +63,8 @@ open class Image:View {
     }
     
     internal override func layoutClipShape(_ clipShape: Shape) {
-         let path = clipShape.getPath(self)
-         let layer = CAShapeLayer()
+        let path: UIBezierPath = clipShape.getPath(self)
+        let layer:CAShapeLayer = .init()
          layer.path = path.cgPath
          layer.frame = self.bounds
          self.__view.layer.mask = layer
@@ -80,24 +80,26 @@ open class Image:View {
         return self
     }
 }
+
 enum RequestError:Error
 {
     case INVALID_URL
     case Unknow
 }
+
 extension String
 {
     public func get$(urlSession:URLSession = URLSession.shared) -> Observable<Data> {
         return Observable.create { observer in
-            guard let url = URL(string: "\(self)") else {
+            guard let url:URL = URL(string: "\(self)") else {
                 observer.on(.error(RequestError.INVALID_URL))
                 return Disposables.create {
                 }
             }
-            let task = urlSession.dataTask(with: url) {data, response, error in
+            let task:URLSessionDataTask = urlSession.dataTask(with: url) { (data:Data?, response:URLResponse?, error:Error?) in
                 print("\(url.absoluteString) \(error?.localizedDescription ?? "")")
 //                print(response)
-                guard let data = data else {
+                guard let data:Data = data else {
                     observer.on(.error(error ?? RequestError.Unknow))
                     return
                 }

@@ -14,14 +14,10 @@ import Lottie
 import PromiseKit
 import AwaitKit
 
-extension UITableView {
-    public func scrollToBottom(animated:Bool = false){
-        if numberOfSections <= 0 {
-            return
-        }
-        let lastSection = numberOfSections - 1
-        let lastRow = numberOfRows(inSection: lastSection) - 1
-        scrollToRow(at: IndexPath(row: lastRow, section: lastSection), at: .bottom, animated: animated)
+extension CGFloat
+{
+    public var int:Int {
+        return Int(self)
     }
 }
 
@@ -46,90 +42,15 @@ extension AnimatedSink where Base: UIView {
     }
 }
 
-extension CGFloat
-{
-    public var int:Int {
-        return Int(self)
-    }
-}
-
-extension Lottie.AnimationView
-{
-    @discardableResult
-    public func setAnimation(urlString:String) -> Promise<()> {
-        return Promise<()> { seal in
-            async {
-                do {
-                    let (data, _) = try await(URLSession.shared.dataTask(.promise, with: URL(string: urlString)!))
-                    let animation = try JSONDecoder().decode(Lottie.Animation.self, from: data)
-
-                    DispatchQueue.main.async {
-                        self.animation = animation
-                        self.alpha = 1
-                        self.isHidden = false
-                        self.play { isDone in
-                            UIView.animate(withDuration: 1, delay: 0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
-                                    self.alpha = 0
-                                }, completion: { _ in
-                                    self.isHidden = true
-                                    seal.fulfill(())
-                                })
-                        }
-                    }
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    public func taskPlay() {
-        DispatchQueue.main.async {
-            self.isHidden = false
-            self.play(completion: { [unowned self] finish in
-                if finish {
-                    self.isHidden = true
-                }
-            })
-        }
-    }
-}
-
-extension Reactive where Base: UIButton {
-    public var isDisabled: Binder<Bool> {
-        return Binder(self.base) { control, value in
-            control.isEnabled = !value
-        }
-    }
-    
-    public var isEnabled: Binder<Bool> {
-        return Binder(self.base) { control, value in
-            control.isEnabled = value
-        }
-    }
-    
-    public var backgroundColor:Binder<UIColor> {
-        return Binder(self.base) { (control, value) -> () in
-            control.backgroundColor = value
-        }
-    }
-    
-    public func titleColor(for controlState: UIControl.State = []) -> Binder<UIColor?> {
-       return Binder(self.base) { button, color -> Void in
-           button.setTitleColor(color, for: controlState)
-       }
-   }
-}
-
-public enum Side {
-    case top
-    case right
-    case bottom
-    case left
-}
-
 extension UIEdgeInsets
 {
+    public enum Side {
+        case top
+        case right
+        case bottom
+        case left
+    }
+    
     public static func all(_ constant:CGFloat) -> UIEdgeInsets {
         return UIEdgeInsets(top: constant, left: constant, bottom: constant, right: constant)
     }
@@ -258,27 +179,27 @@ extension UIView {
         
         translatesAutoresizingMaskIntoConstraints = false
         
-        if let top = top {
+        if let top:NSLayoutYAxisAnchor = top {
             topAnchor.constraint(equalTo: top, constant: padding.top).isActive = true
         }
         
-        if let bottom = bottom {
+        if let bottom:NSLayoutYAxisAnchor = bottom {
             bottomAnchor.constraint(equalTo: bottom, constant: -padding.bottom).isActive = true
         }
         
-        if let left = left {
+        if let left:NSLayoutXAxisAnchor = left {
             leadingAnchor.constraint(equalTo: left, constant: padding.left).isActive = true
         }
         
-        if let right = right {
+        if let right:NSLayoutXAxisAnchor = right {
             trailingAnchor.constraint(equalTo: right, constant: -padding.right).isActive = true
         }
         
-        if let centerX = centerX {
+        if let centerX:NSLayoutXAxisAnchor = centerX {
             centerXAnchor.constraint(equalTo: centerX, constant: 0).isActive = true
         }
         
-        if let centerY = centerY {
+        if let centerY:NSLayoutYAxisAnchor = centerY {
             centerYAnchor.constraint(equalTo: centerY, constant: 0).isActive = true
         }
         
@@ -359,7 +280,6 @@ extension Reactive where Base : UIView {
         }
     }
 }
-
 
 extension UIView {
     public var isShow:Bool {

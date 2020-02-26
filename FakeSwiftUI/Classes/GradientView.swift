@@ -14,21 +14,24 @@ open class GradientView: UIView {
         return CAGradientLayer.classForCoder()
     }
     
-    public static func newInstance(colors:[CGColor] = [UIColor.black.cgColor, UIColor.clear.cgColor], locations:[NSNumber]? = nil, degree:Double? = nil ) -> GradientView {
-        let v = GradientView()
-        let gradientLayer = v.layer as! CAGradientLayer
-        gradientLayer.colors = colors
+    public init(colors:[UIColor] = [UIColor.black, UIColor.clear], locations:[NSNumber]? = nil, degree:Double? = nil ) {
+        super.init(frame: .zero)
+        let gradientLayer = self.layer as! CAGradientLayer
+        gradientLayer.colors = colors.map{ $0.cgColor }
         gradientLayer.locations = locations
-        if let degree = degree {
+        if let degree:Double = degree {
             let x: Double! = degree / 360.0
-            let a = pow(sinf(Float(2.0 * .pi * ((x + 0.75) / 2.0))),2.0);
-            let b = pow(sinf(Float(2 * .pi * ((x+0.0)/2))),2);
-            let c = pow(sinf(Float(2 * .pi * ((x+0.25)/2))),2);
-            let d = pow(sinf(Float(2 * .pi * ((x+0.5)/2))),2);
+            let a:Float = pow(sinf(Float(2.0 * .pi * ((x + 0.75) / 2.0))),2.0);
+            let b:Float = pow(sinf(Float(2 * .pi * ((x+0.0)/2))),2);
+            let c:Float = pow(sinf(Float(2 * .pi * ((x+0.25)/2))),2);
+            let d:Float = pow(sinf(Float(2 * .pi * ((x+0.5)/2))),2);
             gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
             gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
         }
-        return v
+    }
+    
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 

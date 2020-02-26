@@ -215,3 +215,14 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         return self
     }
 }
+
+extension UITableView {
+    public func scrollToBottom(animated:Bool = false){
+        if numberOfSections <= 0 {
+            return
+        }
+        let lastSection = numberOfSections - 1
+        let lastRow = numberOfRows(inSection: lastSection) - 1
+        scrollToRow(at: IndexPath(row: lastRow, section: lastSection), at: .bottom, animated: animated)
+    }
+}

@@ -24,7 +24,7 @@ open class CircularProgressRing:View
             return __view
         }
         set {
-            if let newView = newValue as? UICircularProgressRing {
+            if let newView:UICircularProgressRing = newValue as? UICircularProgressRing {
                 __view = newView
             } else {
                 print("incorrect chassis type for __view")

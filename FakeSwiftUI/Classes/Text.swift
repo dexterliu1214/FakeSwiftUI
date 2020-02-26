@@ -16,7 +16,7 @@ import AwaitKit
 
 open class Text:View {
     var __view:Label
-    override public var _view: UIView? {
+    override public var _view: UIView! {
         get {
             return __view
         }
