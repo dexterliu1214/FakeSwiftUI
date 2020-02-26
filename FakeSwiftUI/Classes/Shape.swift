@@ -43,8 +43,8 @@ open class RoundedRectangle:Shape {
     }
 }
 
-class Arrow:Shape {
-    enum Direction {
+open class Arrow:Shape {
+    public enum Direction {
         case Left
         case Right
     }
