@@ -16,18 +16,22 @@ open class GradientView: UIView {
     
     public init(colors:[UIColor] = [UIColor.black, UIColor.clear], locations:[NSNumber]? = nil, degree:Double? = nil ) {
         super.init(frame: .zero)
-        let gradientLayer = self.layer as! CAGradientLayer
+        let gradientLayer:CAGradientLayer = self.layer as! CAGradientLayer
         gradientLayer.colors = colors.map{ $0.cgColor }
         gradientLayer.locations = locations
         if let degree:Double = degree {
-            let x: Double! = degree / 360.0
-            let a:Float = pow(sinf(Float(2.0 * .pi * ((x + 0.75) / 2.0))),2.0);
-            let b:Float = pow(sinf(Float(2 * .pi * ((x+0.0)/2))),2);
-            let c:Float = pow(sinf(Float(2 * .pi * ((x+0.25)/2))),2);
-            let d:Float = pow(sinf(Float(2 * .pi * ((x+0.5)/2))),2);
+            let x: Double = degree / 360.0
+            let a:Double = calc(x, 0.75)
+            let b:Double = calc(x, 0.0)
+            let c:Double = calc(x, 0.25)
+            let d:Double = calc(x, 0.5)
             gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
             gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
         }
+    }
+    
+    fileprivate func calc(_ x:Double, _ y:Double) -> Double {
+        return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
     }
     
     required public init?(coder: NSCoder) {
