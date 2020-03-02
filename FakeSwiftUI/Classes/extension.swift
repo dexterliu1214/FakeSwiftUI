@@ -10,7 +10,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxAnimated
-import Lottie
 import PromiseKit
 import AwaitKit
 
