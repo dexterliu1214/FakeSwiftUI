@@ -14,7 +14,6 @@ import RxBinding
 import RxGesture
 import PromiseKit
 import AwaitKit
-import ISEmojiView
 
 open class TextView:View {
     var __view:UITextView
@@ -33,12 +32,13 @@ open class TextView:View {
     
     public init(_ text$:BehaviorRelay<String?>, placeholder:Observable<String?>, limit:Int? = nil) {
         __view = UITextView()
-        let placeholderLabel = UILabel(frame: CGRect(x: 0, y: 4, width: 200, height: 40))
+        let placeholderLabel = UILabel()
+        placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
         placeholderLabel.numberOfLines = 0
         placeholderLabel.textColor = .lightGray
-        placeholderLabel.sizeToFit()
-        
         __view.addSubview(placeholderLabel)
+        placeholderLabel.fillSuperview()
+        
         __view.setValue(placeholderLabel, forKey: "_placeholderLabel")
         super.init()
         _init()

@@ -43,13 +43,11 @@ TODO: Add long description of the pod here.
    s.dependency 'RxCocoa'
    s.dependency 'RxBinding'
    s.dependency 'RxAnimated'
-   s.dependency 'InputBarAccessoryView'
    s.dependency 'RxGesture'
    s.dependency 'RxDataSources'
    s.dependency "ReverseExtension"
    s.dependency 'AwaitKit'
    s.dependency 'UIImageViewAlignedSwift'
-   s.dependency 'ISEmojiView'
    s.dependency 'SwiftIcons'
    s.dependency 'UICircularProgressRing'
 end
