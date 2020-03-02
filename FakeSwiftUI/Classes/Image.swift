@@ -13,11 +13,12 @@ import RxCocoa
 import RxBinding
 import RxGesture
 import PromiseKit
+import RxAnimated
 import AwaitKit
 
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
-    var __view:UIImage
+    var __view:UIImageView
     override public var _view: UIView! {
         get {
             return __view
@@ -32,7 +33,7 @@ open class Image:View {
     }
     
     public init(image:UIImage?) {
-        __view = UIImageViewAligned(image:image)
+        __view = UIImageView(image:image)
         super.init()
         _init()
         __view.contentMode = .scaleAspectFit
@@ -73,11 +74,7 @@ open class Image:View {
         __view.contentMode = contentMode
         return self
     }
-    
-    public func alignment(_ mask:UIImageViewAlignmentMask) -> Self {
-        __view.alignment = mask
-        return self
-    }
+
 }
 
 enum RequestError:Error
