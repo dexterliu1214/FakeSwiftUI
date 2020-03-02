@@ -47,7 +47,5 @@ TODO: Add long description of the pod here.
    s.dependency 'RxDataSources'
    s.dependency "ReverseExtension"
    s.dependency 'AwaitKit'
-   s.dependency 'UIImageViewAlignedSwift'
    s.dependency 'SwiftIcons'
-   s.dependency 'UICircularProgressRing'
 end

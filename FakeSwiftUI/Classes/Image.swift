@@ -14,17 +14,16 @@ import RxBinding
 import RxGesture
 import PromiseKit
 import AwaitKit
-import UIImageViewAlignedSwift
 
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
-    var __view:UIImageViewAligned
+    var __view:UIImage
     override public var _view: UIView! {
         get {
             return __view
         }
         set {
-            if let newView:UIImageViewAligned = newValue as? UIImageViewAligned {
+            if let newView:UIImageView = newValue as? UIImageView {
                 __view = newView
             } else {
                 print("incorrect chassis type for __view")
