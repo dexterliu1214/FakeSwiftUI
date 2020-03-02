@@ -13,7 +13,7 @@ import RxBinding
 import RxGesture
 
 open class View:UIView {
-    public var _view:UIView!
+    open var _view:UIView!
     public let disposeBag:DisposeBag = .init()
     var overlayShape:Shape?
     var clipShape:Shape?
@@ -194,7 +194,7 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func shown(_ stream$:Observable<Bool>) -> Self {
+    open func shown(_ stream$:Observable<Bool>) -> Self {
         stream$.asDriver(onErrorJustReturn: false) ~> rx.isShow ~ disposeBag
         return self
     }
