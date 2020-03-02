@@ -31,6 +31,28 @@ open class TextView:View {
         }
     }
     
+    public init(_ text$:BehaviorRelay<String?>, placeholder:Observable<String?>, limit:Int? = nil) {
+        __view = UITextView()
+        let placeholderLabel = UILabel(frame: CGRect(x: 0, y: 4, width: 200, height: 40))
+        placeholderLabel.numberOfLines = 0
+        placeholderLabel.textColor = .lightGray
+        placeholderLabel.sizeToFit()
+        
+        __view.addSubview(placeholderLabel)
+        __view.setValue(placeholderLabel, forKey: "_placeholderLabel")
+        super.init()
+        _init()
+        
+        placeholder ~> placeholderLabel.rx.text ~ disposeBag
+        
+        if let limit = limit {
+            text$ ~> __view.rx.text ~ disposeBag
+            __view.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text$ ~ disposeBag
+        } else {
+            text$ <~> __view.rx.text ~ disposeBag
+        }
+    }
+    
     public convenience init(_ text:String) {
         self.init()
         self.__view.text = text
@@ -77,45 +99,19 @@ open class TextView:View {
     }
     
     @discardableResult
-    public func toggleEmojiView(_ value$:BehaviorRelay<Bool>) -> Self {
-        value$.subscribe(onNext:{[weak self] in
-            if $0 {
-                self?.__view.becomeFirstResponder()
-                let keyboardSettings = KeyboardSettings(bottomType: .categories)
-                keyboardSettings.needToShowAbcButton = true
-                let emojiView = EmojiView(keyboardSettings: keyboardSettings)
-                emojiView.translatesAutoresizingMaskIntoConstraints = false
-                emojiView.delegate = self
-                self?.__view.inputView = emojiView
-                self?.__view.reloadInputViews()
-            } else {
-                self?.__view.becomeFirstResponder()
-                self?.__view.inputView = nil
-                self?.__view.keyboardType = .default
-                self?.__view.reloadInputViews()
-            }
+    public func inputView(_ inputView$:Observable<UIView?>) -> Self {
+        inputView$.subscribe(onNext:{[weak self] in
+            guard let self = self else { return }
+            self.__view.inputView = $0
+            self.__view.reloadInputViews()
+            self.__view.becomeFirstResponder()
         }) ~ disposeBag
         return self
     }
-}
-
-extension TextView:EmojiViewDelegate
-{
-    public func emojiViewDidSelectEmoji(_ emoji: String, emojiView: EmojiView) {
-        __view.insertText(emoji)
-    }
-
-    public func emojiViewDidPressChangeKeyboardButton(_ emojiView: EmojiView) {
-        __view.inputView = nil
-        __view.keyboardType = .default
-        __view.reloadInputViews()
-    }
-        
-    public func emojiViewDidPressDeleteBackwardButton(_ emojiView: EmojiView) {
-        __view.deleteBackward()
-    }
-
-    public func emojiViewDidPressDismissKeyboardButton(_ emojiView: EmojiView) {
-        __view.resignFirstResponder()
+    
+    @discardableResult
+    public func padding(_ padding:UIEdgeInsets = .all(8)) -> Self {
+        self.__view.textContainerInset = padding
+        return self
     }
 }

@@ -38,9 +38,9 @@ open class TextInput: UITextField {
     }
 }
 
-class TextField:View
+open class TextField:View
 {
-    var __view:TextInput
+    var __view:TextInput = .init()
     override public var _view: UIView! {
         get {
             return __view
@@ -55,11 +55,24 @@ class TextField:View
     }
     
     
-    public convenience init(_ placeholder:String, text:BehaviorRelay<String?>, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
-        self.init()
-        __view.placeholder = placeholder
+    public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
         
-        text <~> __view.rx.text ~ disposeBag
+        __view.placeholder = placeholder
+        __view.autocapitalizationType = .none
+        super.init()
+
+        _init()
+        if let limit = limit {
+            text ~> __view.rx.text ~ disposeBag
+            __view.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text ~ disposeBag
+        } else {
+            text <~> __view.rx.text ~ disposeBag
+        }
+        
+        __view.rx.controlEvent([.editingDidEnd]).subscribe(onNext:{[weak self] in
+            self?.__view.inputView = nil
+        }) ~ disposeBag
+        
         __view.rx.controlEvent([.editingChanged]).subscribe(onNext:{
             onEditingChange(true)
         }) ~ disposeBag
@@ -69,7 +82,6 @@ class TextField:View
         }) ~ disposeBag
     }
     public override init (){
-        __view = TextInput()
         super.init()
         _init()
     }
@@ -105,6 +117,25 @@ class TextField:View
     @discardableResult
     public func inputView(_ inputView:UIView) -> Self {
         __view.inputView = inputView
+        return self
+    }
+    
+    @discardableResult
+    public func inputView(_ inputView$:Observable<UIView?>) -> Self {
+        inputView$.subscribe(onNext:{[weak self] in
+            guard let self = self else { return }
+            self.__view.inputView = $0
+            self.__view.reloadInputViews()
+            self.__view.becomeFirstResponder()
+        }) ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func placeholder(_ stream$:Observable<String?>) -> Self {
+        stream$.asDriver(onErrorJustReturn: nil).drive(onNext:{[weak self] in
+            self?.__view.placeholder = $0
+        }) ~ disposeBag
         return self
     }
 }
