@@ -103,9 +103,15 @@ open class TextView:View {
         inputView$.subscribe(onNext:{[weak self] in
             guard let self = self else { return }
             self.__view.inputView = $0
-            self.__view.reloadInputViews()
-            self.__view.becomeFirstResponder()
+            self.__view.reloadInputViews()            
         }) ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func inputAccessoryView(_ view:UIView?) -> Self {
+        self.__view.inputAccessoryView = view
+        self.__view.reloadInputViews()
         return self
     }
     
