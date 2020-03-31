@@ -110,6 +110,11 @@ open class Text:View {
         return self
     }
     
+    public func color(_ color$: Observable<UIColor>) -> Self {
+        color$ ~> __view.rx.textColor ~ disposeBag
+        return self
+    }
+    
     public func resizeToFit() -> Self {
         __view.adjustsFontSizeToFitWidth = true
         __view.minimumScaleFactor = 0.1

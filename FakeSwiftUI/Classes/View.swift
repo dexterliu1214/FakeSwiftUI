@@ -23,8 +23,10 @@ open class View:UIView {
     var trailing:CGFloat?
     var top:CGFloat?
     var bottom:CGFloat?
-    var heightConstraint:NSLayoutConstraint?
     
+    var bottomConstraint:NSLayoutConstraint?
+    var centerYConstraint:NSLayoutConstraint?
+
     public init(){
         super.init(frame:.zero)
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -43,20 +45,6 @@ open class View:UIView {
     public func on(_ superview:UIView) -> View {
         superview.addSubview(self)
         setupConstraint()
-        return self
-    }
-    
-    @discardableResult
-    public func height(_ value:Observable<CGFloat>) -> Self {
-        self.heightConstraint = self.heightAnchor.constraint(equalToConstant: 0)
-        self.heightConstraint?.isActive = true
-        value.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] in
-            guard let self = self else { return }
-            if let hs:NSLayoutConstraint = self.heightConstraint {
-                hs.constant = $0
-                self.layoutIfNeeded()
-            }
-        }) ~ disposeBag
         return self
     }
     
@@ -136,7 +124,7 @@ open class View:UIView {
         }
         
         if let bottom = bottom {
-           self.bottom(bottom)
+            self.bottom(bottom)
         }
     }
     
@@ -245,6 +233,62 @@ open class View:UIView {
         let c:NSLayoutConstraint = heightAnchor.constraint(equalToConstant: 0)
         constant$.asDriver(onErrorJustReturn: 0) ~> c.rx.constant ~ disposeBag
         isActive$.asDriver(onErrorJustReturn: false) ~> c.rx.active ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func width(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
+        let c:NSLayoutConstraint = widthAnchor.constraint(equalToConstant: 0)
+        constant$.asDriver(onErrorJustReturn: 0) ~> c.rx.constant ~ disposeBag
+        isActive$.asDriver(onErrorJustReturn: false) ~> c.rx.active ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func constraint(_ constraint:NSLayoutConstraint, constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
+        constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+             self?.layoutIfNeeded()
+        }).drive(onNext:{[weak self] in
+            guard let self = self else { return }
+            if let superview = self.superview, self.bottomConstraint == nil {
+                self.bottomConstraint = self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: $0)
+                self.bottomConstraint?.isActive = true
+            }
+            if let c = self.bottomConstraint {
+                c.constant = $0
+            }
+        }) ~ disposeBag
+        
+        if let c = self.bottomConstraint {
+           isActive$.asDriver(onErrorJustReturn: false).do(afterNext:{[weak self] _ in
+               self?.layoutIfNeeded()
+           }) ~> c.rx.active ~ disposeBag
+        }
+        
+        return self
+    }
+    
+    @discardableResult
+    public func centerY(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
+        constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+             self?.layoutIfNeeded()
+        }).drive(onNext:{[weak self] in
+            guard let self = self else { return }
+            if let superview = self.superview, self.centerYConstraint == nil {
+                self.centerYConstraint = self.centerYAnchor.constraint(equalTo: superview.centerYAnchor, constant: $0)
+                self.centerYConstraint?.isActive = true
+            }
+            if let c = self.centerYConstraint {
+                c.constant = $0
+            }
+        }) ~ disposeBag
+        
+        if let c = self.centerYConstraint {
+           isActive$.asDriver(onErrorJustReturn: false).do(afterNext:{[weak self] _ in
+               self?.layoutIfNeeded()
+           }) ~> c.rx.active ~ disposeBag
+        }
+        
         return self
     }
 }
