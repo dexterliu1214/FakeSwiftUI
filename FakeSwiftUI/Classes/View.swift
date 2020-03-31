@@ -245,7 +245,7 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func constraint(_ constraint:NSLayoutConstraint, constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
+    public func bottom(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
         constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
              self?.layoutIfNeeded()
         }).drive(onNext:{[weak self] in
