@@ -24,6 +24,8 @@ open class View:UIView {
     var top:CGFloat?
     var bottom:CGFloat?
     
+    var heightConstraint:NSLayoutConstraint?
+    var widthConstraint:NSLayoutConstraint?
     var bottomConstraint:NSLayoutConstraint?
     var centerYConstraint:NSLayoutConstraint?
 
@@ -57,6 +59,20 @@ open class View:UIView {
         if let height = height {
             self.height(height)
         }
+        return self
+    }
+    
+    @discardableResult
+    public func height(offset:CGFloat) -> Self {
+        self.heightConstraint = heightAnchor.constraint(equalToConstant: offset)
+        self.heightConstraint?.isActive = true
+        return self
+    }
+    
+    @discardableResult
+    public func width(offset:CGFloat) -> Self {
+        self.widthConstraint = heightAnchor.constraint(equalToConstant: offset)
+        self.widthConstraint?.isActive = true
         return self
     }
     
@@ -229,23 +245,35 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func height(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
-        let c:NSLayoutConstraint = heightAnchor.constraint(equalToConstant: 0)
-        constant$.asDriver(onErrorJustReturn: 0) ~> c.rx.constant ~ disposeBag
-        isActive$.asDriver(onErrorJustReturn: false) ~> c.rx.active ~ disposeBag
+    public func height(_ constant$:Observable<CGFloat>) -> Self {
+        constant$.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] in
+            guard let self = self else { return }
+            if self.heightConstraint == nil {
+                self.heightConstraint = self.heightAnchor.constraint(equalToConstant: $0)
+                self.heightConstraint?.isActive = true
+            }
+            self.heightConstraint?.constant = $0
+            print($0)
+        }) ~ disposeBag
         return self
     }
     
     @discardableResult
-    public func width(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
-        let c:NSLayoutConstraint = widthAnchor.constraint(equalToConstant: 0)
-        constant$.asDriver(onErrorJustReturn: 0) ~> c.rx.constant ~ disposeBag
-        isActive$.asDriver(onErrorJustReturn: false) ~> c.rx.active ~ disposeBag
+    public func width(_ constant$:Observable<CGFloat>) -> Self {
+        constant$.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] in
+            guard let self = self else { return }
+            if self.widthConstraint == nil {
+                self.widthConstraint = self.widthAnchor.constraint(equalToConstant: $0)
+                self.widthConstraint?.isActive = true
+            }
+            self.widthConstraint?.constant = $0
+            print($0)
+        }) ~ disposeBag
         return self
     }
     
     @discardableResult
-    public func bottom(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
+    public func bottom(_ constant$:Observable<CGFloat>) -> Self {
         constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
              self?.layoutIfNeeded()
         }).drive(onNext:{[weak self] in
@@ -258,18 +286,11 @@ open class View:UIView {
                 c.constant = $0
             }
         }) ~ disposeBag
-        
-        if let c = self.bottomConstraint {
-           isActive$.asDriver(onErrorJustReturn: false).do(afterNext:{[weak self] _ in
-               self?.layoutIfNeeded()
-           }) ~> c.rx.active ~ disposeBag
-        }
-        
         return self
     }
     
     @discardableResult
-    public func centerY(_ constant$:Observable<CGFloat>, isActive$:Observable<Bool> = Observable.just(true)) -> Self {
+    public func centerY(_ constant$:Observable<CGFloat>) -> Self {
         constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
              self?.layoutIfNeeded()
         }).drive(onNext:{[weak self] in
@@ -282,13 +303,6 @@ open class View:UIView {
                 c.constant = $0
             }
         }) ~ disposeBag
-        
-        if let c = self.centerYConstraint {
-           isActive$.asDriver(onErrorJustReturn: false).do(afterNext:{[weak self] _ in
-               self?.layoutIfNeeded()
-           }) ~> c.rx.active ~ disposeBag
-        }
-        
         return self
     }
 }
