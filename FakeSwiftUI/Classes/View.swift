@@ -28,6 +28,7 @@ open class View:UIView {
     var widthConstraint:NSLayoutConstraint?
     var bottomConstraint:NSLayoutConstraint?
     var centerYConstraint:NSLayoutConstraint?
+    var centerXConstraint:NSLayoutConstraint?
 
     public init(){
         super.init(frame:.zero)
@@ -120,11 +121,13 @@ open class View:UIView {
     
     public func setupConstraint(){
         if let centerX = centerX {
-            self.centerX(centerX)
+            self.centerXConstraint = centerXAnchor.constraint(equalTo: superview!.centerXAnchor, constant: centerX)
+            self.centerXConstraint?.isActive = true
         }
         
         if let centerY = centerY {
-            self.centerY(centerY)
+            self.centerYConstraint = centerYAnchor.constraint(equalTo: superview!.centerYAnchor, constant: centerY)
+            self.centerYConstraint?.isActive = true
         }
         
         if let leading = leading {
@@ -303,6 +306,78 @@ open class View:UIView {
                 c.constant = $0
             }
         }) ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func centerX(_ constant$:Observable<CGFloat>) -> Self {
+        constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+             self?.layoutIfNeeded()
+        }).drive(onNext:{[weak self] in
+            guard let self = self else { return }
+            if let superview = self.superview, self.centerXConstraint == nil {
+                self.centerXConstraint = self.centerXAnchor.constraint(equalTo: superview.centerXAnchor, constant: $0)
+                self.centerXConstraint?.isActive = true
+            }
+            if let c = self.centerXConstraint {
+                c.constant = $0
+            }
+        }) ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func draggable() -> Self {
+        var beginPos = CGPoint.zero
+        
+        self.rx.panGesture().when(.began)
+            .asTranslation()
+            .subscribe(onNext:{translation, _ in
+                if let centerY = self.centerYConstraint, let centerX = self.centerXConstraint {
+                    beginPos = CGPoint(x:centerX.constant, y:centerY.constant)
+                }
+            }) ~ disposeBag
+        
+        self.rx.panGesture().when(.changed)
+            .asTranslation()
+            .subscribe(onNext:{[unowned self] translation, _ in
+                if let centerY = self.centerYConstraint, let centerX = self.centerXConstraint {
+                    centerX.constant = beginPos.x + translation.x
+                    centerY.constant = beginPos.y + translation.y
+                    UIView.animate(withDuration: 0.1, animations: {[unowned self] in
+                        self.superview!.layoutIfNeeded()
+                    }, completion: nil)
+                }                
+            }) ~ disposeBag
+        
+        return self
+    }
+    
+    @discardableResult
+    public func scalable() -> Self {
+        var scaleOrigin = CGPoint.zero
+        var minSize:CGSize?
+        self.rx.pinchGesture()
+            .when(.began)
+            .asScale()
+            .subscribe(onNext:{[weak self] (scale, _) in
+                guard let self = self, let widthConstraint = self.widthConstraint, let heightConstraint = self.heightConstraint else { return }
+                scaleOrigin = CGPoint(x: widthConstraint.constant, y: heightConstraint.constant)
+                minSize = minSize ?? CGSize(width: widthConstraint.constant / 2, height: heightConstraint.constant / 2)
+            }) ~ disposeBag
+        
+        self.rx.pinchGesture()
+            .when(.changed)
+            .asScale()
+            .subscribe(onNext:{[weak self] (scale, _) in
+                guard let self = self, let widthConstraint = self.widthConstraint, let heightConstraint = self.heightConstraint else { return }
+                widthConstraint.constant = max(scaleOrigin.x * scale, minSize!.width)
+                heightConstraint.constant = max(scaleOrigin.y * scale, minSize!.height)
+                UIView.animate(withDuration: 0.1, animations: {[weak self] in
+                    self?.superview!.layoutIfNeeded()
+                }, completion: nil)
+            }) ~ disposeBag
+        
         return self
     }
 }
