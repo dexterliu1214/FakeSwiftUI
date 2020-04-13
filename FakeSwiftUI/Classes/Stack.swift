@@ -34,7 +34,7 @@ open class ZStack:View
     }
     
     public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil) -> Self {
-        backgroundView = GradientView(colors: colors, locations: locations, degree: degree)
+        backgroundView = GradientView(colors: colors, degree: degree, locations: locations)
         insertSubview(backgroundView!, at: 0)
         backgroundView?.fillSuperview()
         return self
@@ -106,7 +106,14 @@ open class Stack:View {
     }
     
     public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil) -> Self {
-        backgroundView = GradientView(colors: colors, locations: locations, degree: degree)
+        backgroundView = GradientView(colors: colors, degree: degree, locations: locations)
+        insertSubview(backgroundView!, at: 0)
+        backgroundView?.fillSuperview()
+        return self
+    }
+    
+    public func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double>, locations:[NSNumber]? = nil) -> Self {
+        backgroundView = GradientView(colors$: colors$, degree$: degree$, locations: locations)
         insertSubview(backgroundView!, at: 0)
         backgroundView?.fillSuperview()
         return self

@@ -69,10 +69,6 @@ open class TextField:View
             text <~> __view.rx.text ~ disposeBag
         }
         
-        __view.rx.controlEvent([.editingDidEnd]).subscribe(onNext:{[weak self] in
-            self?.__view.inputView = nil
-        }) ~ disposeBag
-        
         __view.rx.controlEvent([.editingChanged]).subscribe(onNext:{
             onEditingChange(true)
         }) ~ disposeBag
