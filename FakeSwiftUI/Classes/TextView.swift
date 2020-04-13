@@ -16,7 +16,8 @@ import PromiseKit
 import AwaitKit
 
 open class TextView:View {
-    var __view:UITextView
+    var __view = UITextView()
+
     override public var _view: UIView! {
         get {
             return __view
@@ -31,7 +32,6 @@ open class TextView:View {
     }
     
     public init(_ text$:BehaviorRelay<String?>, placeholder:Observable<String?>, limit:Int? = nil) {
-        __view = UITextView()
         let placeholderLabel = UILabel()
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
         placeholderLabel.numberOfLines = 0
@@ -51,6 +51,12 @@ open class TextView:View {
         } else {
             text$ <~> __view.rx.text ~ disposeBag
         }
+    }
+    
+    public init(_ text$:Observable<String?>) {
+        super.init()
+        _init()
+        text$ ~> __view.rx.text ~ disposeBag
     }
     
     public convenience init(_ text:String) {

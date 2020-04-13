@@ -138,4 +138,10 @@ open class TextField:View
         }) ~ disposeBag
         return self
     }
+    
+    @discardableResult
+    public func tintColor(_ color:UIColor) -> Self {
+        self.__view.tintColor = color
+        return self
+    }
 }
