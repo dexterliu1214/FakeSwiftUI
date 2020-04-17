@@ -18,20 +18,8 @@ import RxDataSources
 
 open class Grid<CellType:UICollectionViewCell>:View
 {
-    var __view:UICollectionView
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView:UICollectionView = newValue as? UICollectionView {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
-    
+    lazy var __view = self._view as! UICollectionView
+  
     var columns:Int
     let layout:UICollectionViewFlowLayout = .init()
     var scrollToIndexPath:(IndexPath, UICollectionView.ScrollPosition, Bool)?
@@ -39,8 +27,8 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     public init<ModelType>(columns:Int = 1, vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[ModelType]>, _ builder:@escaping(CellType, ModelType, Int, UICollectionView) -> UICollectionViewCell) {
         self.columns = columns
-        __view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         super.init()
+        _view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
 
@@ -67,8 +55,8 @@ open class Grid<CellType:UICollectionViewCell>:View
         _ builder:@escaping(CellType, ModelType, Int) -> UICollectionViewCell
     ) {
         self.columns = columns
-        __view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         super.init()
+        _view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
         layout.headerReferenceSize = CGSize(width: 200, height: 40)

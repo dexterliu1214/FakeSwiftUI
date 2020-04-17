@@ -16,25 +16,13 @@ import PromiseKit
 import AwaitKit
 
 open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlowLayout {
-    var __view:UICollectionView
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView:UICollectionView = newValue as? UICollectionView {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! UICollectionView
     
     let layout:UICollectionViewFlowLayout = .init()
     
     public init<T>(vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[T]>, _ builder:@escaping(C, T, Int) -> (C)) {
-        __view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         super.init()
+        _view = UICollectionView(frame: .zero, collectionViewLayout: layout)
         let _ = __view.rx.setDelegate(self)
         __view.isScrollEnabled = false
         layout.minimumInteritemSpacing = hSpacing

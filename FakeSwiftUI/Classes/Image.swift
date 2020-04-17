@@ -18,23 +18,12 @@ import AwaitKit
 
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
-    var __view:UIImageView
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView:UIImageView = newValue as? UIImageView {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    
+    lazy var __view = self._view as! UIImageView
     
     public init(image:UIImage?) {
-        __view = UIImageView(image:image)
         super.init()
+        _view = UIImageView(image:image)
         _init()
         __view.contentMode = .scaleAspectFit
         __view.clipsToBounds = true

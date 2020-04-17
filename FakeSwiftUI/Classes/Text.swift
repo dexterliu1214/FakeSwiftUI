@@ -15,19 +15,7 @@ import PromiseKit
 import AwaitKit
 
 open class Text:View {
-    var __view:Label
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? Label {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! Label
     
     var fontSize:CGFloat = UIFont.systemFontSize
     var isBold:Bool = false
@@ -58,8 +46,8 @@ open class Text:View {
     }
     
     public override init (){
-        __view = Label()
         super.init()
+        _view = Label()
         _init()
     }
     

@@ -17,19 +17,7 @@ import AwaitKit
 
 open class Button:View
 {
-    var __view:UIButton
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView:UIButton = newValue as? UIButton {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! UIButton
     
     public convenience init(_ title:String, _ action:@escaping(Button) -> ()) {
         self.init()
@@ -61,9 +49,9 @@ open class Button:View
         }) ~ disposeBag
    }
     
-    override public init (){
-        __view = UIButton()
+    override public init (){        
         super.init()
+        _view = UIButton()
         __view.titleLabel?.adjustsFontSizeToFitWidth = true
         __view.contentEdgeInsets = .all(8)
         _init()

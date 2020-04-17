@@ -17,29 +17,18 @@ import SwiftIcons
 
 open class Icon:View
 {
-    var __view:Label
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView:Label = newValue as? Label {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! Label
+
     var icon:FontType
     var size:CGFloat?
 
     public init(_ icon:FontType, size:CGFloat? = nil, color:UIColor = .black, bgColor:UIColor = .clear) {
         self.icon = icon
         self.size = size
-        __view = Label()
 
         super.init()
-        
+        _view = Label()
+
         _init()
         __view.setIcon(icon: icon, iconSize: size ?? UIFont.systemFontSize, color:color, bgColor:bgColor)
     }

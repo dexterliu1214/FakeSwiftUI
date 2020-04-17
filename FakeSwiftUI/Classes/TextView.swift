@@ -16,22 +16,12 @@ import PromiseKit
 import AwaitKit
 
 open class TextView:View {
-    var __view = UITextView()
+    lazy var __view = self._view as! UITextView
 
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? UITextView {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
-    
     public init(_ text$:BehaviorRelay<String?>, placeholder:Observable<String?>, limit:Int? = nil) {
+        super.init()
+        _view = UITextView()
+        _init()
         let placeholderLabel = UILabel()
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
         placeholderLabel.numberOfLines = 0
@@ -40,9 +30,6 @@ open class TextView:View {
         placeholderLabel.fillSuperview()
         
         __view.setValue(placeholderLabel, forKey: "_placeholderLabel")
-        super.init()
-        _init()
-        
         placeholder ~> placeholderLabel.rx.text ~ disposeBag
         
         if let limit = limit {
@@ -70,8 +57,8 @@ open class TextView:View {
     }
     
     public override init (){
-        __view = UITextView()
         super.init()
+        _view = UITextView()
         _init()
     }
     

@@ -17,30 +17,18 @@ import AwaitKit
 
 open class Toggle:View
 {
-    var __view:UISwitch
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? UISwitch {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! UISwitch
     
     public init(isOn:BehaviorRelay<Bool>){
-        __view = UISwitch()
         super.init()
+        _view = UISwitch()
         _init()
         isOn <~> __view.rx.isOn  ~ disposeBag
     }
     
     public init(isOn:BehaviorRelay<Bool>, _ subview:UIView){
-        __view = UISwitch()
         super.init()
+        _view = UISwitch()
         isOn <~> __view.rx.isOn  ~ disposeBag
         __view.translatesAutoresizingMaskIntoConstraints = false
         HStack(

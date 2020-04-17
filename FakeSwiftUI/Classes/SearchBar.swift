@@ -16,23 +16,11 @@ import PromiseKit
 import AwaitKit
 
 open class SearchBar:View {
-    var __view:UISearchBar
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? UISearchBar {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! UISearchBar
     
-    public init(placeholder:String, _ text$:BehaviorRelay<String?>) {
-        __view = UISearchBar()
+    public init(placeholder:String, _ text$:BehaviorRelay<String?>) {        
         super.init()
+        _view = UISearchBar()
         _init()
         __view.placeholder = placeholder
         text$ <~> __view.rx.text ~ disposeBag

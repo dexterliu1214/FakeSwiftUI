@@ -17,23 +17,11 @@ import AwaitKit
 
 open class SegmentedControl:View
 {
-    var __view:UISegmentedControl
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? UISegmentedControl {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! UISegmentedControl
     
-    public init(_ items:[Any], defaultIndex:Int = 0) {
-        __view = UISegmentedControl(items: items)
+    public init(_ items:[Any], defaultIndex:Int = 0) {        
         super.init()
+        _view = UISegmentedControl(items: items)
         __view.selectedSegmentIndex = defaultIndex
         _init()
     }

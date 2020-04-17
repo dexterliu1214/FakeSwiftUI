@@ -64,26 +64,14 @@ open class HStack:Stack {
 }
 
 open class Stack:View {
-    var __view:UIStackView
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView:UIStackView = newValue as? UIStackView {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! UIStackView
     
     var backgroundView:UIView?
     
     public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[UIView]) {
-        __view = UIStackView()
         super.init()
-        
+        _view = UIStackView()
+
         __view.alignment = alignment
         __view.distribution = .fill
         __view.spacing = spacing

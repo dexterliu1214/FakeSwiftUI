@@ -16,25 +16,12 @@ import RxBinding
 
 open class ScalableImage:View
 {
-    var __view:UIScrollView
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? UIScrollView {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
-    
+    lazy var __view = self._view as! UIScrollView
     let imageView = UIImageView()
 
     public init(_ image$:Driver<UIImage?>) {
-        __view = UIScrollView()
         super.init()
+        _view = UIScrollView()
         __view.delegate = self
         _init()
         imageView.append(to: __view)

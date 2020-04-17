@@ -17,23 +17,11 @@ import AwaitKit
 
 open class Slider:View
 {
-    var __view:UISlider
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? UISlider {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
+    lazy var __view = self._view as! UISlider
 
     public init(_ value$:BehaviorRelay<Float>) {
-        __view = UISlider()
         super.init()
+        _view = UISlider()
         __view.minimumValue = 0.0
         __view.maximumValue = 100.0
         _init()

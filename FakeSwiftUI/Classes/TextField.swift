@@ -40,26 +40,13 @@ open class TextInput: UITextField {
 
 open class TextField:View
 {
-    var __view:TextInput = .init()
-    override public var _view: UIView! {
-        get {
-            return __view
-        }
-        set {
-            if let newView = newValue as? TextInput {
-                __view = newView
-            } else {
-                print("incorrect chassis type for __view")
-            }
-        }
-    }
-    
+    lazy var __view = self._view as! TextInput
     
     public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
-        
-        __view.placeholder = placeholder
-        __view.autocapitalizationType = .none
         super.init()
+        _view = TextInput()
+        __view.placeholder = placeholder
+            __view.autocapitalizationType = .none
 
         _init()
         if let limit = limit {
@@ -77,6 +64,7 @@ open class TextField:View
             onCommit()
         }) ~ disposeBag
     }
+    
     public override init (){
         super.init()
         _init()
