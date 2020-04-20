@@ -19,13 +19,14 @@ open class Slider:View
 {
     lazy var __view = self._view as! UISlider
 
-    public init(_ value$:BehaviorRelay<Float>) {
+    public init(_ value$:BehaviorRelay<Float>, min:Float = 0.0, max:Float = 100.0, step:Float = 1.0) {
         super.init()
         _view = UISlider()
-        __view.minimumValue = 0.0
-        __view.maximumValue = 100.0
+        __view.minimumValue = min
+        __view.maximumValue = max
         _init()
-        value$ <~> __view.rx.value ~ disposeBag
+        value$ ~> __view.rx.value ~ disposeBag
+        __view.rx.value.map{ round($0/step) * step } ~> value$ ~ disposeBag
     }
     
     public required init?(coder: NSCoder) {

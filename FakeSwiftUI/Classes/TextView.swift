@@ -42,24 +42,23 @@ open class TextView:View {
     
     public init(_ text$:Observable<String?>) {
         super.init()
+        _view = UITextView()
         _init()
         text$ ~> __view.rx.text ~ disposeBag
     }
     
-    public convenience init(_ text:String) {
-        self.init()
-        self.__view.text = text
-    }
-    
-    public convenience init(_ attributedText:NSAttributedString) {
-        self.init()
-        self.__view.attributedText = attributedText
-    }
-    
-    public override init (){
+    public  init(_ text:String) {
         super.init()
         _view = UITextView()
         _init()
+        self.__view.text = text
+    }
+    
+    public init(_ attributedText:NSAttributedString) {
+        super.init()
+        _view = UITextView()
+        _init()
+        self.__view.attributedText = attributedText
     }
     
     required public init?(coder: NSCoder) {

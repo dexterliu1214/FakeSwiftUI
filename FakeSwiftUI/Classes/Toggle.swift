@@ -26,25 +26,8 @@ open class Toggle:View
         isOn <~> __view.rx.isOn  ~ disposeBag
     }
     
-    public init(isOn:BehaviorRelay<Bool>, _ subview:UIView){
-        super.init()
-        _view = UISwitch()
-        isOn <~> __view.rx.isOn  ~ disposeBag
-        __view.translatesAutoresizingMaskIntoConstraints = false
-        HStack(
-            subview,
-            __view
-        ).fill().on(self)
-    }
-    
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    @discardableResult
-    public func enabled(_ stream$:Observable<Bool>) -> Self {
-        stream$.asDriver(onErrorJustReturn: true) ~> __view.rx.isEnabled ~ disposeBag
-        return self
     }
     
     @discardableResult

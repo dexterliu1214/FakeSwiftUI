@@ -72,7 +72,7 @@ open class View:UIView {
     
     @discardableResult
     public func width(offset:CGFloat) -> Self {
-        self.widthConstraint = heightAnchor.constraint(equalToConstant: offset)
+        self.widthConstraint = widthAnchor.constraint(equalToConstant: offset)
         self.widthConstraint?.isActive = true
         return self
     }

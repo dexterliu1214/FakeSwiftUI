@@ -42,7 +42,7 @@ open class ZStack:View
 }
 
 open class VStack:Stack {
-    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: UIView...) {
+    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: View...) {
         super.init(alignment: alignment, spacing:spacing, subviews:subviews)
         self.__view.axis = .vertical
     }
@@ -53,7 +53,7 @@ open class VStack:Stack {
 }
 
 open class HStack:Stack {
-    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: UIView...) {
+    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: View...) {
         super.init(alignment: alignment, spacing:spacing, subviews:subviews)
         self.__view.axis = .horizontal
     }
@@ -68,7 +68,7 @@ open class Stack:View {
     
     var backgroundView:UIView?
     
-    public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[UIView]) {
+    public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[View]) {
         super.init()
         _view = UIStackView()
 
@@ -78,6 +78,7 @@ open class Stack:View {
         _init()
         subviews.forEach{
             __view.addArrangedSubview($0)
+            $0.setupConstraint()
         }
     }
     
