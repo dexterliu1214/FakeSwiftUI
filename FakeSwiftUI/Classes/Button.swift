@@ -42,7 +42,6 @@ open class Button:View
         
         let label = label()
         label.append(to:self)
-        label.setupConstraint()
         label.rx.tapGesture().when(.recognized)
         .subscribe(onNext:{[unowned self] _ in
             action(self)

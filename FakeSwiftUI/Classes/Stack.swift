@@ -78,7 +78,6 @@ open class Stack:View {
         _init()
         subviews.forEach{
             __view.addArrangedSubview($0)
-            $0.setupConstraint()
         }
     }
     

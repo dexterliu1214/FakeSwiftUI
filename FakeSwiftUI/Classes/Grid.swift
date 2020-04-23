@@ -119,7 +119,9 @@ open class Grid<CellType:UICollectionViewCell>:View
         }
         
         if let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath {
-            __view.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.__view.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
+            }
         }
     }
     
@@ -136,8 +138,8 @@ open class Grid<CellType:UICollectionViewCell>:View
     }
 
     @discardableResult
-    public func emptyView(_ view:@escaping () -> UIView) -> Self {
-        view().append(to: self.__view.backgroundView!).centerX().centerY()
+    public func emptyView(_ view:@escaping () -> View) -> Self {
+        view().centerX(offset: 0).centerY(offset: 0).on(self.__view.backgroundView!)
         return self
     }
     

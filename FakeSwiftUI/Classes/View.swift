@@ -11,22 +11,40 @@ import UIKit
 import RxSwift
 import RxBinding
 import RxGesture
-
+extension UIView
+{
+    @discardableResult
+    func append(to superview: UIView) -> Self {
+        superview.addSubview(self)
+        return self
+    }
+    @discardableResult
+    func fillSuperview() -> Self {
+        translatesAutoresizingMaskIntoConstraints = false
+        topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0).isActive = true
+        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0).isActive = true
+        leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 0).isActive = true
+        trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0).isActive = true
+        return self
+    }
+}
 open class View:UIView {
     open var _view:UIView!
     public let disposeBag:DisposeBag = .init()
     var overlayShape:Shape?
     var clipShape:Shape?
-    var centerX:CGFloat?
-    var centerY:CGFloat?
-    var leading:CGFloat?
-    var trailing:CGFloat?
-    var top:CGFloat?
-    var bottom:CGFloat?
     
+    var centerXConstant$:Observable<CGFloat>?
+    var centerYConstant$:Observable<CGFloat>?
+    var bottomConstant$:Observable<CGFloat>?
+    var topConstant$:Observable<CGFloat>?
+    var leadingConstant$:Observable<CGFloat>?
+    var trailingConstant$:Observable<CGFloat>?
+    var widthConstant$:Observable<CGFloat>?
+    var heightConstant$:Observable<CGFloat>?
+
     var heightConstraint:NSLayoutConstraint?
     var widthConstraint:NSLayoutConstraint?
-    var bottomConstraint:NSLayoutConstraint?
     var centerYConstraint:NSLayoutConstraint?
     var centerXConstraint:NSLayoutConstraint?
 
@@ -47,45 +65,18 @@ open class View:UIView {
     @discardableResult
     public func on(_ superview:UIView) -> View {
         superview.addSubview(self)
-        setupConstraint()
         return self
     }
     
     @discardableResult
     public func frame(width:CGFloat?, height:CGFloat?) -> Self {
         if let width = width {
-            self.width(width)
+            self.width(offset:width)
         }
         
         if let height = height {
-            self.height(height)
+            self.height(offset:height)
         }
-        return self
-    }
-    
-    @discardableResult
-    public func height(offset:CGFloat) -> Self {
-        self.heightConstraint = heightAnchor.constraint(equalToConstant: offset)
-        self.heightConstraint?.isActive = true
-        return self
-    }
-    
-    @discardableResult
-    public func width(offset:CGFloat) -> Self {
-        self.widthConstraint = widthAnchor.constraint(equalToConstant: offset)
-        self.widthConstraint?.isActive = true
-        return self
-    }
-    
-    @discardableResult
-    public func top(offset:CGFloat) -> Self {
-        top = offset
-        return self
-    }
-    
-    @discardableResult
-    public func bottom(offset:CGFloat) -> Self {
-        bottom = offset
         return self
     }
     
@@ -95,56 +86,173 @@ open class View:UIView {
         return self
     }
     
+    public func setupConstraint(){
+        if let constant$ = centerXConstant$ {
+            self.centerXConstraint = centerXAnchor.constraint(equalTo: superview!.centerXAnchor, constant: 0)
+            self.centerXConstraint?.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                self?.layoutIfNeeded()
+            }) ~> self.centerXConstraint!.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = centerYConstant$ {
+            self.centerYConstraint = centerYAnchor.constraint(equalTo: superview!.centerYAnchor, constant: 0)
+            self.centerYConstraint?.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                self?.layoutIfNeeded()
+            }) ~> self.centerYConstraint!.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = leadingConstant$ {
+            let constraint = leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 0)
+            constraint.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                self?.layoutIfNeeded()
+            }) ~> constraint.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = trailingConstant$ {
+            let constraint = trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0)
+            constraint.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                self?.layoutIfNeeded()
+            }) ~> constraint.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = topConstant$ {
+            let constraint = topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0)
+            constraint.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                self?.layoutIfNeeded()
+            }) ~> constraint.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = bottomConstant$ {
+            let constraint = bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0)
+            constraint.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                 self?.layoutIfNeeded()
+            }) ~> constraint.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = heightConstant$ {
+            self.heightConstraint = heightAnchor.constraint(equalToConstant: 0)
+            self.heightConstraint?.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                 self?.layoutIfNeeded()
+            }) ~> heightConstraint!.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = widthConstant$ {
+            self.widthConstraint = widthAnchor.constraint(equalToConstant: 0)
+            self.widthConstraint?.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                 self?.layoutIfNeeded()
+            }) ~> widthConstraint!.rx.constant ~ disposeBag
+        }
+    }
+    
+    @discardableResult
+    public func height(_ constant$:Observable<CGFloat>) -> Self {
+        heightConstant$ = constant$
+        return self
+    }
+    
+    @discardableResult
+    public func width(_ constant$:Observable<CGFloat>) -> Self {
+        widthConstant$ = constant$
+        return self
+    }
+    
+    @discardableResult
+    public func height(offset:CGFloat) -> Self {
+        heightConstant$ = Observable.just(offset)
+        return self
+    }
+    
+    @discardableResult
+    public func width(offset:CGFloat) -> Self {
+        widthConstant$ = Observable.just(offset)
+        return self
+    }
+    
+    open override func didMoveToSuperview() {
+        super.didMoveToSuperview()
+        if let superview = superview {
+            setupConstraint()
+        }
+    }
+    
+    @discardableResult
+    public func leading(_ constant$:Observable<CGFloat>) -> Self {
+        leadingConstant$ = constant$
+        return self
+    }
+    
     @discardableResult
     public func leading(offset:CGFloat) -> Self {
-        leading = offset
+        leadingConstant$ = Observable.just(offset)
+        return self
+    }
+    
+    @discardableResult
+    public func trailing(_ constant$:Observable<CGFloat>) -> Self {
+        trailingConstant$ = constant$
         return self
     }
     
     @discardableResult
     public func trailing(offset:CGFloat) -> Self {
-        trailing = offset
+        trailingConstant$ = Observable.just(offset)
+        return self
+    }
+    
+    @discardableResult
+    public func bottom(_ constant$:Observable<CGFloat>) -> Self {
+        bottomConstant$ = constant$
+        return self
+    }
+    
+    @discardableResult
+    public func bottom(offset:CGFloat) -> Self {
+        bottomConstant$ = Observable.just(offset)
+        return self
+    }
+    
+    @discardableResult
+    public func top(_ constant$:Observable<CGFloat>) -> Self {
+        topConstant$ = constant$
+        return self
+    }
+    
+    @discardableResult
+    public func top(offset:CGFloat) -> Self {
+        topConstant$ = Observable.just(offset)
+        return self
+    }
+    
+    @discardableResult
+    public func centerY(_ constant$:Observable<CGFloat>) -> Self {
+        centerYConstant$ = constant$
         return self
     }
     
     @discardableResult
     public func centerY(offset:CGFloat) -> Self {
-        centerY = offset
+        centerYConstant$ = Observable.just(offset)
         return self
     }
     
     @discardableResult
     public func centerX(offset:CGFloat) -> Self {
-        centerX = offset
+        centerXConstant$ = Observable.just(offset)
         return self
     }
-    
-    public func setupConstraint(){
-        if let centerX = centerX {
-            self.centerXConstraint = centerXAnchor.constraint(equalTo: superview!.centerXAnchor, constant: centerX)
-            self.centerXConstraint?.isActive = true
-        }
-        
-        if let centerY = centerY {
-            self.centerYConstraint = centerYAnchor.constraint(equalTo: superview!.centerYAnchor, constant: centerY)
-            self.centerYConstraint?.isActive = true
-        }
-        
-        if let leading = leading {
-           self.leading(leading)
-        }
-        
-        if let trailing = trailing {
-           self.trailing(trailing)
-        }
-        
-        if let top = top {
-           self.top(top)
-        }
-        
-        if let bottom = bottom {
-            self.bottom(bottom)
-        }
+
+    @discardableResult
+    public func centerX(_ constant$:Observable<CGFloat>) -> Self {
+        centerXConstant$ = constant$
+        return self
     }
     
     override public func layoutSubviews() {
@@ -244,85 +352,6 @@ open class View:UIView {
                 callback(self)
             })
             ~ disposeBag
-        return self
-    }
-    
-    @discardableResult
-    public func height(_ constant$:Observable<CGFloat>) -> Self {
-        constant$.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] in
-            guard let self = self else { return }
-            if self.heightConstraint == nil {
-                self.heightConstraint = self.heightAnchor.constraint(equalToConstant: $0)
-                self.heightConstraint?.isActive = true
-            }
-            self.heightConstraint?.constant = $0
-            print($0)
-        }) ~ disposeBag
-        return self
-    }
-    
-    @discardableResult
-    public func width(_ constant$:Observable<CGFloat>) -> Self {
-        constant$.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] in
-            guard let self = self else { return }
-            if self.widthConstraint == nil {
-                self.widthConstraint = self.widthAnchor.constraint(equalToConstant: $0)
-                self.widthConstraint?.isActive = true
-            }
-            self.widthConstraint?.constant = $0
-            print($0)
-        }) ~ disposeBag
-        return self
-    }
-    
-    @discardableResult
-    public func bottom(_ constant$:Observable<CGFloat>) -> Self {
-        constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-             self?.layoutIfNeeded()
-        }).drive(onNext:{[weak self] in
-            guard let self = self else { return }
-            if let superview = self.superview, self.bottomConstraint == nil {
-                self.bottomConstraint = self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: $0)
-                self.bottomConstraint?.isActive = true
-            }
-            if let c = self.bottomConstraint {
-                c.constant = $0
-            }
-        }) ~ disposeBag
-        return self
-    }
-    
-    @discardableResult
-    public func centerY(_ constant$:Observable<CGFloat>) -> Self {
-        constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-             self?.layoutIfNeeded()
-        }).drive(onNext:{[weak self] in
-            guard let self = self else { return }
-            if let superview = self.superview, self.centerYConstraint == nil {
-                self.centerYConstraint = self.centerYAnchor.constraint(equalTo: superview.centerYAnchor, constant: $0)
-                self.centerYConstraint?.isActive = true
-            }
-            if let c = self.centerYConstraint {
-                c.constant = $0
-            }
-        }) ~ disposeBag
-        return self
-    }
-    
-    @discardableResult
-    public func centerX(_ constant$:Observable<CGFloat>) -> Self {
-        constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-             self?.layoutIfNeeded()
-        }).drive(onNext:{[weak self] in
-            guard let self = self else { return }
-            if let superview = self.superview, self.centerXConstraint == nil {
-                self.centerXConstraint = self.centerXAnchor.constraint(equalTo: superview.centerXAnchor, constant: $0)
-                self.centerXConstraint?.isActive = true
-            }
-            if let c = self.centerXConstraint {
-                c.constant = $0
-            }
-        }) ~ disposeBag
         return self
     }
     

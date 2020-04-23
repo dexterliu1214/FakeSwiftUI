@@ -24,6 +24,7 @@ open class ScalableImage:View
         _view = UIScrollView()
         __view.delegate = self
         _init()
+        imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
         imageView.append(to: __view)
         
         imageView.rx.tapGesture() { gesture, _ in
