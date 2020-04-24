@@ -1,0 +1,61 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AwaitKit",
+        "repositoryURL": "https://github.com/yannickl/AwaitKit.git",
+        "state": {
+          "branch": "master",
+          "revision": "743fbf22caa2813436e634fd7bf1fb0ff13751b9",
+          "version": null
+        }
+      },
+      {
+        "package": "PromiseKit",
+        "repositoryURL": "https://github.com/mxcl/PromiseKit.git",
+        "state": {
+          "branch": null,
+          "revision": "f14f16cc2602afec1030e4f492100d6d43dca544",
+          "version": "6.13.1"
+        }
+      },
+      {
+        "package": "RxAnimated",
+        "repositoryURL": "https://github.com/RxSwiftCommunity/RxAnimated.git",
+        "state": {
+          "branch": null,
+          "revision": "43d2047d9b1dd6141a730e23e17b12b18581d788",
+          "version": "0.8.1"
+        }
+      },
+      {
+        "package": "RxDataSources",
+        "repositoryURL": "https://github.com/RxSwiftCommunity/RxDataSources",
+        "state": {
+          "branch": null,
+          "revision": "a18cee01c9ee55f04d0c7eb15c77a96c3648c88e",
+          "version": "4.0.1"
+        }
+      },
+      {
+        "package": "RxGesture",
+        "repositoryURL": "https://github.com/RxSwiftCommunity/RxGesture.git",
+        "state": {
+          "branch": null,
+          "revision": "867f176b6695829e350fafc00b5a849bb46a1857",
+          "version": "3.0.3"
+        }
+      },
+      {
+        "package": "RxSwift",
+        "repositoryURL": "https://github.com/ReactiveX/RxSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "002d325b0bdee94e7882e1114af5ff4fe1e96afa",
+          "version": "5.1.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

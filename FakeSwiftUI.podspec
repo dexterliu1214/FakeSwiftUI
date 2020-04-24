@@ -30,7 +30,7 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '11.0'
 
-  s.source_files = 'FakeSwiftUI/Classes/**/*.swift'
+  s.source_files = 'Sources/FakeSwiftUI/Classes/**/*.swift'
   
   # s.resource_bundles = {
   #   'FakeSwiftUI' => ['FakeSwiftUI/Assets/*.png']
