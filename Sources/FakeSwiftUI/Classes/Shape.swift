@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 open class Shape {
     var color = UIColor.black
