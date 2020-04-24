@@ -29,6 +29,15 @@
         }
       },
       {
+        "package": "RxBinding",
+        "repositoryURL": "https://github.com/dexterliu1214/RxBinding.git",
+        "state": {
+          "branch": "master",
+          "revision": "85ff21aee2c91faeaf74be3a9433956212d293a1",
+          "version": null
+        }
+      },
+      {
         "package": "RxDataSources",
         "repositoryURL": "https://github.com/RxSwiftCommunity/RxDataSources.git",
         "state": {
