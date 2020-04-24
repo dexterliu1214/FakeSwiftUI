@@ -15,7 +15,6 @@ import RxGesture
 import PromiseKit
 import AwaitKit
 import RxDataSources
-import ReverseExtension
 
 open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     lazy var __view = self._view as! UITableView
@@ -91,12 +90,6 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return sectionViewHeightCalculator?(section) ?? 0
-    }
-    
-    @discardableResult
-    public func reversed() -> Self {
-        __view.re.delegate = self
-        return self
     }
     
     @discardableResult

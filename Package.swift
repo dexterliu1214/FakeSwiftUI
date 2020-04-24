@@ -24,7 +24,6 @@ let package = Package(
         .package(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", from: "4.0.1"),
         .package(url: "https://github.com/yannickl/AwaitKit.git", .branch("master")),
         .package(url: "https://github.com/dexterliu1214/SwiftIcons.git", .branch("master")),
-        .package(url: "https://github.com/dexterliu1214/ReverseExtension.git", .branch("master")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -39,7 +38,6 @@ let package = Package(
                 "RxDataSources",
                 "AwaitKit",
                 "SwiftIcons",
-                "ReverseExtension",
             ]),
     ]
 )

@@ -45,7 +45,6 @@ TODO: Add long description of the pod here.
    s.dependency 'RxAnimated'
    s.dependency 'RxGesture'
    s.dependency 'RxDataSources'
-   s.dependency "ReverseExtension"
    s.dependency 'AwaitKit'
    s.dependency 'SwiftIcons'
 end

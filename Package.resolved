@@ -63,6 +63,15 @@
           "revision": "002d325b0bdee94e7882e1114af5ff4fe1e96afa",
           "version": "5.1.1"
         }
+      },
+      {
+        "package": "SwiftIcons",
+        "repositoryURL": "https://github.com/dexterliu1214/SwiftIcons.git",
+        "state": {
+          "branch": "master",
+          "revision": "44fd147d442391d35853d7f0d39f9d927c964e13",
+          "version": null
+        }
       }
     ]
   },
