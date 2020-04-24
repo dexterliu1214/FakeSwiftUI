@@ -10,6 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import RxBinding
+import UIKit
 
 open class LoadingIndicator:View
 {
