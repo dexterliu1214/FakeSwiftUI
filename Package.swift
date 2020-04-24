@@ -32,7 +32,7 @@ let package = Package(
                 "RxSwift",
                 "RxAnimated",
                 "RxGesture",
-                "RxDatasouces",
+                "RxDataSources",
                 "AwaitKit"
             ]),
         .testTarget(
