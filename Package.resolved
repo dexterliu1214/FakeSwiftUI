@@ -30,7 +30,7 @@
       },
       {
         "package": "RxDataSources",
-        "repositoryURL": "https://github.com/RxSwiftCommunity/RxDataSources",
+        "repositoryURL": "https://github.com/RxSwiftCommunity/RxDataSources.git",
         "state": {
           "branch": null,
           "revision": "a18cee01c9ee55f04d0c7eb15c77a96c3648c88e",

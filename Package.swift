@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "5.0.0"),
         .package(url: "https://github.com/RxSwiftCommunity/RxAnimated.git", from: "0.8.1"),
         .package(url: "https://github.com/RxSwiftCommunity/RxGesture.git", from: "3.0.3"),
-        .package(url: "https://github.com/RxSwiftCommunity/RxDataSources", from: "4.0.1"),
+        .package(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", from: "4.0.1"),
         .package(url: "https://github.com/yannickl/AwaitKit.git", .branch("master")),
     ],
     targets: [
@@ -30,7 +30,6 @@ let package = Package(
             name: "FakeSwiftUI",
             dependencies: [
                 "RxSwift",
-                "RxCocoa",
                 "RxAnimated",
                 "RxGesture",
                 "RxDatasouces",
