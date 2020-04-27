@@ -9,12 +9,8 @@ import Foundation
 import UIKit
 import RxSwift
 import RxCocoa
-import RxBinding
-import RxGesture
-import PromiseKit
-import AwaitKit
 
-class Label: UILabel {
+open class Label: UILabel {
     var insets = UIEdgeInsets.all(0)
     
     override func drawText(in rect: CGRect) {
@@ -30,7 +26,7 @@ class Label: UILabel {
     }
     
     @discardableResult
-    func padding(_ insets:UIEdgeInsets) -> Self {
+    public func padding(_ insets:UIEdgeInsets) -> Self {
         self.insets = insets
         return self
     }
