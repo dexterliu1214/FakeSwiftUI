@@ -116,7 +116,9 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         refreshControl.tintColor = tintColor
         refreshControl.rx.controlEvent(.valueChanged).asDriver().drive(onNext:{
             let complete = {
-                refreshControl.endRefreshing()
+                DispatchQueue.main.async {
+                    refreshControl.endRefreshing()
+                }                
             }
             callback(complete)            
         }).disposed(by: disposeBag)

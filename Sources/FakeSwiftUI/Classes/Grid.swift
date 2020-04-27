@@ -153,7 +153,9 @@ open class Grid<CellType:UICollectionViewCell>:View
         refreshControl.tintColor = .white
         refreshControl.rx.controlEvent(.valueChanged).subscribe(onNext:{
             let complete = {
-                refreshControl.endRefreshing()
+                DispatchQueue.main.async {
+                    refreshControl.endRefreshing()
+                }
             }
             callback(complete)
         }) ~ disposeBag
