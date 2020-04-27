@@ -34,7 +34,7 @@ open class Grid<CellType:UICollectionViewCell>:View
         
         _init()
         __view.register(CellType.self, forCellWithReuseIdentifier: "CELL")
-        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true).drive(__view.backgroundView!.rx.isShow) ~ disposeBag
+        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag
         
         items.asDriver(onErrorJustReturn: []).drive(__view.rx.items) { (cv:UICollectionView, row:Int, element:ModelType) in
             let indexPath:IndexPath = .init(row: row, section: 0)
@@ -68,7 +68,7 @@ open class Grid<CellType:UICollectionViewCell>:View
         __view.register(HeaderType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Section")
         __view.register(FooterType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Section")
 
-        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true).drive(__view.backgroundView!.rx.isShow) ~ disposeBag
+        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag
         
         let dataSource:RxCollectionViewSectionedReloadDataSource<SectionModel<String, ModelType>> = .init(configureCell: { (ds:CollectionViewSectionedDataSource, cv:UICollectionView, ip:IndexPath, model:ModelType) in
             let cell:CellType = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: ip) as! CellType

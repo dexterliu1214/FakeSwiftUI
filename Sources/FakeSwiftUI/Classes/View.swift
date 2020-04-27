@@ -351,8 +351,7 @@ open class View:UIView {
             .drive(onNext:{[weak self] _ in
                 guard let self = self else { return }
                 callback(self)
-            })
-            ~ disposeBag
+            }) ~ disposeBag
         return self
     }
     

@@ -31,13 +31,13 @@ open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlo
         _init()
         __view.register(C.self, forCellWithReuseIdentifier: "CELL")
         
-        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true).drive(__view.backgroundView!.rx.isShow) ~ disposeBag
+        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag
         
         items.asDriver(onErrorJustReturn: []).drive(__view.rx.items) { (collectionView:UICollectionView, row:Int, element:T) in
             let indexPath:IndexPath = .init(row: row, section: 0)
             let cell:C = collectionView.dequeueReusableCell(withReuseIdentifier: "CELL", for: indexPath) as! C
             return builder(cell, element, row)
-        }.disposed(by: disposeBag)
+        } ~ disposeBag
     }
     
     public required init?(coder: NSCoder) {

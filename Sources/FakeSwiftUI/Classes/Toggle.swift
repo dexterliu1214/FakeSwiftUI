@@ -21,7 +21,7 @@ open class Toggle:View
         super.init()
         _view = UISwitch()
         _init()
-        isOn <~> __view.rx.isOn  ~ disposeBag
+        isOn <~> __view.rx.isOn ~ disposeBag
     }
     
     required public init?(coder: NSCoder) {

@@ -93,7 +93,7 @@ open class TextView:View {
         inputView$.subscribe(onNext:{[weak self] in
             guard let self = self else { return }
             self.__view.inputView = $0
-            self.__view.reloadInputViews()            
+            self.__view.reloadInputViews()
         }) ~ disposeBag
         return self
     }

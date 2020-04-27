@@ -37,7 +37,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
             let indexPath = IndexPath(row: row, section: 0)
             let cell = view.dequeueReusableCell(withIdentifier: "CELL", for: indexPath) as! CellType
             return builder(cell, element, row, view)
-        }.disposed(by: disposeBag)
+        } ~ disposeBag
         
         __view.rx.itemSelected
             .subscribe(onNext:{[weak self] in
@@ -45,8 +45,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
                  if self.isAutoDeselect {
                      self.__view.deselectRow(at: $0, animated: false)
                  }
-            })
-            .disposed(by: disposeBag)
+            }) ~ disposeBag
     }
 
     public init<ModelType>(items:Observable<[SectionModel<String, ModelType>]>, style:UITableView.Style = .plain, _ builder:@escaping(CellType, IndexPath, ModelType) -> UITableViewCell) {
@@ -121,7 +120,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
                 }                
             }
             callback(complete)            
-        }).disposed(by: disposeBag)
+        }) ~ disposeBag
         __view.refreshControl = refreshControl
         return self
     }
@@ -131,8 +130,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         __view.rx.modelSelected(T.self)
             .subscribe(onNext:{
                 callback($0)
-            })
-            .disposed(by: disposeBag)
+            }) ~ disposeBag
         return self
     }
     
@@ -141,8 +139,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
        __view.rx.itemSelected
            .subscribe(onNext:{
                 callback($0)
-           })
-           .disposed(by: disposeBag)
+           }) ~ disposeBag
        return self
     }
     
@@ -150,8 +147,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
        __view.rx.itemDeleted
            .subscribe(onNext:{
                 callback($0)
-           })
-           .disposed(by: disposeBag)
+           }) ~ disposeBag
        return self
     }
     
@@ -161,8 +157,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
             .when(.recognized)
             .subscribe(onNext:{
                 callback($0.direction)
-            })
-            .disposed(by: disposeBag)
+            }) ~ disposeBag
         return self
     }
     

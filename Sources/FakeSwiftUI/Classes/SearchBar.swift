@@ -42,8 +42,7 @@ open class SearchBar:View {
         __view.rx.searchButtonClicked
             .subscribe(onNext:{[unowned self] in
                 callback(self.__view.text)
-            })
-            .disposed(by: disposeBag)
+            }) ~ disposeBag
         return self
     }
     
@@ -53,8 +52,7 @@ open class SearchBar:View {
                 if $0 == "" {
                     callback()
                 }
-            })
-            .disposed(by: disposeBag)
+            }) ~ disposeBag
         return self
     }
 }
