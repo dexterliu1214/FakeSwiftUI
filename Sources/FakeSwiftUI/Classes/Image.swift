@@ -12,9 +12,7 @@ import RxSwift
 import RxCocoa
 import RxBinding
 import RxGesture
-import PromiseKit
 import RxAnimated
-import AwaitKit
 
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
