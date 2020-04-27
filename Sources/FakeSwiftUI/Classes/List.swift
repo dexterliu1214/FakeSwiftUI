@@ -111,15 +111,14 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     }
     
     @discardableResult
-    public func onRefresh(tintColor:UIColor = .white, _ callback:@escaping() -> (Promise<()>)) -> Self {
+    public func onRefresh(tintColor:UIColor = .white, _ callback:@escaping(complete:() -> ()) -> ()) -> Self {
         let refreshControl = UIRefreshControl()
         refreshControl.tintColor = tintColor
-        refreshControl.rx.controlEvent(.valueChanged).subscribe(onNext:{
-            callback().then {
-                DispatchQueue.main.async {
-                    refreshControl.endRefreshing()
-                }
+        refreshControl.rx.controlEvent(.valueChanged).asDriver().drive(onNext:{
+            let complete = {
+                refreshControl.endRefreshing()
             }
+            callback(complete)            
         }).disposed(by: disposeBag)
         __view.refreshControl = refreshControl
         return self
