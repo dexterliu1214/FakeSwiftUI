@@ -10,8 +10,6 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxAnimated
-import PromiseKit
-import AwaitKit
 
 extension CGFloat
 {
