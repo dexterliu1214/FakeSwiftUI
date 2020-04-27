@@ -15,7 +15,7 @@ import RxGesture
 import RxDataSources
 
 open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
-    lazy var __view = self._view as! UITableView
+    public lazy var __view = self._view as! UITableView
     
     var sectionViewBuilder:((Int) -> UIView?)?
     var sectionViewHeightCalculator:((Int) -> CGFloat)?
