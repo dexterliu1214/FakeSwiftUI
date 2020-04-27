@@ -148,7 +148,7 @@ open class Grid<CellType:UICollectionViewCell>:View
     }
     
     @discardableResult
-    public func onRefresh(_ callback:@escaping(_ complete:() -> ()) -> ()) -> Self {
+    public func onRefresh(_ callback:@escaping(_ complete:@escaping() -> ()) -> ()) -> Self {
         let refreshControl:UIRefreshControl = .init()
         refreshControl.tintColor = .white
         refreshControl.rx.controlEvent(.valueChanged).subscribe(onNext:{
