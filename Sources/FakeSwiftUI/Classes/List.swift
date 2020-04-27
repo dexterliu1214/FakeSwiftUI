@@ -111,7 +111,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     }
     
     @discardableResult
-    public func onRefresh(tintColor:UIColor = .white, _ callback:@escaping(complete:() -> ()) -> ()) -> Self {
+    public func onRefresh(tintColor:UIColor = .white, _ callback:@escaping(_ complete:() -> ()) -> ()) -> Self {
         let refreshControl = UIRefreshControl()
         refreshControl.tintColor = tintColor
         refreshControl.rx.controlEvent(.valueChanged).asDriver().drive(onNext:{
