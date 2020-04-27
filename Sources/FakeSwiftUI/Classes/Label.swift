@@ -13,12 +13,12 @@ import RxCocoa
 open class Label: UILabel {
     var insets = UIEdgeInsets.all(0)
     
-    override func drawText(in rect: CGRect) {
+    open override func drawText(in rect: CGRect) {
         let newRect = rect.inset(by: insets)
         super.drawText(in: newRect)
     }
     
-    override var intrinsicContentSize:CGSize {
+    open override var intrinsicContentSize:CGSize {
         var intrinsicContentSize = super.intrinsicContentSize
         intrinsicContentSize.height += insets.top + insets.bottom
         intrinsicContentSize.width += insets.left + insets.right
