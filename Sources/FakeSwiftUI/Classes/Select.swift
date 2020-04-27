@@ -13,8 +13,6 @@ import RxCocoa
 import RxBinding
 import RxGesture
 import RxDataSources
-import PromiseKit
-import AwaitKit
 
 open class Select:View
 {

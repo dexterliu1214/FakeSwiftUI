@@ -10,9 +10,6 @@ import RxSwift
 import RxCocoa
 import RxBinding
 import RxGesture
-import PromiseKit
-import AwaitKit
-import SwiftIcons
 
 open class CheckBox:View {
     

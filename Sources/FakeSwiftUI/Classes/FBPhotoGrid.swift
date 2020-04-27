@@ -12,8 +12,6 @@ import RxSwift
 import RxCocoa
 import RxBinding
 import RxGesture
-import PromiseKit
-import AwaitKit
 
 open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlowLayout {
     lazy var __view = self._view as! UICollectionView

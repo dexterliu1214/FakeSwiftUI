@@ -12,8 +12,6 @@ import RxSwift
 import RxCocoa
 import RxBinding
 import RxGesture
-import PromiseKit
-import AwaitKit
 import RxDataSources
 
 open class Grid<CellType:UICollectionViewCell>:View

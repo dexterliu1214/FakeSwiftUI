@@ -10,8 +10,6 @@ import RxSwift
 import RxCocoa
 import RxBinding
 import RxGesture
-import PromiseKit
-import AwaitKit
 
 open class Seperator:View {
     public override init() {
