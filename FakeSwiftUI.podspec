@@ -41,6 +41,7 @@ TODO: Add long description of the pod here.
 #   s.dependency 'AFNetworking', '~> 2.3'
    s.dependency 'RxSwift'
    s.dependency 'RxCocoa'
+   s.dependency 'RxBinding'
    s.dependency 'RxAnimated'
    s.dependency 'RxGesture'
    s.dependency 'RxDataSources'
