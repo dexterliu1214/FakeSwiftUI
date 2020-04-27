@@ -2,24 +2,6 @@
   "object": {
     "pins": [
       {
-        "package": "AwaitKit",
-        "repositoryURL": "https://github.com/yannickl/AwaitKit.git",
-        "state": {
-          "branch": "master",
-          "revision": "743fbf22caa2813436e634fd7bf1fb0ff13751b9",
-          "version": null
-        }
-      },
-      {
-        "package": "PromiseKit",
-        "repositoryURL": "https://github.com/mxcl/PromiseKit.git",
-        "state": {
-          "branch": null,
-          "revision": "f14f16cc2602afec1030e4f492100d6d43dca544",
-          "version": "6.13.1"
-        }
-      },
-      {
         "package": "RxAnimated",
         "repositoryURL": "https://github.com/RxSwiftCommunity/RxAnimated.git",
         "state": {
@@ -62,15 +44,6 @@
           "branch": null,
           "revision": "002d325b0bdee94e7882e1114af5ff4fe1e96afa",
           "version": "5.1.1"
-        }
-      },
-      {
-        "package": "SwiftIcons",
-        "repositoryURL": "https://github.com/dexterliu1214/SwiftIcons.git",
-        "state": {
-          "branch": "master",
-          "revision": "44fd147d442391d35853d7f0d39f9d927c964e13",
-          "version": null
         }
       }
     ]

@@ -117,8 +117,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         let refreshControl = UIRefreshControl()
         refreshControl.tintColor = tintColor
         refreshControl.rx.controlEvent(.valueChanged).subscribe(onNext:{
-            async {
-                try await(callback())
+            callback().then {
                 DispatchQueue.main.async {
                     refreshControl.endRefreshing()
                 }
