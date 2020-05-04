@@ -14,11 +14,11 @@ import RxBinding
 import RxGesture
 
 open class TextView:View {
-    lazy var __view = self._view as! UITextView
+    let __view = UITextView()
 
     public init(_ text$:BehaviorRelay<String?>, placeholder:Observable<String?>, limit:Int? = nil) {
         super.init()
-        _view = UITextView()
+        _view = __view
         _init()
         let placeholderLabel = UILabel()
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -40,21 +40,21 @@ open class TextView:View {
     
     public init(_ text$:Observable<String?>) {
         super.init()
-        _view = UITextView()
+        _view = __view
         _init()
         text$ ~> __view.rx.text ~ disposeBag
     }
     
     public  init(_ text:String) {
         super.init()
-        _view = UITextView()
+        _view = __view
         _init()
         self.__view.text = text
     }
     
     public init(_ attributedText:NSAttributedString) {
         super.init()
-        _view = UITextView()
+        _view = __view
         _init()
         self.__view.attributedText = attributedText
     }

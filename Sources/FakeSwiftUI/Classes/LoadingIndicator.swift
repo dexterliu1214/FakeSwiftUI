@@ -14,11 +14,12 @@ import UIKit
 
 open class LoadingIndicator:View
 {
-    lazy var __view = self._view as! UIActivityIndicatorView
+    let __view:UIActivityIndicatorView
     
-    public init(_ isAnimate$:Observable<Bool>, style:UIActivityIndicatorView.Style){        
+    public init(_ isAnimate$:Observable<Bool>, style:UIActivityIndicatorView.Style){
+        __view = UIActivityIndicatorView()
         super.init()
-        _view = UIActivityIndicatorView()
+        _view = __view
         __view.style = style
         isAnimate$.asDriver(onErrorJustReturn: false).drive(__view.rx.isAnimating) ~ disposeBag
        _init()

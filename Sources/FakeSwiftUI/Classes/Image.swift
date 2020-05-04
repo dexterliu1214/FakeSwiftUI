@@ -17,11 +17,12 @@ import RxAnimated
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
     
-    lazy var __view = self._view as! UIImageView
+    let __view:UIImageView
     
     public init(image:UIImage?) {
+        __view = UIImageView(image:image)
         super.init()
-        _view = UIImageView(image:image)
+        _view = __view
         _init()
         __view.contentMode = .scaleAspectFit
         __view.clipsToBounds = true

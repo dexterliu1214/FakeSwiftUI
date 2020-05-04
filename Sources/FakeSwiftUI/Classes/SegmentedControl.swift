@@ -15,12 +15,14 @@ import RxGesture
 
 open class SegmentedControl:View
 {
-    lazy var __view = self._view as! UISegmentedControl
+    let __view:UISegmentedControl
     
-    public init(_ items:[Any], defaultIndex:Int = 0) {        
-        super.init()
-        _view = UISegmentedControl(items: items)
+    public init(_ items:[Any], defaultIndex:Int = 0) {
+        __view = UISegmentedControl(items: items)
         __view.selectedSegmentIndex = defaultIndex
+
+        super.init()
+        _view = __view
         _init()
     }
     

@@ -15,15 +15,16 @@ import RxGesture
 import RxDataSources
 
 open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
-    public lazy var __view = self._view as! UITableView
+    public let __view:UITableView
     
     var sectionViewBuilder:((Int) -> UIView?)?
     var sectionViewHeightCalculator:((Int) -> CGFloat)?
     var isAutoDeselect = false
     
     public init<ModelType>(items:Observable<[ModelType]>, _ builder:@escaping(CellType, ModelType, Int, UITableView) -> UITableViewCell) {
+        __view = .init()
         super.init()
-        _view = UITableView()
+        _view = __view
         __view.rowHeight = UITableView.automaticDimension
         __view.register(CellType.self, forCellReuseIdentifier: "CELL")
         
@@ -49,8 +50,9 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     }
 
     public init<ModelType>(items:Observable<[SectionModel<String, ModelType>]>, style:UITableView.Style = .plain, _ builder:@escaping(CellType, IndexPath, ModelType) -> UITableViewCell) {
+        __view = .init(frame: .zero, style: style)
         super.init()
-        _view = UITableView(frame: .zero, style: style)
+        _view = __view
         __view.rowHeight = UITableView.automaticDimension
         __view.register(CellType.self, forCellReuseIdentifier: "CELL")
         _init()

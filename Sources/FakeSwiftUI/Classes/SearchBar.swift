@@ -14,11 +14,11 @@ import RxBinding
 import RxGesture
 
 open class SearchBar:View {
-    lazy var __view = self._view as! UISearchBar
+    let __view = UISearchBar()
     
     public init(placeholder:String, _ text$:BehaviorRelay<String?>) {        
         super.init()
-        _view = UISearchBar()
+        _view = __view
         _init()
         __view.placeholder = placeholder
         text$ <~> __view.rx.text ~ disposeBag

@@ -11,24 +11,8 @@ import UIKit
 import RxSwift
 import RxBinding
 import RxGesture
+import RxCocoa
 
-extension UIView
-{
-    @discardableResult
-    func append(to superview: UIView) -> Self {
-        superview.addSubview(self)
-        return self
-    }
-    @discardableResult
-    func fillSuperview() -> Self {
-        translatesAutoresizingMaskIntoConstraints = false
-        topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0).isActive = true
-        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0).isActive = true
-        leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 0).isActive = true
-        trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0).isActive = true
-        return self
-    }
-}
 open class View:UIView {
     open var _view:UIView!
     public let disposeBag:DisposeBag = .init()
@@ -407,6 +391,45 @@ open class View:UIView {
                 }, completion: nil)
             }) ~ disposeBag
         
+        return self
+    }
+}
+
+extension Reactive where Base : UIView {
+    public var isShow: Binder<Bool> {
+        return Binder(self.base) { control, value in
+            control.isShow = value
+        }
+    }
+}
+
+extension UIView {
+    public var isShow:Bool {
+        get {
+            return !isHidden
+        }
+        
+        set {
+            isHidden = !newValue
+        }
+    }
+}
+
+
+extension UIView
+{
+    @discardableResult
+    func append(to superview: UIView) -> Self {
+        superview.addSubview(self)
+        return self
+    }
+    @discardableResult
+    func fillSuperview() -> Self {
+        translatesAutoresizingMaskIntoConstraints = false
+        topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0).isActive = true
+        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0).isActive = true
+        leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 0).isActive = true
+        trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0).isActive = true
         return self
     }
 }

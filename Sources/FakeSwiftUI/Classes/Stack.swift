@@ -63,13 +63,13 @@ open class HStack:Stack {
 }
 
 open class Stack:View {
-    lazy var __view = self._view as! UIStackView
+    let __view = UIStackView()
     
     var backgroundView:UIView?
     
     public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[View]) {
         super.init()
-        _view = UIStackView()
+        _view = __view
 
         __view.alignment = alignment
         __view.distribution = .fill

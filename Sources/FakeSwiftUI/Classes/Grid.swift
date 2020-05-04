@@ -16,7 +16,7 @@ import RxDataSources
 
 open class Grid<CellType:UICollectionViewCell>:View
 {
-    lazy var __view = self._view as! UICollectionView
+    let __view:UICollectionView
   
     var columns:Int
     let layout:UICollectionViewFlowLayout = .init()
@@ -25,8 +25,9 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     public init<ModelType>(columns:Int = 1, vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[ModelType]>, _ builder:@escaping(CellType, ModelType, Int, UICollectionView) -> UICollectionViewCell) {
         self.columns = columns
+        __view = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        _view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        _view = __view
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
 
@@ -53,8 +54,9 @@ open class Grid<CellType:UICollectionViewCell>:View
         _ builder:@escaping(CellType, ModelType, Int) -> UICollectionViewCell
     ) {
         self.columns = columns
+        __view = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        _view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        _view = __view
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
         layout.headerReferenceSize = CGSize(width: 200, height: 40)

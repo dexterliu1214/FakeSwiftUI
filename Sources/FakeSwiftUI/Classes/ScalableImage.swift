@@ -15,12 +15,12 @@ import RxBinding
 
 open class ScalableImage:View
 {
-    lazy var __view = self._view as! UIScrollView
+    let __view = UIScrollView()
     let imageView = UIImageView()
 
     public init(_ image$:Driver<UIImage?>) {
         super.init()
-        _view = UIScrollView()
+        _view = __view
         __view.delegate = self
         _init()
         imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)

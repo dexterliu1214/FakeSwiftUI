@@ -15,11 +15,11 @@ import RxGesture
 
 open class Toggle:View
 {
-    lazy var __view = self._view as! UISwitch
+    let __view = UISwitch()
     
     public init(isOn:BehaviorRelay<Bool>){
         super.init()
-        _view = UISwitch()
+        _view = __view
         _init()
         isOn <~> __view.rx.isOn ~ disposeBag
     }

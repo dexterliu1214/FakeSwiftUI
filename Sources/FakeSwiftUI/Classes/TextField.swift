@@ -38,11 +38,11 @@ open class TextInput: UITextField {
 
 open class TextField:View
 {
-    lazy var __view = self._view as! TextInput
+    let __view = TextInput()
     
     public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
         super.init()
-        _view = TextInput()
+        _view = __view
         __view.placeholder = placeholder
             __view.autocapitalizationType = .none
 
@@ -63,10 +63,10 @@ open class TextField:View
         }) ~ disposeBag
     }
     
-    public override init (){
-        super.init()
-        _init()
-    }
+//    public override init (){
+//        super.init()
+//        _init()
+//    }
     
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

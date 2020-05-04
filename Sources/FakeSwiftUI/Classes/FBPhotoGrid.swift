@@ -14,13 +14,14 @@ import RxBinding
 import RxGesture
 
 open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlowLayout {
-    lazy var __view = self._view as! UICollectionView
+    let __view:UICollectionView
     
     let layout:UICollectionViewFlowLayout = .init()
     
     public init<T>(vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[T]>, _ builder:@escaping(C, T, Int) -> (C)) {
+        __view = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        _view = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        _view = __view
         let _ = __view.rx.setDelegate(self)
         __view.isScrollEnabled = false
         layout.minimumInteritemSpacing = hSpacing

@@ -92,23 +92,3 @@ extension Int
         }
     }
 }
-
-extension Reactive where Base : UIView {
-    public var isShow: Binder<Bool> {
-        return Binder(self.base) { control, value in
-            control.isShow = value
-        }
-    }
-}
-
-extension UIView {
-    public var isShow:Bool {
-        get {
-            return !isHidden
-        }
-        
-        set {
-            isHidden = !newValue
-        }
-    }
-}

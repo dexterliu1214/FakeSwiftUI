@@ -13,13 +13,13 @@ import RxCocoa
 import RxBinding
 import RxGesture
 
-
 open class Button:View
 {
-    lazy var __view = self._view as! UIButton
+    let __view = UIButton()
     
     public convenience init(_ title:String, _ action:@escaping(Button) -> ()) {
         self.init()
+        
         self.__view.setTitle(title, for: .normal)
         __view.rx.tap
             .subscribe(onNext:{[unowned self] _ in
@@ -49,7 +49,7 @@ open class Button:View
     
     override public init (){        
         super.init()
-        _view = UIButton()
+        _view = __view
         __view.titleLabel?.adjustsFontSizeToFitWidth = true
         __view.contentEdgeInsets = .all(8)
         _init()

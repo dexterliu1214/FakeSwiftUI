@@ -13,7 +13,7 @@ import RxBinding
 import RxGesture
 
 open class Text:View {
-    lazy var __view = self._view as! Label
+    let __view = Label()
     
     var fontSize:CGFloat = UIFont.systemFontSize
     var isBold:Bool = false
@@ -45,7 +45,7 @@ open class Text:View {
     
     public override init (){
         super.init()
-        _view = Label()
+        _view = __view
         _init()
     }
     
