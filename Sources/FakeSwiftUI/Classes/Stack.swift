@@ -85,8 +85,13 @@ open class Stack:View {
     }
     
     override public func background(_ color:UIColor) -> Self {
+        self.background(Observable.just(color))
+        return self
+    }
+    
+    override public func background(_ colors$:Observable<UIColor>) -> Self {
         backgroundView = UIView()
-        backgroundView?.backgroundColor = color
+        colors$.asDriver(onErrorJustReturn: UIColor.systemPink) ~> backgroundView!.rx.backgroundColor ~ disposeBag
         insertSubview(backgroundView!, at: 0)
         backgroundView?.fillSuperview()
         return self
@@ -98,7 +103,7 @@ open class Stack:View {
         backgroundView?.fillSuperview()
         return self
     }
-    
+
     public func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double>, locations:[NSNumber]? = nil) -> Self {
         backgroundView = GradientView(colors$: colors$, degree$: degree$, locations: locations)
         insertSubview(backgroundView!, at: 0)
