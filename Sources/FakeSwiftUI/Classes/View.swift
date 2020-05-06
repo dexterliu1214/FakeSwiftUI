@@ -25,6 +25,7 @@ open class View:UIView {
     var topConstant$:Observable<CGFloat>?
     var leadingConstant$:Observable<CGFloat>?
     var trailingConstant$:Observable<CGFloat>?
+    var trailingLessThanOrEqualConstant$:Observable<CGFloat>?
     var widthConstant$:Observable<CGFloat>?
     var heightConstant$:Observable<CGFloat>?
 
@@ -98,6 +99,14 @@ open class View:UIView {
         
         if let constant$ = trailingConstant$ {
             let constraint = trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0)
+            constraint.isActive = true
+            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
+                self?.layoutIfNeeded()
+            }) ~> constraint.rx.constant ~ disposeBag
+        }
+        
+        if let constant$ = trailingLessThanOrEqualConstant$ {
+            let constraint = trailingAnchor.constraint(lessThanOrEqualTo: superview!.trailingAnchor, constant: 0)
             constraint.isActive = true
             constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
                 self?.layoutIfNeeded()
@@ -183,6 +192,18 @@ open class View:UIView {
     @discardableResult
     public func trailing(_ constant$:Observable<CGFloat>) -> Self {
         trailingConstant$ = constant$
+        return self
+    }
+    
+    @discardableResult
+    public func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>) -> Self {
+        trailingLessThanOrEqualConstant$ = constant$
+        return self
+    }
+    
+    @discardableResult
+    public func trailingLessThanOrEqual(offset:CGFloat) -> Self {
+        trailingLessThanOrEqualConstant$ = Observable.just(offset)
         return self
     }
     
