@@ -445,12 +445,12 @@ extension UIView
         return self
     }
     @discardableResult
-    func fillSuperview() -> Self {
+    func fillSuperview(_ insets:UIEdgeInsets = .zero) -> Self {
         translatesAutoresizingMaskIntoConstraints = false
-        topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0).isActive = true
-        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0).isActive = true
-        leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 0).isActive = true
-        trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0).isActive = true
+        topAnchor.constraint(equalTo: superview!.topAnchor, constant: insets.top).isActive = true
+        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -insets.bottom).isActive = true
+        leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: insets.left).isActive = true
+        trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -insets.right).isActive = true
         return self
     }
 }

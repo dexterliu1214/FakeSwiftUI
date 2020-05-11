@@ -13,29 +13,30 @@ import RxCocoa
 import RxBinding
 import RxGesture
 
+extension TextView:UITextViewDelegate
+{
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if (text == "\n") {
+            textView.resignFirstResponder()
+            submitCallback?(self.__view.text)
+        }
+        return true
+    }
+}
+
 open class TextView:View {
     let __view = UITextView()
-
-    public init(_ text$:BehaviorRelay<String?>, placeholder:Observable<String?>, limit:Int? = nil) {
+    var submitCallback:((_ text:String) -> ())?
+    var text$:BehaviorRelay<String?>? = nil
+    
+    public init(_ text$:BehaviorRelay<String?>) {
+        self.text$ = text$
         super.init()
+        __view.delegate = self
         _view = __view
         _init()
-        let placeholderLabel = UILabel()
-        placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
-        placeholderLabel.numberOfLines = 0
-        placeholderLabel.textColor = .lightGray
-        __view.addSubview(placeholderLabel)
-        placeholderLabel.fillSuperview()
         
-        __view.setValue(placeholderLabel, forKey: "_placeholderLabel")
-        placeholder ~> placeholderLabel.rx.text ~ disposeBag
-        
-        if let limit = limit {
-            text$ ~> __view.rx.text ~ disposeBag
-            __view.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text$ ~ disposeBag
-        } else {
-            text$ <~> __view.rx.text ~ disposeBag
-        }
+        text$ <~> __view.rx.text ~ disposeBag
     }
     
     public init(_ text$:Observable<String?>) {
@@ -45,7 +46,7 @@ open class TextView:View {
         text$ ~> __view.rx.text ~ disposeBag
     }
     
-    public  init(_ text:String) {
+    public init(_ text:String) {
         super.init()
         _view = __view
         _init()
@@ -63,26 +64,63 @@ open class TextView:View {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @discardableResult
+    public func placeholder(_ text$:Observable<String?>) -> Self {
+        let placeholderLabel = UILabel()
+        placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
+        placeholderLabel.numberOfLines = 0
+        placeholderLabel.textColor = .lightGray
+        __view.addSubview(placeholderLabel)
+        placeholderLabel.fillSuperview()
+        
+        __view.setValue(placeholderLabel, forKey: "_placeholderLabel")
+        text$ ~> placeholderLabel.rx.text ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func placeholder(_ text:String) -> Self {
+        return self.placeholder(Observable.just(text))
+    }
+    
+    @discardableResult
+    public func limit(_ limit:Int) -> Self {
+        guard let text$ = self.text$ else { return self }
+        __view.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text$ ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
     public func editable(_ editable:Bool) -> Self {
         __view.isEditable = editable
         return self
     }
     
+    @discardableResult
     public func scrollable(_ scrollable:Bool) -> Self {
         __view.isScrollEnabled = scrollable
         return self
     }
     
+    @discardableResult
     public func alignment(_ alignment:NSTextAlignment) -> Self {
         __view.textAlignment = alignment
         return self
     }
     
+    @discardableResult
     public func color(_ color:UIColor) -> Self {
-        __view.textColor = color
+        self.color(Observable.just(color))
         return self
     }
     
+    @discardableResult
+    public func color(_ color$:Observable<UIColor>) -> Self {
+        color$ ~> __view.rx.textColor ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
     public func font(_ size:CGFloat) -> Self {
         __view.font = UIFont.systemFont(ofSize: size)
         return self
@@ -109,5 +147,43 @@ open class TextView:View {
     public func padding(_ padding:UIEdgeInsets = .all(8)) -> Self {
         self.__view.textContainerInset = padding
         return self
+    }
+    
+    @discardableResult
+    public func insert(_ text$:Observable<String>) -> Self {
+        text$.subscribe(onNext:{[weak self] in
+            self?.__view.insertText($0)
+        }) ~ disposeBag
+        
+        return self
+    }
+    
+    @discardableResult
+    public func deleteBackword(_ event$:Observable<()>) -> Self {
+        event$.subscribe(onNext:{[weak self] in
+            self?.__view.deleteBackward()
+        }) ~ disposeBag
+        
+        return self
+    }
+    
+    @discardableResult
+    public func returnType(_ type:UIReturnKeyType) -> Self {
+        self.__view.returnKeyType = type
+        return self
+    }
+    
+    @discardableResult
+    public func onSubmit(_ callback:@escaping(_ text:String) -> ()) -> Self {
+        submitCallback = callback
+        return self
+    }
+}
+
+extension Reactive where Base: UITextView {
+    public var textColor: Binder<UIColor> {
+        return Binder(self.base) { control, value in
+            control.textColor = value
+        }
     }
 }
