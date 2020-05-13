@@ -135,6 +135,7 @@ open class Spacer:View {
     public init(axis:NSLayoutConstraint.Axis = .horizontal) {
         super.init()
         _view = UIView()
+        _view.translatesAutoresizingMaskIntoConstraints = false
         _view.setContentHuggingPriority(.defaultLow, for: axis)
         _view.append(to: self).fillSuperview()
     }
