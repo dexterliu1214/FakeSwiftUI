@@ -444,6 +444,7 @@ extension UIView
         superview.addSubview(self)
         return self
     }
+    
     @discardableResult
     func fillSuperview(_ insets:UIEdgeInsets = .zero) -> Self {
         translatesAutoresizingMaskIntoConstraints = false
@@ -451,6 +452,16 @@ extension UIView
         bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -insets.bottom).isActive = true
         leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: insets.left).isActive = true
         trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -insets.right).isActive = true
+        return self
+    }
+    
+    @discardableResult
+    func fillSafeArea(_ insets:UIEdgeInsets = .zero) -> Self {
+        translatesAutoresizingMaskIntoConstraints = false
+        topAnchor.constraint(equalTo: superview!.safeAreaLayoutGuide.topAnchor, constant: insets.top).isActive = true
+        bottomAnchor.constraint(equalTo: superview!.safeAreaLayoutGuide.bottomAnchor, constant: -insets.bottom).isActive = true
+        leadingAnchor.constraint(equalTo: superview!.safeAreaLayoutGuide.leadingAnchor, constant: insets.left).isActive = true
+        trailingAnchor.constraint(equalTo: superview!.safeAreaLayoutGuide.trailingAnchor, constant: -insets.right).isActive = true
         return self
     }
 }

@@ -204,4 +204,12 @@ open class Grid<CellType:UICollectionViewCell>:View
         scrollToIndexPath = (indexPath, scrollPosition, animated)
         return self
     }
+    
+    @discardableResult
+    public func itemSelected(_ callback:@escaping(IndexPath) -> ()) -> Self {
+        __view.rx.itemSelected.subscribe(onNext:{
+            callback($0)
+        }) ~ disposeBag
+        return self
+    }
 }
