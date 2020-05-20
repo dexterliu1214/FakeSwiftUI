@@ -352,7 +352,11 @@ open class View:UIView {
     
     @discardableResult
     public func onTap(_ callback:@escaping(UIView) -> ()) -> Self {
-        _view.rx.tapGesture().when(.recognized).asDriver(onErrorJustReturn: UITapGestureRecognizer())
+        rx.tapGesture(configuration: { gestureRecognizer, delegate in
+            delegate.touchReceptionPolicy = .custom {gestureRecognizer, touch in
+                return gestureRecognizer.view!.isKind(of: Self.self)
+            }
+        }).when(.recognized).asDriver(onErrorJustReturn: UITapGestureRecognizer())
             .drive(onNext:{[weak self] _ in
                 guard let self = self else { return }
                 callback(self)
