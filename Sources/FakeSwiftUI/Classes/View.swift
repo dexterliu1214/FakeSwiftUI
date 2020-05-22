@@ -418,6 +418,28 @@ open class View:UIView {
         
         return self
     }
+    
+    @discardableResult
+    public func blur() -> Self {
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.translatesAutoresizingMaskIntoConstraints = false
+        blurView.append(to: _view).fillSuperview()
+        return self
+    }
+    
+    @discardableResult
+    public func rotate(_ angle$:Observable<CGFloat>, duration:TimeInterval) -> Self {
+        angle$.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] angle in
+            guard let self = self else { return }
+            UIView.animate(withDuration: duration) {
+                let radians = angle / 180.0 * CGFloat.pi
+                self._view.transform = self._view.transform.rotated(by: radians)
+            }
+        }) ~ disposeBag
+        
+        return self
+    }
 }
 
 extension Reactive where Base : UIView {
