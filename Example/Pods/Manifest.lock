@@ -1,0 +1,65 @@
+PODS:
+  - Differentiator (4.0.1)
+  - FakeSwiftUI (0.1.0):
+    - RxAnimated
+    - RxBinding
+    - RxCocoa
+    - RxDataSources
+    - RxGesture
+    - RxSwift
+  - RxAnimated (0.7.0):
+    - RxAnimated/Core (= 0.7.0)
+    - RxCocoa (~> 5.1)
+    - RxSwift (~> 5.1)
+  - RxAnimated/Core (0.7.0):
+    - RxCocoa (~> 5.1)
+    - RxSwift (~> 5.1)
+  - RxBinding (0.3.1):
+    - RxCocoa (~> 5)
+    - RxSwift (~> 5)
+  - RxCocoa (5.1.1):
+    - RxRelay (~> 5)
+    - RxSwift (~> 5)
+  - RxDataSources (4.0.1):
+    - Differentiator (~> 4.0)
+    - RxCocoa (~> 5.0)
+    - RxSwift (~> 5.0)
+  - RxGesture (3.0.2):
+    - RxCocoa (~> 5.1)
+    - RxSwift (~> 5.1)
+  - RxRelay (5.1.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.1.1)
+
+DEPENDENCIES:
+  - FakeSwiftUI (from `../`)
+
+SPEC REPOS:
+  https://cdn.cocoapods.org/:
+    - Differentiator
+    - RxAnimated
+    - RxBinding
+    - RxCocoa
+    - RxDataSources
+    - RxGesture
+    - RxRelay
+    - RxSwift
+
+EXTERNAL SOURCES:
+  FakeSwiftUI:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Differentiator: 886080237d9f87f322641dedbc5be257061b0602
+  FakeSwiftUI: 7fbc9931cc87fc9a048d724317b3cbfd199a804b
+  RxAnimated: 8540892468e906e7404595bc51ed4b36b3737ab5
+  RxBinding: 58be2cf1311165489a66eacb4a3e33932d598a53
+  RxCocoa: 32065309a38d29b5b0db858819b5bf9ef038b601
+  RxDataSources: efee07fa4de48477eca0a4611e6d11e2da9c1114
+  RxGesture: d6bd7447ca3a596c7a9702a6a2b6a2bb5d8bae54
+  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
+  RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
+
+PODFILE CHECKSUM: 7420f46d7f48acc8767122863cb2fc33c6af002c
+
+COCOAPODS: 1.9.1

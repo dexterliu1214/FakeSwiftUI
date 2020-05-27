@@ -1,0 +1,6 @@
+framework module FakeSwiftUI {
+  umbrella header "FakeSwiftUI-umbrella.h"
+
+  export *
+  module * { export * }
+}

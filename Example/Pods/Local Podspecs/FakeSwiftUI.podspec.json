@@ -1,0 +1,45 @@
+{
+  "name": "FakeSwiftUI",
+  "version": "0.1.0",
+  "summary": "A short description of FakeSwiftUI.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/youga/FakeSwiftUI",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "youga": "dexterliu1214@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/youga/FakeSwiftUI.git",
+    "tag": "0.1.0"
+  },
+  "swift_versions": "5.0",
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source_files": "Sources/FakeSwiftUI/Classes/**/*.swift",
+  "frameworks": "UIKit",
+  "dependencies": {
+    "RxSwift": [
+
+    ],
+    "RxCocoa": [
+
+    ],
+    "RxBinding": [
+
+    ],
+    "RxAnimated": [
+
+    ],
+    "RxGesture": [
+
+    ],
+    "RxDataSources": [
+
+    ]
+  },
+  "swift_version": "5.0"
+}
