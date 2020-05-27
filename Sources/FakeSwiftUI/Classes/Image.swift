@@ -33,17 +33,17 @@ open class Image:View {
     }
     
     public convenience init(_ url$:Observable<String>, fadeDuration duration:TimeInterval = 0) {
-        let image$:Observable<UIImage?> = url$.flatMapLatest{
+        let image$:Observable<UIImage> = url$.flatMapLatest{
             $0.get$(urlSession:Image.urlSession).catchErrorJustReturn(Data())
         }
-        .map{UIImage(data:$0)}
+        .map{UIImage(data:$0)!}
         
         self.init(image$, fadeDuration:duration)
     }
     
-    public convenience init(_ image$:Observable<UIImage?>, fadeDuration duration:TimeInterval = 0) {
+    public convenience init(_ image$:Observable<UIImage>, fadeDuration duration:TimeInterval = 0) {
         self.init(image:nil)
-        image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> __view.rx.animated.fadeIn(duration:duration).image ~ disposeBag
+        image$.distinctUntilChanged().asDriver(onErrorJustReturn: UIImage()) ~> __view.rx.animated.fadeIn(duration:duration).image ~ disposeBag
     }
     
     required public init?(coder: NSCoder) {
