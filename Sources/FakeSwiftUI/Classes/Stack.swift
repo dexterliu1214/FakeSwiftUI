@@ -73,13 +73,6 @@ open class Stack:View {
         fatalError("init(coder:) has not been implemented")
     }
     
-    open override func layoutClipShape(_ clipShape: Shape) {
-        let path:UIBezierPath = clipShape.getClipPath(self)
-        let layer:CAShapeLayer = .init()
-         layer.path = path.cgPath
-         layer.frame = self.bounds
-     }
-    
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
         __view.isLayoutMarginsRelativeArrangement = true
         __view.layoutMargins = insets
