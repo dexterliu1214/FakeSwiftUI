@@ -383,12 +383,12 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+    public func background(_ colors:[UIColor], degree:Double = 0, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
         return self.background(Observable.just(colors), degree$: Observable.just(degree), locations: locations, type: type)
     }
     
     @discardableResult
-    public func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double?> = Observable.just(nil), locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+    public func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double> = Observable.just(0), locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
         func calc(_ x:Double, _ y:Double) -> Double {
             return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
         }
@@ -405,7 +405,7 @@ open class View:UIView {
             }) ~ disposeBag
         
         if type == .axial {
-            degree$.asDriver(onErrorJustReturn: nil)
+            degree$.asDriver(onErrorJustReturn: 0)
                 .drive(onNext:{
                     if let degree:Double = $0 {
                         let x: Double = degree / 360.0
