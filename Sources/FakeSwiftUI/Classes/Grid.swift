@@ -34,6 +34,7 @@ open class Grid<CellType:UICollectionViewCell>:View
         self.__view.backgroundView = UIView()
         
         _init()
+        __view.backgroundColor = .clear
         __view.register(CellType.self, forCellWithReuseIdentifier: "CELL")
         items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag
         
@@ -66,6 +67,7 @@ open class Grid<CellType:UICollectionViewCell>:View
         self.__view.backgroundView = UIView()
         
         _init()
+        __view.backgroundColor = .clear
         __view.register(CellType.self, forCellWithReuseIdentifier: "CELL")
         __view.register(HeaderType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Section")
         __view.register(FooterType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Section")

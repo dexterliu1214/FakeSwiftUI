@@ -30,6 +30,7 @@ open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlo
         self.__view.backgroundView = UIView()
         
         _init()
+        __view.backgroundColor = .clear
         __view.register(C.self, forCellWithReuseIdentifier: "CELL")
         
         items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag

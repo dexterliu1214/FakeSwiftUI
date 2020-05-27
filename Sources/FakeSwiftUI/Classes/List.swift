@@ -29,7 +29,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         __view.register(CellType.self, forCellReuseIdentifier: "CELL")
         
         _init()
-        
+        __view.backgroundColor = .clear
         self.__view.backgroundView = UIView()
         self.__view.tableFooterView = UIView()
         items.map{ $0.count > 0 } ~> __view.backgroundView!.rx.isHidden ~ disposeBag
@@ -56,7 +56,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         __view.rowHeight = UITableView.automaticDimension
         __view.register(CellType.self, forCellReuseIdentifier: "CELL")
         _init()
-        
+        __view.backgroundColor = .clear
         self.__view.backgroundView = UIView()
         self.__view.tableFooterView = UIView()
         
