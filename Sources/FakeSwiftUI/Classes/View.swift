@@ -384,11 +384,11 @@ open class View:UIView {
     
     @discardableResult
     public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
-        return self.background(Observable.just(colors), degree: degree, locations: locations, type: type)
+        return self.background(Observable.just(colors), degree$: Observable.just(degree), locations: locations, type: type)
     }
     
     @discardableResult
-    public func background(_ colors$:Observable<[UIColor]>, degree:Double? = nil, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+    public func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double?> = Observable.just(nil), locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
         func calc(_ x:Double, _ y:Double) -> Double {
             return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
         }
@@ -405,15 +405,18 @@ open class View:UIView {
             }) ~ disposeBag
         
         if type == .axial {
-            if let degree:Double = degree {
-                let x: Double = degree / 360.0
-                let a:Double = calc(x, 0.75)
-                let b:Double = calc(x, 0.0)
-                let c:Double = calc(x, 0.25)
-                let d:Double = calc(x, 0.5)
-                gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
-                gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
-            }
+            degree$.asDriver(onErrorJustReturn: nil)
+                .drive(onNext:{
+                    if let degree:Double = $0 {
+                        let x: Double = degree / 360.0
+                        let a:Double = calc(x, 0.75)
+                        let b:Double = calc(x, 0.0)
+                        let c:Double = calc(x, 0.25)
+                        let d:Double = calc(x, 0.5)
+                        gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
+                        gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
+                    }
+                }) ~ disposeBag
         } else {
             gradientLayer.startPoint = CGPoint(x: 0.5,y: 0.5)
             gradientLayer.endPoint = CGPoint(x: 1,y: 1)
