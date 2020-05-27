@@ -35,7 +35,7 @@ open class TextView:View {
         __view.delegate = self
         _view = __view
         _init()
-        
+        __view.backgroundColor = .clear
         text$ <~> __view.rx.text ~ disposeBag
     }
     
@@ -43,6 +43,7 @@ open class TextView:View {
         super.init()
         _view = __view
         _init()
+        __view.backgroundColor = .clear
         text$ ~> __view.rx.text ~ disposeBag
     }
     
@@ -50,6 +51,7 @@ open class TextView:View {
         super.init()
         _view = __view
         _init()
+        __view.backgroundColor = .clear
         self.__view.text = text
     }
     
@@ -57,6 +59,7 @@ open class TextView:View {
         super.init()
         _view = __view
         _init()
+        __view.backgroundColor = .clear
         self.__view.attributedText = attributedText
     }
     
