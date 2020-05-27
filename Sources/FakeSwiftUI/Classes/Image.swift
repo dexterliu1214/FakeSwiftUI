@@ -18,7 +18,7 @@ open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
     
     let __view:UIImageView
-    
+
     public init(image:UIImage?) {
         __view = UIImageView(image:image)
         super.init()
@@ -38,10 +38,10 @@ open class Image:View {
         }
         .map{UIImage(data:$0)}
         
-        self.init(image$.asDriver(onErrorJustReturn: nil), fadeDuration:duration)
+        self.init(image$, fadeDuration:duration)
     }
     
-    public convenience init(_ image$:Driver<UIImage?>, fadeDuration duration:TimeInterval = 0) {
+    public convenience init(_ image$:Observable<UIImage?>, fadeDuration duration:TimeInterval = 0) {
         self.init(image:nil)
         image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> __view.rx.animated.fadeIn(duration:duration).image ~ disposeBag
     }
@@ -49,20 +49,11 @@ open class Image:View {
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    internal override func layoutClipShape(_ clipShape: Shape) {
-        let path: UIBezierPath = clipShape.getPath(self)
-        let layer:CAShapeLayer = .init()
-         layer.path = path.cgPath
-         layer.frame = self.bounds
-         self.__view.layer.mask = layer
-     }
 
     public func aspectRatio(contentMode:ContentMode) -> Self {
         __view.contentMode = contentMode
         return self
     }
-
 }
 
 enum RequestError:Error

@@ -15,8 +15,6 @@ import RxGesture
 
 open class ZStack:View
 {
-    var backgroundView:UIView?
-    
     public init(_ subviews:View...) {
         super.init()
         _view = UIView()
@@ -30,13 +28,6 @@ open class ZStack:View
     
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil) -> Self {
-        backgroundView = GradientView(colors: colors, degree: degree, locations: locations)
-        insertSubview(backgroundView!, at: 0)
-        backgroundView?.fillSuperview()
-        return self
     }
 }
 
@@ -64,9 +55,7 @@ open class HStack:Stack {
 
 open class Stack:View {
     let __view = UIStackView()
-    
-    var backgroundView:UIView?
-    
+        
     public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[View]) {
         super.init()
         _view = __view
@@ -84,39 +73,11 @@ open class Stack:View {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override public func background(_ color:UIColor) -> Self {
-        self.background(Observable.just(color))
-        return self
-    }
-    
-    override public func background(_ colors$:Observable<UIColor>) -> Self {
-        backgroundView = UIView()
-        colors$.asDriver(onErrorJustReturn: UIColor.systemPink) ~> backgroundView!.rx.backgroundColor ~ disposeBag
-        insertSubview(backgroundView!, at: 0)
-        backgroundView?.fillSuperview()
-        return self
-    }
-    
-    public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil) -> Self {
-        backgroundView = GradientView(colors: colors, degree: degree, locations: locations)
-        insertSubview(backgroundView!, at: 0)
-        backgroundView?.fillSuperview()
-        return self
-    }
-
-    public func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double>, locations:[NSNumber]? = nil) -> Self {
-        backgroundView = GradientView(colors$: colors$, degree$: degree$, locations: locations)
-        insertSubview(backgroundView!, at: 0)
-        backgroundView?.fillSuperview()
-        return self
-    }
-    
-    override internal func layoutClipShape(_ clipShape: Shape) {
-        let path:UIBezierPath = clipShape.getPath(self)
+    open override func layoutClipShape(_ clipShape: Shape) {
+        let path:UIBezierPath = clipShape.getClipPath(self)
         let layer:CAShapeLayer = .init()
          layer.path = path.cgPath
          layer.frame = self.bounds
-        backgroundView?.layer.mask = layer
      }
     
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {

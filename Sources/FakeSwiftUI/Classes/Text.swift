@@ -53,14 +53,6 @@ open class Text:View {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutClipShape(_ clipShape:Shape){
-        let path = clipShape.getPath(self)
-        let layer = CAShapeLayer()
-        layer.path = path.cgPath
-        layer.frame = self.bounds
-        self.__view.layer.mask = layer
-    }
-    
     public func padding(_ padding:UIEdgeInsets = .symmetric(4, 8)) -> Self {
         __view.padding(padding)
         return self

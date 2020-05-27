@@ -14,20 +14,41 @@ import RxGesture
 import RxCocoa
 
 open class View:UIView {
+    override open class var layerClass: AnyClass {
+        return CAGradientLayer.classForCoder()
+    }
+    
     open var _view:UIView!
     public let disposeBag:DisposeBag = .init()
-    var overlayShape:Shape?
+    var overlayShapes = [Shape]()
     var clipShape:Shape?
     
     var centerXConstant$:Observable<CGFloat>?
+    var centerXDuration:TimeInterval = 0
+    
     var centerYConstant$:Observable<CGFloat>?
+    var centerYDuration:TimeInterval = 0
+    
     var bottomConstant$:Observable<CGFloat>?
+    var bottomDuration:TimeInterval = 0
+    
     var topConstant$:Observable<CGFloat>?
+    var topDuration:TimeInterval = 0
+    
     var leadingConstant$:Observable<CGFloat>?
+    var leadingDuration:TimeInterval = 0
+
     var trailingConstant$:Observable<CGFloat>?
+    var trailingDuration:TimeInterval = 0
+
     var trailingLessThanOrEqualConstant$:Observable<CGFloat>?
+    var trailingLessThanOrEqualDuration:TimeInterval = 0
+
     var widthConstant$:Observable<CGFloat>?
+    var widthDuration:TimeInterval = 0
+
     var heightConstant$:Observable<CGFloat>?
+    var heightDuration:TimeInterval = 0
 
     var heightConstraint:NSLayoutConstraint?
     var widthConstraint:NSLayoutConstraint?
@@ -76,85 +97,69 @@ open class View:UIView {
         if let constant$ = centerXConstant$ {
             self.centerXConstraint = centerXAnchor.constraint(equalTo: superview!.centerXAnchor, constant: 0)
             self.centerXConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                self?.layoutIfNeeded()
-            }) ~> self.centerXConstraint!.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> centerXConstraint!.rx.animated.layout(duration: centerXDuration).constant ~ disposeBag
         }
         
         if let constant$ = centerYConstant$ {
             self.centerYConstraint = centerYAnchor.constraint(equalTo: superview!.centerYAnchor, constant: 0)
             self.centerYConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                self?.layoutIfNeeded()
-            }) ~> self.centerYConstraint!.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> centerYConstraint!.rx.animated.layout(duration: centerYDuration).constant ~ disposeBag
         }
         
         if let constant$ = leadingConstant$ {
             let constraint = leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 0)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                self?.layoutIfNeeded()
-            }) ~> constraint.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: leadingDuration).constant ~ disposeBag
         }
         
         if let constant$ = trailingConstant$ {
             let constraint = trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                self?.layoutIfNeeded()
-            }) ~> constraint.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: trailingDuration).constant ~ disposeBag
         }
         
         if let constant$ = trailingLessThanOrEqualConstant$ {
             let constraint = trailingAnchor.constraint(lessThanOrEqualTo: superview!.trailingAnchor, constant: 0)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                self?.layoutIfNeeded()
-            }) ~> constraint.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: trailingLessThanOrEqualDuration).constant ~ disposeBag
         }
         
         if let constant$ = topConstant$ {
             let constraint = topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                self?.layoutIfNeeded()
-            }) ~> constraint.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: topDuration).constant ~ disposeBag
         }
         
         if let constant$ = bottomConstant$ {
             let constraint = bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                 self?.layoutIfNeeded()
-            }) ~> constraint.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: bottomDuration).constant ~ disposeBag
         }
         
         if let constant$ = heightConstant$ {
             self.heightConstraint = heightAnchor.constraint(equalToConstant: 0)
             self.heightConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                 self?.layoutIfNeeded()
-            }) ~> heightConstraint!.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> heightConstraint!.rx.animated.layout(duration: heightDuration).constant ~ disposeBag
         }
         
         if let constant$ = widthConstant$ {
             self.widthConstraint = widthAnchor.constraint(equalToConstant: 0)
             self.widthConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0).do(afterNext:{[weak self] _ in
-                 self?.layoutIfNeeded()
-            }) ~> widthConstraint!.rx.constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: 0) ~> widthConstraint!.rx.animated.layout(duration: widthDuration).constant ~ disposeBag
         }
     }
     
     @discardableResult
-    public func height(_ constant$:Observable<CGFloat>) -> Self {
+    public func height(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         heightConstant$ = constant$
+        heightDuration = duration
         return self
     }
     
     @discardableResult
-    public func width(_ constant$:Observable<CGFloat>) -> Self {
+    public func width(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         widthConstant$ = constant$
+        widthDuration = duration
         return self
     }
     
@@ -172,14 +177,15 @@ open class View:UIView {
     
     open override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        if let superview = superview {
+        if superview != nil {
             setupConstraint()
         }
     }
     
     @discardableResult
-    public func leading(_ constant$:Observable<CGFloat>) -> Self {
+    public func leading(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         leadingConstant$ = constant$
+        leadingDuration = duration
         return self
     }
     
@@ -190,14 +196,16 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func trailing(_ constant$:Observable<CGFloat>) -> Self {
+    public func trailing(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         trailingConstant$ = constant$
+        trailingDuration = duration
         return self
     }
     
     @discardableResult
-    public func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>) -> Self {
+    public func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         trailingLessThanOrEqualConstant$ = constant$
+        trailingLessThanOrEqualDuration = duration
         return self
     }
     
@@ -214,8 +222,9 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func bottom(_ constant$:Observable<CGFloat>) -> Self {
+    public func bottom(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         bottomConstant$ = constant$
+        bottomDuration = duration
         return self
     }
     
@@ -226,8 +235,9 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func top(_ constant$:Observable<CGFloat>) -> Self {
+    public func top(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         topConstant$ = constant$
+        topDuration = duration
         return self
     }
     
@@ -238,8 +248,9 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func centerY(_ constant$:Observable<CGFloat>) -> Self {
+    public func centerY(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         centerYConstant$ = constant$
+        centerYDuration = duration
         return self
     }
     
@@ -256,15 +267,17 @@ open class View:UIView {
     }
 
     @discardableResult
-    public func centerX(_ constant$:Observable<CGFloat>) -> Self {
+    public func centerX(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
         centerXConstant$ = constant$
+        centerXDuration = duration
         return self
     }
     
     override public func layoutSubviews() {
         super.layoutSubviews()
-        if let overlayShape = overlayShape {
-           layoutOverlay(overlayShape)
+        overlayShapes.enumerated().forEach{ (i, shape) in
+           shape.name = "overlay\(i)"
+           layoutOverlay(shape)
         }
          
         if let clipShape = clipShape {
@@ -272,30 +285,51 @@ open class View:UIView {
         }
     }
     
-    internal func layoutClipShape(_ clipShape:Shape){
-        let path:UIBezierPath = clipShape.getPath(self)
+    open func layoutClipShape(_ clipShape:Shape){
+        let path:UIBezierPath = clipShape.getClipPath(self)
         let layer:CAShapeLayer = .init()
         layer.path = path.cgPath
         layer.frame = self.bounds
         self.layer.mask = layer
     }
     
-    internal func layoutOverlay(_ overlayShape:Shape){
-        _view?.layer.sublayers?.first{ $0.name == "border" }?.removeFromSuperlayer()
-        let path:UIBezierPath = overlayShape.getPath(self)
+    open func layoutOverlay(_ overlayShape:Shape){
+        _view?.layer.sublayers?.first{ $0.name == overlayShape.name }?.removeFromSuperlayer()
+        let path:UIBezierPath = overlayShape.getOverlayPath(self)
         let borderLayer:CAShapeLayer = .init()
-        borderLayer.name = "border"
+        borderLayer.name = overlayShape.name
         borderLayer.path = path.cgPath
         borderLayer.lineWidth = overlayShape.lineWidth
         borderLayer.strokeColor = overlayShape.color.cgColor
         borderLayer.fillColor = UIColor.clear.cgColor
         borderLayer.frame = self.bounds
-        _view?.layer.addSublayer(borderLayer)
+        
+        if overlayShape.colors.count > 0 {
+            let gradientLayer = CAGradientLayer()
+            gradientLayer.name = overlayShape.name
+            gradientLayer.frame = self.bounds
+            let x: Double = overlayShape.degree / 360.0
+            let a:Double = calc(x, 0.75)
+            let b:Double = calc(x, 0.0)
+            let c:Double = calc(x, 0.25)
+            let d:Double = calc(x, 0.5)
+            gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
+            gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
+            gradientLayer.colors = overlayShape.colors.map({$0.cgColor})
+            gradientLayer.mask = borderLayer
+            _view?.layer.addSublayer(gradientLayer)
+        } else {
+            _view?.layer.addSublayer(borderLayer)
+        }
+    }
+    
+    fileprivate func calc(_ x:Double, _ y:Double) -> Double {
+        return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
     }
     
     @discardableResult
     public func overlay(_ shape:Shape) -> Self {
-        self.overlayShape = shape
+        self.overlayShapes.append(shape)
         return self
     }
      
@@ -339,14 +373,51 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func background(_ color$:Observable<UIColor>) -> Self {
-        color$.asDriver(onErrorJustReturn: .red) ~> _view.rx.backgroundColor ~ disposeBag
-        return self
+    public func background(_ color:UIColor) -> Self {
+        return self.background([color, color])
     }
     
     @discardableResult
-    public func background(_ color:UIColor) -> Self {
-        _view.backgroundColor = color
+    public func background(_ color$:Observable<UIColor>) -> Self {
+        return self.background(color$.map{ [$0, $0] })
+    }
+    
+    @discardableResult
+    public func background(_ colors:[UIColor], degree:Double? = nil, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+        return self.background(Observable.just(colors), degree: degree, locations: locations, type: type)
+    }
+    
+    @discardableResult
+    public func background(_ colors$:Observable<[UIColor]>, degree:Double? = nil, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+        func calc(_ x:Double, _ y:Double) -> Double {
+            return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
+        }
+        
+        let gradientLayer:CAGradientLayer = self.layer as! CAGradientLayer
+        gradientLayer.type = type
+        gradientLayer.locations = locations
+        
+        colors$
+            .map{ $0.map{ $0.cgColor} }
+            .asDriver(onErrorJustReturn: [])
+            .drive(onNext:{
+                gradientLayer.colors = $0
+            }) ~ disposeBag
+        
+        if type == .axial {
+            if let degree:Double = degree {
+                let x: Double = degree / 360.0
+                let a:Double = calc(x, 0.75)
+                let b:Double = calc(x, 0.0)
+                let c:Double = calc(x, 0.25)
+                let d:Double = calc(x, 0.5)
+                gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
+                gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
+            }
+        } else {
+            gradientLayer.startPoint = CGPoint(x: 0.5,y: 0.5)
+            gradientLayer.endPoint = CGPoint(x: 1,y: 1)
+        }
         return self
     }
     

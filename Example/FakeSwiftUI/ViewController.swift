@@ -7,18 +7,24 @@
 //
 
 import UIKit
+import FakeSwiftUI
+import RxSwift
+import RxRelay
 
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        Text("FakeSwiftUI Rocks")
+            .font(50)
+            .clipShape(Circle())
+            .overlay(Circle().stroke([.blue, .yellow], lineWidth: 3))
+            .padding(.symmetric(4, 16))
+            .background([UIColor.red, .blue])
+            .centerX(offset: 0)
+            .centerY(offset: 0)
+            .on(view)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
 }
 

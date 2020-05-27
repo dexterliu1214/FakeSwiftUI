@@ -41,12 +41,12 @@ open class SegmentedControl:View
     @discardableResult
     public func font(_ size:CGFloat) -> Self {
         __view.backgroundColor = 0x4F3D6A.color
-        __view.setTitleTextAttributes([.font: UIFont.systemFont(ofSize: size), .foregroundColor: UIColor.white ], for: .normal)
+        __view.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: size), .foregroundColor: UIColor.white ], for: .normal)
         if #available(iOS 13.0, *) {
             __view.selectedSegmentTintColor = UIColor.white.withAlphaComponent(0.4)
         } else {
             __view.tintColor = .clear
-            __view.setTitleTextAttributes([.font: UIFont.systemFont(ofSize: size), .foregroundColor: UIColor.white, .backgroundColor: UIColor.white.withAlphaComponent(0.4) ], for: .selected)
+            __view.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: size), .foregroundColor: UIColor.white, .backgroundColor: UIColor.white.withAlphaComponent(0.4) ], for: .selected)
         }
         return self
     }
