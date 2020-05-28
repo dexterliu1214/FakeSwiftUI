@@ -10,6 +10,16 @@
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
 ### Text
+<table>
+<tr>
+<td> Preview </td> <td> Code </td>
+</tr>
+<tr>
+<td>
+   <img src="https://raw.githubusercontent.com/dexterliu1214/FakeSwiftUI/master/%E5%9C%96%E7%89%87.png" width="" height=""/>
+</td>
+<td>
+    
 ```swift
 import FakeSwiftUI
 import RxSwift
@@ -21,9 +31,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         Text("FakeSwiftUI Rocks")
-            .font(50)
+            .color(.white)
+            .font(40)
             .clipShape(Circle())
-            .overlay(Circle().stroke([.blue, .yellow], lineWidth: 3))
+            .overlay(Circle().stroke([.blue, .yellow], lineWidth: 4))
             .padding(.symmetric(4, 16))
             .background([UIColor.red, .blue])
             .centerX(offset: 0)
@@ -32,6 +43,9 @@ class ViewController: UIViewController {
     }
 }
 ```
+</td>
+</tr>
+</table>
 
 ## Requirements
 
@@ -43,7 +57,6 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod 'FakeSwiftUI', git => 'https://github.com/dexterliu1214/FakeSwiftUI'
 ```
-
 ## Author
 
 dexterliu1214@gmail.com
