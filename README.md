@@ -9,6 +9,30 @@
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
 
+### Text
+```swift
+import FakeSwiftUI
+import RxSwift
+import RxRelay
+
+class ViewController: UIViewController {
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        Text("FakeSwiftUI Rocks")
+            .font(50)
+            .clipShape(Circle())
+            .overlay(Circle().stroke([.blue, .yellow], lineWidth: 3))
+            .padding(.symmetric(4, 16))
+            .background([UIColor.red, .blue])
+            .centerX(offset: 0)
+            .centerY(offset: 0)
+            .on(view)
+    }
+}
+```
+
 ## Requirements
 
 ## Installation
