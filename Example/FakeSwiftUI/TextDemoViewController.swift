@@ -11,15 +11,15 @@ import FakeSwiftUI
 import RxSwift
 import RxRelay
 
-class ViewController: UIViewController {
+class TextDemoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         Text("FakeSwiftUI Rocks")
-            .font(50)
+            .font(40)
             .clipShape(Circle())
-            .overlay(Circle().stroke([.blue, .yellow], lineWidth: 3))
+            .overlay(Circle().stroke([.blue, .yellow], lineWidth: 4))
             .padding(.symmetric(4, 16))
             .background([UIColor.red, .blue])
             .centerX(offset: 0)

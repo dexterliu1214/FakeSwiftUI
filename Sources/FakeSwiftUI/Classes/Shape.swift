@@ -8,12 +8,13 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 open class Shape {
     var name = ""
     var color = UIColor.black
     var colors = [UIColor]()
-    var degree = 0.0
+    var degree$:Observable<Double>?
     public var lineWidth:CGFloat = 2
     public var inset:CGFloat = 0
     
@@ -31,7 +32,15 @@ open class Shape {
     public func stroke(_ colors:[UIColor], degree:Double = 0, lineWidth: CGFloat = 2.0, inset:CGFloat = 0) -> Shape {
         self.colors = colors
         self.lineWidth = lineWidth
-        self.degree = degree
+        self.degree$ = Observable.just(degree)
+        self.inset = inset
+        return self
+    }
+    
+    public func stroke(_ colors:[UIColor], degree$:Observable<Double>, lineWidth: CGFloat = 2.0, inset:CGFloat = 0) -> Shape {
+        self.colors = colors
+        self.lineWidth = lineWidth
+        self.degree$ = degree$
         self.inset = inset
         return self
     }

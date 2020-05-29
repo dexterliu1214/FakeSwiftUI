@@ -54,6 +54,8 @@ open class View:UIView {
     var widthConstraint:NSLayoutConstraint?
     var centerYConstraint:NSLayoutConstraint?
     var centerXConstraint:NSLayoutConstraint?
+    
+    var masker: UIView?
 
     public init(){
         super.init(frame:.zero)
@@ -275,6 +277,7 @@ open class View:UIView {
     
     override public func layoutSubviews() {
         super.layoutSubviews()
+        
         overlayShapes.enumerated().forEach{ (i, shape) in
            shape.name = "overlay\(i)"
            layoutOverlay(shape)
@@ -283,6 +286,16 @@ open class View:UIView {
         if let clipShape = clipShape {
             layoutClipShape(clipShape)
         }
+
+        self.mask = self.masker
+        
+    }
+    
+    open func mask(_ view:UIView) -> Self {
+        addSubview(view)
+        view.fillSuperview()
+        self.masker = view
+        return self
     }
     
     open func layoutClipShape(_ clipShape:Shape){
@@ -294,7 +307,7 @@ open class View:UIView {
     }
     
     open func layoutOverlay(_ overlayShape:Shape){
-        _view?.layer.sublayers?.first{ $0.name == overlayShape.name }?.removeFromSuperlayer()
+        layer.sublayers?.first{ $0.name == overlayShape.name }?.removeFromSuperlayer()
         let path:UIBezierPath = overlayShape.getOverlayPath(self)
         let borderLayer:CAShapeLayer = .init()
         borderLayer.name = overlayShape.name
@@ -308,23 +321,16 @@ open class View:UIView {
             let gradientLayer = CAGradientLayer()
             gradientLayer.name = overlayShape.name
             gradientLayer.frame = self.bounds
-            let x: Double = overlayShape.degree / 360.0
-            let a:Double = calc(x, 0.75)
-            let b:Double = calc(x, 0.0)
-            let c:Double = calc(x, 0.25)
-            let d:Double = calc(x, 0.5)
-            gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
-            gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
+            if let degree$ = overlayShape.degree$ {
+                degree$.asDriver(onErrorJustReturn: 0) ~> gradientLayer.rx.degree  ~ disposeBag
+            } 
+            
             gradientLayer.colors = overlayShape.colors.map({$0.cgColor})
             gradientLayer.mask = borderLayer
-            _view?.layer.addSublayer(gradientLayer)
+            layer.addSublayer(gradientLayer)
         } else {
-            _view?.layer.addSublayer(borderLayer)
+            layer.addSublayer(borderLayer)
         }
-    }
-    
-    fileprivate func calc(_ x:Double, _ y:Double) -> Double {
-        return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
     }
     
     @discardableResult
@@ -345,6 +351,7 @@ open class View:UIView {
         layer.shadowRadius = radius
         layer.shadowColor = color.cgColor
         layer.shadowOffset = CGSize(width: x, height: y)
+//        layer.masksToBounds = false
         return self
     }
     
@@ -388,6 +395,11 @@ open class View:UIView {
     }
     
     @discardableResult
+    public func background(_ colors:[UIColor], degree$:Observable<Double>, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+        return self.background(Observable.just(colors), degree$: degree$, locations: locations, type: type)
+    }
+    
+    @discardableResult
     public func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double> = Observable.just(0), locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
         func calc(_ x:Double, _ y:Double) -> Double {
             return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
@@ -397,26 +409,10 @@ open class View:UIView {
         gradientLayer.type = type
         gradientLayer.locations = locations
         
-        colors$
-            .map{ $0.map{ $0.cgColor} }
-            .asDriver(onErrorJustReturn: [])
-            .drive(onNext:{
-                gradientLayer.colors = $0
-            }) ~ disposeBag
+        colors$.map{ $0.map{ $0.cgColor} }.asDriver(onErrorJustReturn: []) ~> gradientLayer.rx.colors ~ disposeBag
         
         if type == .axial {
-            degree$.asDriver(onErrorJustReturn: 0)
-                .drive(onNext:{
-                    if let degree:Double = $0 {
-                        let x: Double = degree / 360.0
-                        let a:Double = calc(x, 0.75)
-                        let b:Double = calc(x, 0.0)
-                        let c:Double = calc(x, 0.25)
-                        let d:Double = calc(x, 0.5)
-                        gradientLayer.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
-                        gradientLayer.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
-                    }
-                }) ~ disposeBag
+            degree$.asDriver(onErrorJustReturn: 0) ~> gradientLayer.rx.degree ~ disposeBag
         } else {
             gradientLayer.startPoint = CGPoint(x: 0.5,y: 0.5)
             gradientLayer.endPoint = CGPoint(x: 1,y: 1)
@@ -456,7 +452,7 @@ open class View:UIView {
                 if let centerY = self.centerYConstraint, let centerX = self.centerXConstraint {
                     centerX.constant = beginPos.x + translation.x
                     centerY.constant = beginPos.y + translation.y
-                    UIView.animate(withDuration: 0.1, animations: {[unowned self] in
+                    UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1, delay: 0, options: .curveLinear, animations: {
                         self.superview!.layoutIfNeeded()
                     }, completion: nil)
                 }                
@@ -485,8 +481,8 @@ open class View:UIView {
                 guard let self = self, let widthConstraint = self.widthConstraint, let heightConstraint = self.heightConstraint else { return }
                 widthConstraint.constant = max(scaleOrigin.x * scale, minSize!.width)
                 heightConstraint.constant = max(scaleOrigin.y * scale, minSize!.height)
-                UIView.animate(withDuration: 0.1, animations: {[weak self] in
-                    self?.superview!.layoutIfNeeded()
+                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1, delay: 0, options: .curveLinear, animations: {
+                    self.superview!.layoutIfNeeded()
                 }, completion: nil)
             }) ~ disposeBag
         
@@ -498,7 +494,7 @@ open class View:UIView {
         let blurEffect = UIBlurEffect(style: .light)
         let blurView = UIVisualEffectView(effect: blurEffect)
         blurView.translatesAutoresizingMaskIntoConstraints = false
-        blurView.append(to: _view).fillSuperview()
+        blurView.append(to: self).fillSuperview()
         return self
     }
     
@@ -506,10 +502,10 @@ open class View:UIView {
     public func rotate(_ angle$:Observable<CGFloat>, duration:TimeInterval) -> Self {
         angle$.asDriver(onErrorJustReturn: 0).drive(onNext:{[weak self] angle in
             guard let self = self else { return }
-            UIView.animate(withDuration: duration) {
+            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: duration, delay: 0, options: UIView.AnimationOptions.curveLinear, animations: {
                 let radians = angle / 180.0 * CGFloat.pi
-                self._view.transform = self._view.transform.rotated(by: radians)
-            }
+                self.transform = self.transform.rotated(by: radians)
+            })
         }) ~ disposeBag
         
         return self
@@ -520,6 +516,41 @@ extension Reactive where Base : UIView {
     public var isShow: Binder<Bool> {
         return Binder(self.base) { control, value in
             control.isShow = value
+        }
+    }
+}
+
+extension Reactive where Base : CAGradientLayer {
+    public var colors: Binder<[CGColor]> {
+        return Binder(self.base) { control, value in
+            control.colors = value
+        }
+    }
+    
+    public var degree: Binder<Double> {
+        return Binder(self.base) { control, value in
+            control.degree = value
+        }
+    }
+}
+
+extension CAGradientLayer
+{
+    var degree:Double {
+        get {
+            return 0
+        }
+        set{
+            func calc(_ x:Double, _ y:Double) -> Double {
+                return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
+            }
+            let x: Double = newValue / 360.0
+            let a:Double = calc(x, 0.75)
+            let b:Double = calc(x, 0.0)
+            let c:Double = calc(x, 0.25)
+            let d:Double = calc(x, 0.5)
+            self.startPoint = CGPoint(x: CGFloat(a),y:CGFloat(b))
+            self.endPoint = CGPoint(x: CGFloat(c),y: CGFloat(d))
         }
     }
 }
