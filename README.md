@@ -16,7 +16,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 </tr>
 <tr>
 <td>
-   <img src="https://raw.githubusercontent.com/dexterliu1214/FakeSwiftUI/master/%E5%9C%96%E7%89%87.png" width="" height=""/>
+   <img src="https://raw.githubusercontent.com/dexterliu1214/FakeSwiftUI/master/%E5%9C%96%E7%89%87.png"/>
 </td>
 <td>
     
@@ -42,6 +42,40 @@ class ViewController: UIViewController {
             .on(view)
     }
 }
+```
+</td>
+</tr>
+<tr>
+<td>
+   <img src="https://raw.githubusercontent.com/dexterliu1214/FakeSwiftUI/master/text-gradient-animate.gif"/>
+</td>
+<td>
+    
+```swift
+let degree$ = Observable<Int>.timer(
+   .seconds(1),
+   period: .milliseconds(5),
+   scheduler: MainScheduler.instance
+)
+   .map{ Double($0).truncatingRemainder(dividingBy: 360.0) }
+     
+ZStack(
+   View()
+       .mask(
+           Text("FakeSwiftUI Rocks")
+
+               .font(40)
+               .padding(.symmetric(4, 16))
+   )
+       .background([UIColor.red, .blue], degree$: degree$)
+       .fill()
+)
+   .background(.black)
+   .clipShape(Circle())
+   .overlay(Circle().stroke([.green, .yellow], degree$: degree$, lineWidth: 4))
+   .centerX(offset: 0)
+   .centerY(offset: 0)
+   .on(view)
 ```
 </td>
 </tr>
