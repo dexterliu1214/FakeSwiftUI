@@ -119,7 +119,7 @@ open class Arrow:Shape {
     }
     
     override public func getClipPath(_ view:UIView) -> UIBezierPath {
-        return getPath(view.bounds)
+        return getPath(view.bounds.inset(by: .all(lineWidth)))
     }
     
     override public func getOverlayPath(_ view:UIView) -> UIBezierPath {

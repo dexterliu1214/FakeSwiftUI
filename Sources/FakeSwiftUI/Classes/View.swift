@@ -36,6 +36,7 @@ open class View:UIView {
     var topDuration:TimeInterval = 0
     
     var leadingConstant$:Observable<CGFloat>?
+    var leadingStartValue:CGFloat = 0
     var leadingDuration:TimeInterval = 0
 
     var trailingConstant$:Observable<CGFloat>?
@@ -109,9 +110,9 @@ open class View:UIView {
         }
         
         if let constant$ = leadingConstant$ {
-            let constraint = leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 0)
+            let constraint = leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: leadingStartValue)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: leadingDuration).constant ~ disposeBag
+            constant$.asDriver(onErrorJustReturn: leadingStartValue) ~> constraint.rx.animated.layout(duration: leadingDuration).constant ~ disposeBag
         }
         
         if let constant$ = trailingConstant$ {
@@ -185,15 +186,17 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func leading(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
+    public func leading(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
         leadingConstant$ = constant$
         leadingDuration = duration
+        leadingStartValue = startValue
         return self
     }
     
     @discardableResult
-    public func leading(offset:CGFloat) -> Self {
+    public func leading(offset:CGFloat, startValue:CGFloat = 0) -> Self {
         leadingConstant$ = Observable.just(offset)
+        leadingStartValue = startValue
         return self
     }
     
