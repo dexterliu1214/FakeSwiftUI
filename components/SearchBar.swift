@@ -14,14 +14,15 @@ import RxBinding
 import RxGesture
 
 open class SearchBar:View {
-    let __view = UISearchBar()
+    let searchBar = UISearchBar()
     
     public init(placeholder:String, _ text$:BehaviorRelay<String?>) {        
         super.init()
-        _view = __view
-        _init()
-        __view.placeholder = placeholder
-        text$ <~> __view.rx.text ~ disposeBag
+        view = searchBar
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
+        searchBar.placeholder = placeholder
+        text$ <~> searchBar.rx.text ~ disposeBag
     }
     
     public required init?(coder: NSCoder) {
@@ -29,25 +30,25 @@ open class SearchBar:View {
     }
     
     public func barStyle(_ style:UIBarStyle) -> Self {
-        __view.barStyle = style
+        searchBar.barStyle = style
         return self
     }
     
     public func autocapitalizationType(_ type:UITextAutocapitalizationType) -> Self {
-        __view.autocapitalizationType = type
+        searchBar.autocapitalizationType = type
         return self
     }
     
     public func onSearch(_ callback:@escaping(String?) -> ()) -> Self {
-        __view.rx.searchButtonClicked
+        searchBar.rx.searchButtonClicked
             .subscribe(onNext:{[unowned self] in
-                callback(self.__view.text)
+                callback(self.searchBar.text)
             }) ~ disposeBag
         return self
     }
     
     public func onCancel(_ callback:@escaping() -> ()) -> Self {
-        __view.rx.text.changed.distinctUntilChanged()
+        searchBar.rx.text.changed.distinctUntilChanged()
             .subscribe(onNext:{
                 if $0 == "" {
                     callback()

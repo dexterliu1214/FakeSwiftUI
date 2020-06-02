@@ -16,7 +16,7 @@ import RxDataSources
 
 open class Grid<CellType:UICollectionViewCell>:View
 {
-    let __view:UICollectionView
+    let collectionView:UICollectionView
   
     var columns:Int
     let layout:UICollectionViewFlowLayout = .init()
@@ -25,20 +25,21 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     public init<ModelType>(columns:Int = 1, vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[ModelType]>, _ builder:@escaping(CellType, ModelType, Int, UICollectionView) -> UICollectionViewCell) {
         self.columns = columns
-        __view = .init(frame: .zero, collectionViewLayout: layout)
+        collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        _view = __view
+        view = collectionView
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
 
-        self.__view.backgroundView = UIView()
+        self.collectionView.backgroundView = UIView()
         
-        _init()
-        __view.backgroundColor = .clear
-        __view.register(CellType.self, forCellWithReuseIdentifier: "CELL")
-        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
+        collectionView.backgroundColor = .clear
+        collectionView.register(CellType.self, forCellWithReuseIdentifier: "CELL")
+        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> collectionView.backgroundView!.rx.isShow ~ disposeBag
         
-        items.asDriver(onErrorJustReturn: []).drive(__view.rx.items) { (cv:UICollectionView, row:Int, element:ModelType) in
+        items.asDriver(onErrorJustReturn: []).drive(collectionView.rx.items) { (cv:UICollectionView, row:Int, element:ModelType) in
             let indexPath:IndexPath = .init(row: row, section: 0)
             let cell:CellType = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: indexPath) as! CellType
             return builder(cell, element, row, cv)
@@ -55,24 +56,25 @@ open class Grid<CellType:UICollectionViewCell>:View
         _ builder:@escaping(CellType, ModelType, Int) -> UICollectionViewCell
     ) {
         self.columns = columns
-        __view = .init(frame: .zero, collectionViewLayout: layout)
+        collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        _view = __view
+        view = collectionView
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
         layout.headerReferenceSize = CGSize(width: 200, height: 40)
         layout.footerReferenceSize = CGSize(width: 200, height: 40)
         layout.sectionInset = .symmetric(8, 0)
 
-        self.__view.backgroundView = UIView()
+        self.collectionView.backgroundView = UIView()
         
-        _init()
-        __view.backgroundColor = .clear
-        __view.register(CellType.self, forCellWithReuseIdentifier: "CELL")
-        __view.register(HeaderType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Section")
-        __view.register(FooterType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Section")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
+        collectionView.backgroundColor = .clear
+        collectionView.register(CellType.self, forCellWithReuseIdentifier: "CELL")
+        collectionView.register(HeaderType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Section")
+        collectionView.register(FooterType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Section")
 
-        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag
+        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> collectionView.backgroundView!.rx.isShow ~ disposeBag
         
         let dataSource:RxCollectionViewSectionedReloadDataSource<SectionModel<String, ModelType>> = .init(configureCell: { (ds:CollectionViewSectionedDataSource, cv:UICollectionView, ip:IndexPath, model:ModelType) in
             let cell:CellType = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: ip) as! CellType
@@ -87,7 +89,7 @@ open class Grid<CellType:UICollectionViewCell>:View
             }
         })
 
-        items ~> __view.rx.items(dataSource: dataSource) ~ disposeBag
+        items ~> collectionView.rx.items(dataSource: dataSource) ~ disposeBag
     }
     
     required public init?(coder: NSCoder) {
@@ -97,7 +99,7 @@ open class Grid<CellType:UICollectionViewCell>:View
     override public func layoutSubviews() {
         super.layoutSubviews()
         let hSpacing:CGFloat = layout.minimumInteritemSpacing
-        let width:CGFloat = (self.bounds.width - __view.contentInset.left - __view.contentInset.right - (CGFloat(columns - 1) * hSpacing)) / CGFloat(columns)
+        let width:CGFloat = (self.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right - (CGFloat(columns - 1) * hSpacing)) / CGFloat(columns)
         
         if let ratio:CGFloat = ratio {
             layout.itemSize = CGSize(width: width, height: width / ratio)
@@ -111,18 +113,18 @@ open class Grid<CellType:UICollectionViewCell>:View
             
             layout.itemSize = CGSize(width: width, height: width)
         } else {
-            if columns == 1 && __view.isPagingEnabled {
+            if columns == 1 && collectionView.isPagingEnabled {
                 let height:CGFloat =  self.bounds.height
                 layout.itemSize = CGSize(width: width, height: height)
             } else {
-                let width:CGFloat = self.bounds.height - __view.contentInset.top - __view.contentInset.bottom
+                let width:CGFloat = self.bounds.height - collectionView.contentInset.top - collectionView.contentInset.bottom
                 layout.itemSize = CGSize(width: width, height: width)
             }
         }
         
         if let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.__view.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
+                self.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
             }
         }
     }
@@ -141,13 +143,13 @@ open class Grid<CellType:UICollectionViewCell>:View
 
     @discardableResult
     public func emptyView(_ view:@escaping () -> View) -> Self {
-        view().centerX(offset: 0).centerY(offset: 0).on(self.__view.backgroundView!)
+        view().centerX(offset: 0).centerY(offset: 0).on(self.collectionView.backgroundView!)
         return self
     }
     
     @discardableResult
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
-        __view.contentInset = insets
+        collectionView.contentInset = insets
         return self
     }
     
@@ -163,13 +165,13 @@ open class Grid<CellType:UICollectionViewCell>:View
             }
             callback(complete)
         }) ~ disposeBag
-        __view.refreshControl = refreshControl
+        collectionView.refreshControl = refreshControl
         return self
     }
     
     @discardableResult
     public func onSwipe(_ direction:Set<SwipeDirection>, _ callback:@escaping(UISwipeGestureRecognizer.Direction) -> ()) -> Self {
-        _view.rx.swipeGesture(direction)
+        collectionView.rx.swipeGesture(direction)
             .when(.recognized)
             .subscribe(onNext:{
                 callback($0.direction)
@@ -179,13 +181,13 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     @discardableResult
     public func alwaysBounceVertical(_ value:Bool = true) -> Self {
-        __view.alwaysBounceVertical = value
+        collectionView.alwaysBounceVertical = value
         return self
     }
     
     @discardableResult
     public func alwaysBounceHorizontal() -> Self {
-        __view.alwaysBounceHorizontal = true
+        collectionView.alwaysBounceHorizontal = true
         return self
     }
     
@@ -197,7 +199,7 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     @discardableResult
     public func isPagingEnabled(_ value:Bool) -> Self {
-        __view.isPagingEnabled = value
+        collectionView.isPagingEnabled = value
         return self
     }
     
@@ -209,7 +211,7 @@ open class Grid<CellType:UICollectionViewCell>:View
     
     @discardableResult
     public func itemSelected(_ callback:@escaping(IndexPath) -> ()) -> Self {
-        __view.rx.itemSelected.subscribe(onNext:{
+        collectionView.rx.itemSelected.subscribe(onNext:{
             callback($0)
         }) ~ disposeBag
         return self

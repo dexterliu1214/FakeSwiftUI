@@ -14,28 +14,29 @@ import RxBinding
 import RxGesture
 
 open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlowLayout {
-    let __view:UICollectionView
+    let collectionView:UICollectionView
     
     let layout:UICollectionViewFlowLayout = .init()
     
     public init<T>(vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[T]>, _ builder:@escaping(C, T, Int) -> (C)) {
-        __view = .init(frame: .zero, collectionViewLayout: layout)
+        collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        _view = __view
-        let _ = __view.rx.setDelegate(self)
-        __view.isScrollEnabled = false
+        view = collectionView
+        let _ = collectionView.rx.setDelegate(self)
+        collectionView.isScrollEnabled = false
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
         
-        self.__view.backgroundView = UIView()
+        self.collectionView.backgroundView = UIView()
         
-        _init()
-        __view.backgroundColor = .clear
-        __view.register(C.self, forCellWithReuseIdentifier: "CELL")
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
+        collectionView.backgroundColor = .clear
+        collectionView.register(C.self, forCellWithReuseIdentifier: "CELL")
         
-        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> __view.backgroundView!.rx.isShow ~ disposeBag
+        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> collectionView.backgroundView!.rx.isShow ~ disposeBag
         
-        items.asDriver(onErrorJustReturn: []).drive(__view.rx.items) { (collectionView:UICollectionView, row:Int, element:T) in
+        items.asDriver(onErrorJustReturn: []).drive(collectionView.rx.items) { (collectionView:UICollectionView, row:Int, element:T) in
             let indexPath:IndexPath = .init(row: row, section: 0)
             let cell:C = collectionView.dequeueReusableCell(withReuseIdentifier: "CELL", for: indexPath) as! C
             return builder(cell, element, row)
@@ -48,13 +49,13 @@ open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlo
     
     @discardableResult
     public func emptyView(_ view:@escaping () -> View) -> Self {
-        view().centerX(offset: 0).centerY(offset: 0).on(self.__view.backgroundView!)
+        view().centerX(offset: 0).centerY(offset: 0).on(collectionView.backgroundView!)
         return self
     }
     
     @discardableResult
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
-        __view.contentInset = insets
+        collectionView.contentInset = insets
         return self
     }
     

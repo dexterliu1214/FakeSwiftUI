@@ -15,13 +15,14 @@ import RxGesture
 
 open class Toggle:View
 {
-    let __view = UISwitch()
+    let switchView = UISwitch()
     
     public init(isOn:BehaviorRelay<Bool>){
         super.init()
-        _view = __view
-        _init()
-        isOn <~> __view.rx.isOn ~ disposeBag
+        view = switchView
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
+        isOn <~> switchView.rx.isOn ~ disposeBag
     }
     
     required public init?(coder: NSCoder) {
@@ -30,7 +31,7 @@ open class Toggle:View
     
     @discardableResult
     public func color(_ color:UIColor) -> Self {
-        __view.onTintColor = color
+        switchView.onTintColor = color
         return self
     }
 }

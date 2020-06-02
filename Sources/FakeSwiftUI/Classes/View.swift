@@ -18,7 +18,8 @@ open class View:UIView {
         return CAGradientLayer.classForCoder()
     }
     
-    open var _view:UIView!
+    open var view:UIView!
+
     public let disposeBag:DisposeBag = .init()
     var overlayShapes = [Shape]()
     var clipShape:Shape?
@@ -43,11 +44,6 @@ open class View:UIView {
     public init(){
         super.init(frame:.zero)
         self.translatesAutoresizingMaskIntoConstraints = false
-    }
-    
-    public func _init(){
-        _view.translatesAutoresizingMaskIntoConstraints = false
-        _view.append(to: self).fillSuperview()
     }
     
     required public init?(coder: NSCoder) {

@@ -15,26 +15,27 @@ import RxBinding
 
 open class ScalableImage:View
 {
-    let __view = UIScrollView()
+    let scrollView = UIScrollView()
     let imageView = UIImageView()
 
     public init(_ image$:Driver<UIImage?>) {
         super.init()
-        _view = __view
-        __view.delegate = self
-        _init()
+        view = scrollView
+        scrollView.delegate = self
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
         imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        imageView.append(to: __view)
+        imageView.append(to: scrollView)
         
         imageView.rx.tapGesture() { gesture, _ in
             gesture.numberOfTapsRequired = 2
         }.when(.recognized)
             .subscribe(onNext:{[weak self] _ in
                 guard let self = self else { return }
-                if (self.__view.zoomScale > self.__view.minimumZoomScale) {
-                    self.__view.setZoomScale(self.__view.minimumZoomScale, animated: true)
+                if (self.scrollView.zoomScale > self.scrollView.minimumZoomScale) {
+                    self.scrollView.setZoomScale(self.scrollView.minimumZoomScale, animated: true)
                 } else {
-                    self.__view.setZoomScale(self.__view.maximumZoomScale, animated: true)
+                    self.scrollView.setZoomScale(self.scrollView.maximumZoomScale, animated: true)
                 }
             }) ~ disposeBag
         image$
@@ -42,15 +43,15 @@ open class ScalableImage:View
                 guard let self = self else { return }
                 self.imageView.image = $0
                 guard let size = $0?.size else { return }
-                self.__view.contentSize = CGSize(width: size.width, height: size.height)
+                self.scrollView.contentSize = CGSize(width: size.width, height: size.height)
                 self.imageView.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
                 self.setZoomScale()
                
                 if size.width >= size.height {
-                    let newContentOffsetX = (self.__view.contentSize.width/2) - (self.bounds.size.width/2)
-                    self.__view.setContentOffset(CGPoint(x: newContentOffsetX, y: 0) , animated: false)
+                    let newContentOffsetX = (self.scrollView.contentSize.width/2) - (self.bounds.size.width/2)
+                    self.scrollView.setContentOffset(CGPoint(x: newContentOffsetX, y: 0) , animated: false)
                 } else {
-                    self.__view.setContentOffset(CGPoint(x: 0, y: 0) , animated: false)
+                    self.scrollView.setContentOffset(CGPoint(x: 0, y: 0) , animated: false)
                 }
             }) ~ disposeBag
     }
@@ -69,13 +70,13 @@ open class ScalableImage:View
     
     func setZoomScale() {
         let imageViewSize = imageView.bounds.size
-        let scrollViewSize = _view.bounds.size
+        let scrollViewSize = view.bounds.size
         let widthScale = scrollViewSize.width / imageViewSize.width
         let heightScale = scrollViewSize.height / imageViewSize.height
             
-        __view.minimumZoomScale = min(widthScale, heightScale)
-        __view.maximumZoomScale = max(widthScale, heightScale)
-        __view.zoomScale = heightScale
+        scrollView.minimumZoomScale = min(widthScale, heightScale)
+        scrollView.maximumZoomScale = max(widthScale, heightScale)
+        scrollView.zoomScale = heightScale
     }
 }
 

@@ -14,15 +14,16 @@ import UIKit
 
 open class LoadingIndicator:View
 {
-    let __view:UIActivityIndicatorView
+    let indicatorView:UIActivityIndicatorView
     
     public init(_ isAnimate$:Observable<Bool>, style:UIActivityIndicatorView.Style){
-        __view = UIActivityIndicatorView()
+        indicatorView = UIActivityIndicatorView()
         super.init()
-        _view = __view
-        __view.style = style
-        isAnimate$.asDriver(onErrorJustReturn: false).drive(__view.rx.isAnimating) ~ disposeBag
-       _init()
+        view = indicatorView
+        indicatorView.style = style
+        isAnimate$.asDriver(onErrorJustReturn: false).drive(indicatorView.rx.isAnimating) ~ disposeBag
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
     }
     
     public required init?(coder: NSCoder) {

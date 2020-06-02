@@ -17,15 +17,16 @@ import RxAnimated
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
     
-    let __view:UIImageView
+    let imageView:UIImageView
 
     public init(image:UIImage?) {
-        __view = UIImageView(image:image)
+        imageView = UIImageView(image:image)
         super.init()
-        _view = __view
-        _init()
-        __view.contentMode = .scaleAspectFit
-        __view.clipsToBounds = true
+        view = imageView
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
     }
     
     public convenience init(_ name:String) {
@@ -43,7 +44,7 @@ open class Image:View {
     
     public convenience init(_ image$:Observable<UIImage?>, fadeDuration duration:TimeInterval = 0) {
         self.init(image:nil)
-        image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> __view.rx.animated.fadeIn(duration:duration).image ~ disposeBag
+        image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> imageView.rx.animated.fadeIn(duration:duration).image ~ disposeBag
     }
     
     required public init?(coder: NSCoder) {
@@ -51,7 +52,7 @@ open class Image:View {
     }
 
     public func aspectRatio(contentMode:ContentMode) -> Self {
-        __view.contentMode = contentMode
+        imageView.contentMode = contentMode
         return self
     }
 }

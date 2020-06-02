@@ -38,27 +38,28 @@ open class TextInput: UITextField {
 
 open class TextField:View
 {
-    let __view = TextInput()
+    let textInputView = TextInput()
     
     public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
         super.init()
-        _view = __view
-        __view.placeholder = placeholder
-            __view.autocapitalizationType = .none
+        view = textInputView
+        textInputView.placeholder = placeholder
+            textInputView.autocapitalizationType = .none
 
-        _init()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
         if let limit = limit {
-            text ~> __view.rx.text ~ disposeBag
-            __view.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text ~ disposeBag
+            text ~> textInputView.rx.text ~ disposeBag
+            textInputView.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text ~ disposeBag
         } else {
-            text <~> __view.rx.text ~ disposeBag
+            text <~> textInputView.rx.text ~ disposeBag
         }
         
-        __view.rx.controlEvent([.editingChanged]).subscribe(onNext:{
+        textInputView.rx.controlEvent([.editingChanged]).subscribe(onNext:{
             onEditingChange(true)
         }) ~ disposeBag
         
-        __view.rx.controlEvent([.editingDidEndOnExit]).subscribe(onNext:{
+        textInputView.rx.controlEvent([.editingDidEndOnExit]).subscribe(onNext:{
             onCommit()
         }) ~ disposeBag
     }
@@ -74,13 +75,13 @@ open class TextField:View
     
     @discardableResult
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
-        __view.padding(insets)
+        textInputView.padding(insets)
         return self
     }
     
     @discardableResult
     public func onEditingDidBegin(_ callback:@escaping() -> ()) -> Self {
-        __view.rx.controlEvent([.editingDidBegin])
+        textInputView.rx.controlEvent([.editingDidBegin])
             .subscribe(onNext:{ _ in
                 callback()
             }) ~ disposeBag
@@ -89,7 +90,7 @@ open class TextField:View
     
     @discardableResult
     public func onEditingDidEnd(_ callback:@escaping() -> ()) -> Self {
-        __view.rx.controlEvent([.editingDidEnd])
+        textInputView.rx.controlEvent([.editingDidEnd])
             .subscribe(onNext:{ _ in
                 callback()
             }) ~ disposeBag
@@ -98,7 +99,7 @@ open class TextField:View
     
     @discardableResult
     public func inputView(_ inputView:UIView) -> Self {
-        __view.inputView = inputView
+        textInputView.inputView = inputView
         return self
     }
     
@@ -106,9 +107,9 @@ open class TextField:View
     public func inputView(_ inputView$:Observable<UIView?>) -> Self {
         inputView$.subscribe(onNext:{[weak self] in
             guard let self = self else { return }
-            self.__view.inputView = $0
-            self.__view.reloadInputViews()
-            self.__view.becomeFirstResponder()
+            self.textInputView.inputView = $0
+            self.textInputView.reloadInputViews()
+            self.textInputView.becomeFirstResponder()
         }) ~ disposeBag
         return self
     }
@@ -116,14 +117,14 @@ open class TextField:View
     @discardableResult
     public func placeholder(_ stream$:Observable<String?>) -> Self {
         stream$.asDriver(onErrorJustReturn: nil).drive(onNext:{[weak self] in
-            self?.__view.placeholder = $0
+            self?.textInputView.placeholder = $0
         }) ~ disposeBag
         return self
     }
     
     @discardableResult
     public func tintColor(_ color:UIColor) -> Self {
-        self.__view.tintColor = color
+        self.textInputView.tintColor = color
         return self
     }
 }

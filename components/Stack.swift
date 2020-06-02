@@ -17,10 +17,11 @@ open class ZStack:View
 {
     public init(_ subviews:View...) {
         super.init()
-        _view = UIView()
-        _init()
+        view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
         subviews.forEach{[weak self] in
-            guard let self = self, let view = self._view else { return }
+            guard let self = self, let view = self.view else { return }
             let v = $0
             v.on(view)
         }
@@ -34,7 +35,7 @@ open class ZStack:View
 open class VStack:Stack {
     public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: View...) {
         super.init(alignment: alignment, spacing:spacing, subviews:subviews)
-        self.__view.axis = .vertical
+        self.stackView.axis = .vertical
     }
     
     public required init(coder: NSCoder) {
@@ -45,7 +46,7 @@ open class VStack:Stack {
 open class HStack:Stack {
     public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: View...) {
         super.init(alignment: alignment, spacing:spacing, subviews:subviews)
-        self.__view.axis = .horizontal
+        self.stackView.axis = .horizontal
     }
     
     public required init?(coder: NSCoder) {
@@ -54,18 +55,19 @@ open class HStack:Stack {
 }
 
 open class Stack:View {
-    let __view = UIStackView()
+    let stackView = UIStackView()
         
     public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[View]) {
         super.init()
-        _view = __view
+        view = stackView
 
-        __view.alignment = alignment
-        __view.distribution = .fill
-        __view.spacing = spacing
-        _init()
+        stackView.alignment = alignment
+        stackView.distribution = .fill
+        stackView.spacing = spacing
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
         subviews.forEach{
-            __view.addArrangedSubview($0)
+            stackView.addArrangedSubview($0)
         }
     }
     
@@ -74,13 +76,13 @@ open class Stack:View {
     }
     
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
-        __view.isLayoutMarginsRelativeArrangement = true
-        __view.layoutMargins = insets
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.layoutMargins = insets
         return self
     }
     
     public func distribution(_ type:UIStackView.Distribution) -> Self {
-        __view.distribution = type
+        stackView.distribution = type
         return self
     }
 }
@@ -88,10 +90,10 @@ open class Stack:View {
 open class Spacer:View {
     public init(axis:NSLayoutConstraint.Axis = .horizontal) {
         super.init()
-        _view = UIView()
-        _view.translatesAutoresizingMaskIntoConstraints = false
-        _view.setContentHuggingPriority(.defaultLow, for: axis)
-        _view.append(to: self).fillSuperview()
+        view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.setContentHuggingPriority(.defaultLow, for: axis)
+        view.append(to: self).fillSuperview()
     }
     
     public required init?(coder: NSCoder) {

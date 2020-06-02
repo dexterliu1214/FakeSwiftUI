@@ -13,40 +13,41 @@ import RxBinding
 import RxGesture
 
 open class Text:View {
-    let __view = Label()
+    let labelView = Label()
     
     var fontSize:CGFloat = UIFont.systemFontSize
     var isBold:Bool = false
     
     public convenience init(_ stream$:Observable<String>) {
         self.init()
-        stream$.asDriver(onErrorJustReturn: "") ~> __view.rx.text ~ disposeBag
+        stream$.asDriver(onErrorJustReturn: "") ~> labelView.rx.text ~ disposeBag
     }
     
     public convenience init(_ stream$:Observable<String?>) {
         self.init()
-        stream$.asDriver(onErrorJustReturn: nil) ~> __view.rx.text ~ disposeBag
+        stream$.asDriver(onErrorJustReturn: nil) ~> labelView.rx.text ~ disposeBag
     }
     
     public convenience init(_ stream$:BehaviorRelay<String?>) {
         self.init()
-        stream$.asDriver(onErrorJustReturn: nil) ~> __view.rx.text ~ disposeBag
+        stream$.asDriver(onErrorJustReturn: nil) ~> labelView.rx.text ~ disposeBag
     }
     
     public convenience init(_ stream$:Observable<NSAttributedString?>) {
         self.init()
-        stream$ ~> __view.rx.attributedText ~ disposeBag
+        stream$ ~> labelView.rx.attributedText ~ disposeBag
     }
     
     public convenience init(_ text:String) {
         self.init()
-        self.__view.text = text
+        self.labelView.text = text
     }
     
     public override init (){
         super.init()
-        _view = __view
-        _init()
+        view = labelView
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
     }
     
     required public init?(coder: NSCoder) {
@@ -54,24 +55,24 @@ open class Text:View {
     }
     
     public func padding(_ padding:UIEdgeInsets = .symmetric(4, 8)) -> Self {
-        __view.padding(padding)
+        labelView.padding(padding)
         return self
     }
     
     public func font(_ style:UIFont.TextStyle) -> Self {
-        __view.font = UIFont.preferredFont(forTextStyle: style)
+        labelView.font = UIFont.preferredFont(forTextStyle: style)
         return self
     }
     
     public func font(_ size:CGFloat) -> Self {
         fontSize = size
-        __view.font = generateFont()
+        labelView.font = generateFont()
         return self
     }
     
     public func bold() -> Self {
         isBold = true
-        __view.font = generateFont()
+        labelView.font = generateFont()
         return self
     }
     
@@ -84,34 +85,34 @@ open class Text:View {
     }
     
     public func color(_ color: UIColor) -> Self {
-        __view.textColor = color
+        labelView.textColor = color
         return self
     }
     
     public func color(_ color$: Observable<UIColor>) -> Self {
-        color$ ~> __view.rx.textColor ~ disposeBag
+        color$ ~> labelView.rx.textColor ~ disposeBag
         return self
     }
     
     public func resizeToFit() -> Self {
-        __view.adjustsFontSizeToFitWidth = true
-        __view.minimumScaleFactor = 0.1
-        __view.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        labelView.adjustsFontSizeToFitWidth = true
+        labelView.minimumScaleFactor = 0.1
+        labelView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return self
     }
     
     public func lineLimit(_ number:Int) -> Self {
-        __view.numberOfLines = number
+        labelView.numberOfLines = number
         return self
     }
     
     public func lineBreakMode(_ mode:NSLineBreakMode) -> Self {
-        __view.lineBreakMode = mode
+        labelView.lineBreakMode = mode
         return self
     }
     
     public func textAlignment(_ type:NSTextAlignment) -> Self {
-        __view.textAlignment = type
+        labelView.textAlignment = type
         return self
     }
 }

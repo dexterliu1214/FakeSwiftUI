@@ -15,13 +15,13 @@ import RxGesture
 
 open class Button:View
 {
-    let __view = UIButton()
+    let button = UIButton()
     
     public convenience init(_ title:String, _ action:@escaping(Button) -> ()) {
         self.init()
         
-        self.__view.setTitle(title, for: .normal)
-        __view.rx.tap
+        self.button.setTitle(title, for: .normal)
+        button.rx.tap
             .subscribe(onNext:{[unowned self] _ in
                 action(self)
             }) ~ disposeBag
@@ -29,8 +29,8 @@ open class Button:View
     
     public convenience init(_ title$:Observable<String>, _ action:@escaping(Button) -> ()) {
         self.init()
-        title$ ~> self.__view.rx.title(for: .normal) ~ disposeBag
-        __view.rx.tap
+        title$ ~> self.button.rx.title(for: .normal) ~ disposeBag
+        button.rx.tap
             .subscribe(onNext:{[unowned self] _ in
                 action(self)
             }) ~ disposeBag
@@ -49,10 +49,11 @@ open class Button:View
     
     override public init (){        
         super.init()
-        _view = __view
-        __view.titleLabel?.adjustsFontSizeToFitWidth = true
-        __view.contentEdgeInsets = .all(8)
-        _init()
+        view = button
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.contentEdgeInsets = .all(8)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
     }
     
     required public init?(coder: NSCoder) {
@@ -60,7 +61,7 @@ open class Button:View
     }
     
     public func image(_ image:UIImage?, for state:UIControl.State = .normal) -> Self {
-        __view.setImage(image, for: state)
+        button.setImage(image, for: state)
         return self
     }
     
@@ -69,17 +70,17 @@ open class Button:View
     }
     
     public func color(_ color$:Observable<UIColor>, for state:UIControl.State = .normal) -> Self {
-        color$ ~> __view.rx.titleColor(for:state) ~ disposeBag
+        color$ ~> button.rx.titleColor(for:state) ~ disposeBag
         return self
     }
     
     public func disabled(_ value$:Observable<Bool>) -> Self {
-        value$ ~> __view.rx.isDisabled ~ disposeBag
+        value$ ~> button.rx.isDisabled ~ disposeBag
         return self
     }
     
     public func enabled(_ value$:Observable<Bool>) -> Self {
-        value$ ~> __view.rx.isEnabled ~ disposeBag
+        value$ ~> button.rx.isEnabled ~ disposeBag
         return self
     }
 }
