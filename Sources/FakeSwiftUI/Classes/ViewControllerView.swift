@@ -10,21 +10,21 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0.0, *)
-struct ViewControllerView<T:UIViewController>: UIViewControllerRepresentable {
+public struct ViewControllerView<T:UIViewController>: UIViewControllerRepresentable {
     
     let builder:() -> T
     
-    init(_ builder:@escaping() -> T) {
+    public init(_ builder:@escaping() -> T) {
         self.builder = builder
     }
     
-    func makeUIViewController(context: Context) -> T {
+    public func makeUIViewController(context: Context) -> T {
         builder()
     }
     
-    func updateUIViewController(_ uiViewController: T, context: Context) {
+    public func updateUIViewController(_ uiViewController: T, context: Context) {
         
     }
     
-    typealias UIViewControllerType = T
+    public typealias UIViewControllerType = T
 }

@@ -94,7 +94,7 @@ extension Int
 }
 
 extension String {
-    var hex: Int? {
+    public var hex: Int? {
         return Int(self, radix: 16)
     }
 }

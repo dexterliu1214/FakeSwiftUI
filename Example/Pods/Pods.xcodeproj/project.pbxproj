@@ -243,6 +243,7 @@
 		873786F87649C362863C5FE5EE8BCE86 /* Signal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DF506016E7389D69D185BA74D52A34 /* Signal.swift */; };
 		8906F030E977C1A9F72F83B18F932AD7 /* ItemEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BD2BCC8CAA68C9670AB01B14EAD97BD /* ItemEvents.swift */; };
 		892079033270F005F3057C442B49F07C /* Repeat.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4AB2290B162C5871D10D402E1CF9D61 /* Repeat.swift */; };
+		8A8C3C572485E690007CE66F /* ViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8C3C562485E690007CE66F /* ViewControllerView.swift */; };
 		8B8F968D34DE47150BF9A341D9EC34C4 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E60CADC55980043FF43001D68DC9B4 /* Grid.swift */; };
 		8BC23CF9BBAEB91EDD195643B60B715F /* RetryWhen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 238A29220F5B23341CDD170554AFD89D /* RetryWhen.swift */; };
 		8DC73FCADF4378831DA515FA47FBB4D2 /* Date+Dispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA5FD5AE6C0A22B99A427D02EE9DDFC5 /* Date+Dispatch.swift */; };
@@ -857,6 +858,7 @@
 		8A4628D5732183451408A2AC43F876D3 /* Pods-FakeSwiftUI_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FakeSwiftUI_Example-Info.plist"; sourceTree = "<group>"; };
 		8A6C2BA18C574458669D3239E6F894B8 /* Differentiator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Differentiator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A6DCF69C4C6A159EB856596657C59CD /* VirtualTimeConverterType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VirtualTimeConverterType.swift; path = RxSwift/Schedulers/VirtualTimeConverterType.swift; sourceTree = "<group>"; };
+		8A8C3C562485E690007CE66F /* ViewControllerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewControllerView.swift; path = Sources/FakeSwiftUI/Classes/ViewControllerView.swift; sourceTree = "<group>"; };
 		8BA99731D69A399AF9EF62EAE7139DF9 /* KeyPathBinder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeyPathBinder.swift; path = RxCocoa/Common/KeyPathBinder.swift; sourceTree = "<group>"; };
 		8BD2BCC8CAA68C9670AB01B14EAD97BD /* ItemEvents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ItemEvents.swift; path = RxCocoa/iOS/Events/ItemEvents.swift; sourceTree = "<group>"; };
 		8C180950352CDC29DDE4EF5D4EE8639A /* AnimatableSectionModelType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnimatableSectionModelType.swift; path = Sources/Differentiator/AnimatableSectionModelType.swift; sourceTree = "<group>"; };
@@ -1435,6 +1437,7 @@
 				C2458C76257839F18AAEAECFCF05B6F4 /* Label.swift */,
 				B0361B367BBF13B5C146E7D8B48850A9 /* Shape.swift */,
 				5C178E3FE054FCE0B4202ECF70CAB7FE /* View.swift */,
+				8A8C3C562485E690007CE66F /* ViewControllerView.swift */,
 				1D7DB4D8CE4CAB323DBC268ABA3F546D /* Pod */,
 				337840ACF54B24B32EF01C10ACF8BFE6 /* Support Files */,
 			);
@@ -2686,6 +2689,7 @@
 				794805BD527989DE2EFC45426CB8B0F7 /* LoadingIndicator.swift in Sources */,
 				4DED759BBCEB793A10AEE494712D71D0 /* ScalableImage.swift in Sources */,
 				A510DC432DA648E15F72D67ACF3AD4AA /* SearchBar.swift in Sources */,
+				8A8C3C572485E690007CE66F /* ViewControllerView.swift in Sources */,
 				3CDDBFD52EC74EBE20697C0D4B7F1CC6 /* SegmentedControl.swift in Sources */,
 				1BCDEE47270A0A80CA3EBE4320F659EA /* Seperator.swift in Sources */,
 				BFBF483AE9516B98B3CE71DC19A75F49 /* Shape.swift in Sources */,
