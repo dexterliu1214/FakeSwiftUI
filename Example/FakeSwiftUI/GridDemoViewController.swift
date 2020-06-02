@@ -62,12 +62,15 @@ class GridDemoViewController: UIViewController {
             "#0F9900"
         ]
         
+        let selectedColorString$ = BehaviorRelay(value: colors.first!)
+        let selectedColor$ = selectedColorString$.map{ String($0.dropFirst()).hex!.color }
+        
         ZStack(
             Button("show grid") { _ in
                 isShowColorMenu$.accept(true)
             }
                 .color(.black)
-                .background(.cyan)
+                .background(selectedColor$)
                 .centerX(offset: 0)
                 .centerY(offset: 0),
             Grid(columns: 5, items: Observable.just(colors)) { (cell:UICollectionViewCell, model, row, view) -> UICollectionViewCell in
@@ -81,7 +84,7 @@ class GridDemoViewController: UIViewController {
                 .bottom(isShowColorMenu$.map{$0 ? 0 : UIScreen.main.bounds.height / 2}, startValue: UIScreen.main.bounds.height / 2, duration: 0.5)
                 .height(offset: UIScreen.main.bounds.height / 2)
                 .itemSelected{
-                    print(colors[$0.row])
+                    selectedColorString$.accept(colors[$0.row])
                     isShowColorMenu$.accept(false)
                 }
         ).fill().on(view)
