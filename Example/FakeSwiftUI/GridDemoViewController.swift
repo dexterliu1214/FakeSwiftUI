@@ -13,12 +13,6 @@ import RxRelay
 import RxBinding
 import SwiftUI
 
-extension String {
-    var hex: Int? {
-        return Int(self, radix: 16)
-    }
-}
-
 @available(iOS 13.0.0, *)
 struct ViewControllerView_Previews: PreviewProvider {
     static var previews: some SwiftUI.View {
