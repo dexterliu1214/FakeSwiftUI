@@ -10,6 +10,16 @@ import UIKit
 import FakeSwiftUI
 import RxSwift
 import RxRelay
+import SwiftUI
+
+@available(iOS 13.0.0, *)
+struct ImageDemoViewController_Previews: PreviewProvider {
+    static var previews: some SwiftUI.View {
+        ViewControllerView{
+            ImageDemoViewController()
+        }
+    }
+}
 
 class ImageDemoViewController: UIViewController {
 

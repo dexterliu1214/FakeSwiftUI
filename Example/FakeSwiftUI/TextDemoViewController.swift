@@ -10,6 +10,16 @@ import UIKit
 import FakeSwiftUI
 import RxSwift
 import RxRelay
+import SwiftUI
+
+@available(iOS 13.0.0, *)
+struct TextDemoViewController_Previews: PreviewProvider {
+    static var previews: some SwiftUI.View {
+        ViewControllerView{
+            TextDemoViewController()
+        }
+    }
+}
 
 class TextDemoViewController: UIViewController {
 
@@ -27,4 +37,3 @@ class TextDemoViewController: UIViewController {
             .on(view)
     }
 }
-
