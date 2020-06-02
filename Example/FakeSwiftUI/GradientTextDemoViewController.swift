@@ -10,6 +10,8 @@ import UIKit
 import FakeSwiftUI
 import RxSwift
 import RxRelay
+
+#if targetEnvironment(simulator)
 import SwiftUI
 
 @available(iOS 13.0.0, *)
@@ -20,6 +22,7 @@ struct GradientTextDemoViewController_Previews: PreviewProvider {
         }
     }
 }
+#endif
 
 class GradientTextDemoViewController: UIViewController {
 
@@ -35,7 +38,6 @@ class GradientTextDemoViewController: UIViewController {
             View()
                 .mask(
                     Text("FakeSwiftUI Rocks")
-                        
                         .font(40)
                         .padding(.symmetric(4, 16))
             )

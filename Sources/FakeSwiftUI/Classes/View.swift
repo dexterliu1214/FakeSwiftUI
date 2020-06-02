@@ -23,34 +23,16 @@ open class View:UIView {
     var overlayShapes = [Shape]()
     var clipShape:Shape?
     
-    var centerXConstant$:Observable<CGFloat>?
-    var centerXDuration:TimeInterval = 0
+    var centerXParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var centerYParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var bottomParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var topParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var leadingParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var trailingParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var trailingLessThanOrEqualParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var widthParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
+    var heightParams:(constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)?
     
-    var centerYConstant$:Observable<CGFloat>?
-    var centerYDuration:TimeInterval = 0
-    
-    var bottomConstant$:Observable<CGFloat>?
-    var bottomDuration:TimeInterval = 0
-    
-    var topConstant$:Observable<CGFloat>?
-    var topDuration:TimeInterval = 0
-    
-    var leadingConstant$:Observable<CGFloat>?
-    var leadingStartValue:CGFloat = 0
-    var leadingDuration:TimeInterval = 0
-
-    var trailingConstant$:Observable<CGFloat>?
-    var trailingDuration:TimeInterval = 0
-
-    var trailingLessThanOrEqualConstant$:Observable<CGFloat>?
-    var trailingLessThanOrEqualDuration:TimeInterval = 0
-
-    var widthConstant$:Observable<CGFloat>?
-    var widthDuration:TimeInterval = 0
-
-    var heightConstant$:Observable<CGFloat>?
-    var heightDuration:TimeInterval = 0
-
     var heightConstraint:NSLayoutConstraint?
     var widthConstraint:NSLayoutConstraint?
     var centerYConstraint:NSLayoutConstraint?
@@ -97,84 +79,82 @@ open class View:UIView {
     }
     
     public func setupConstraint(){
-        if let constant$ = centerXConstant$ {
-            self.centerXConstraint = centerXAnchor.constraint(equalTo: superview!.centerXAnchor, constant: 0)
+        if let params = centerXParams {
+            self.centerXConstraint = centerXAnchor.constraint(equalTo: superview!.centerXAnchor, constant: params.startValue)
             self.centerXConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> centerXConstraint!.rx.animated.layout(duration: centerXDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> centerXConstraint!.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = centerYConstant$ {
-            self.centerYConstraint = centerYAnchor.constraint(equalTo: superview!.centerYAnchor, constant: 0)
+        if let params = centerYParams {
+            self.centerYConstraint = centerYAnchor.constraint(equalTo: superview!.centerYAnchor, constant: params.startValue)
             self.centerYConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> centerYConstraint!.rx.animated.layout(duration: centerYDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> centerYConstraint!.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = leadingConstant$ {
-            let constraint = leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: leadingStartValue)
+        if let params = leadingParams {
+            let constraint = leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: params.startValue)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: leadingStartValue) ~> constraint.rx.animated.layout(duration: leadingDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> constraint.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = trailingConstant$ {
-            let constraint = trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: 0)
+        if let params = trailingParams {
+            let constraint = trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: params.startValue)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: trailingDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> constraint.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = trailingLessThanOrEqualConstant$ {
-            let constraint = trailingAnchor.constraint(lessThanOrEqualTo: superview!.trailingAnchor, constant: 0)
+        if let params = trailingLessThanOrEqualParams {
+            let constraint = trailingAnchor.constraint(lessThanOrEqualTo: superview!.trailingAnchor, constant: params.startValue)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: trailingLessThanOrEqualDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> constraint.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = topConstant$ {
-            let constraint = topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0)
+        if let params = topParams {
+            let constraint = topAnchor.constraint(equalTo: superview!.topAnchor, constant: params.startValue)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: topDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> constraint.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = bottomConstant$ {
-            let constraint = bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0)
+        if let params = bottomParams {
+            let constraint = bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: params.startValue)
             constraint.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> constraint.rx.animated.layout(duration: bottomDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> constraint.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = heightConstant$ {
-            self.heightConstraint = heightAnchor.constraint(equalToConstant: 0)
+        if let params = heightParams {
+            self.heightConstraint = heightAnchor.constraint(equalToConstant: params.startValue)
             self.heightConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> heightConstraint!.rx.animated.layout(duration: heightDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> heightConstraint!.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
         
-        if let constant$ = widthConstant$ {
-            self.widthConstraint = widthAnchor.constraint(equalToConstant: 0)
+        if let params = widthParams {
+            self.widthConstraint = widthAnchor.constraint(equalToConstant: params.startValue)
             self.widthConstraint?.isActive = true
-            constant$.asDriver(onErrorJustReturn: 0) ~> widthConstraint!.rx.animated.layout(duration: widthDuration).constant ~ disposeBag
+            params.constant$.asDriver(onErrorJustReturn: params.startValue) ~> widthConstraint!.rx.animated.layout(duration: params.duration).constant ~ disposeBag
         }
     }
     
     @discardableResult
-    public func height(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        heightConstant$ = constant$
-        heightDuration = duration
+    public func height(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        heightParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func width(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        widthConstant$ = constant$
-        widthDuration = duration
+    public func width(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        widthParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func height(offset:CGFloat) -> Self {
-        heightConstant$ = Observable.just(offset)
+    public func height(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        heightParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func width(offset:CGFloat) -> Self {
-        widthConstant$ = Observable.just(offset)
+    public func width(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        widthParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
@@ -187,94 +167,85 @@ open class View:UIView {
     
     @discardableResult
     public func leading(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        leadingConstant$ = constant$
-        leadingDuration = duration
-        leadingStartValue = startValue
+        leadingParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func leading(offset:CGFloat, startValue:CGFloat = 0) -> Self {
-        leadingConstant$ = Observable.just(offset)
-        leadingStartValue = startValue
+    public func leading(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        leadingParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func trailing(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        trailingConstant$ = constant$
-        trailingDuration = duration
+    public func trailing(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        trailingParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        trailingLessThanOrEqualConstant$ = constant$
-        trailingLessThanOrEqualDuration = duration
+    public func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        trailingLessThanOrEqualParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func trailingLessThanOrEqual(offset:CGFloat) -> Self {
-        trailingLessThanOrEqualConstant$ = Observable.just(offset)
+    public func trailingLessThanOrEqual(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        trailingLessThanOrEqualParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func trailing(offset:CGFloat) -> Self {
-        trailingConstant$ = Observable.just(offset)
+    public func trailing(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        trailingParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func bottom(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        bottomConstant$ = constant$
-        bottomDuration = duration
+    public func bottom(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        bottomParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func bottom(offset:CGFloat) -> Self {
-        bottomConstant$ = Observable.just(offset)
+    public func bottom(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        bottomParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func top(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        topConstant$ = constant$
-        topDuration = duration
+    public func top(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        topParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func top(offset:CGFloat) -> Self {
-        topConstant$ = Observable.just(offset)
+    public func top(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        topParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func centerY(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        centerYConstant$ = constant$
-        centerYDuration = duration
+    public func centerY(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        centerYParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func centerY(offset:CGFloat) -> Self {
-        centerYConstant$ = Observable.just(offset)
+    public func centerY(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        centerYParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    public func centerX(offset:CGFloat) -> Self {
-        centerXConstant$ = Observable.just(offset)
+    public func centerX(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        centerXParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
 
     @discardableResult
-    public func centerX(_ constant$:Observable<CGFloat>, duration:TimeInterval = 0) -> Self {
-        centerXConstant$ = constant$
-        centerXDuration = duration
+    public func centerX(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
+        centerXParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
@@ -301,7 +272,7 @@ open class View:UIView {
         return self
     }
     
-    open func layoutClipShape(_ clipShape:Shape){
+    open func layoutClipShape(_ clipShape:FakeSwiftUI.Shape){
         let path:UIBezierPath = clipShape.getClipPath(self)
         let layer:CAShapeLayer = .init()
         layer.path = path.cgPath

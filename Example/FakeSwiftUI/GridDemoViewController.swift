@@ -11,6 +11,8 @@ import FakeSwiftUI
 import RxSwift
 import RxRelay
 import RxBinding
+
+#if targetEnvironment(simulator)
 import SwiftUI
 
 @available(iOS 13.0.0, *)
@@ -21,6 +23,7 @@ struct ViewControllerView_Previews: PreviewProvider {
         }
     }
 }
+#endif
 
 class GridDemoViewController: UIViewController {
     
@@ -60,7 +63,7 @@ class GridDemoViewController: UIViewController {
         ]
         
         ZStack(
-            FakeSwiftUI.Button("show grid") { _ in
+            Button("show grid") { _ in
                 isShowColorMenu$.accept(true)
             }
                 .color(.black)
@@ -75,7 +78,7 @@ class GridDemoViewController: UIViewController {
                 .background(.black)
                 .leading(offset: 0)
                 .trailing(offset: 0)
-                .bottom(isShowColorMenu$.map{$0 ? 0 : UIScreen.main.bounds.height / 2}, duration: 0.5)
+                .bottom(isShowColorMenu$.map{$0 ? 0 : UIScreen.main.bounds.height / 2}, startValue: UIScreen.main.bounds.height / 2, duration: 0.5)
                 .height(offset: UIScreen.main.bounds.height / 2)
                 .itemSelected{
                     print(colors[$0.row])

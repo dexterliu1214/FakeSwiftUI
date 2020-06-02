@@ -10,8 +10,9 @@ import UIKit
 import FakeSwiftUI
 import RxSwift
 import RxRelay
-import SwiftUI
 
+#if targetEnvironment(simulator)
+import SwiftUI
 @available(iOS 13.0.0, *)
 struct TextDemoViewController_Previews: PreviewProvider {
     static var previews: some SwiftUI.View {
@@ -20,6 +21,7 @@ struct TextDemoViewController_Previews: PreviewProvider {
         }
     }
 }
+#endif
 
 class TextDemoViewController: UIViewController {
 

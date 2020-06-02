@@ -10,6 +10,8 @@ import UIKit
 import FakeSwiftUI
 import RxSwift
 import RxRelay
+
+#if targetEnvironment(simulator)
 import SwiftUI
 
 @available(iOS 13.0.0, *)
@@ -20,6 +22,7 @@ struct ImageDemoViewController_Previews: PreviewProvider {
         }
     }
 }
+#endif
 
 class ImageDemoViewController: UIViewController {
 
@@ -29,7 +32,7 @@ class ImageDemoViewController: UIViewController {
         view.backgroundColor = .white
         
         ZStack(
-            Image(Observable.just("https://placeimg.com/640/480/any"))
+            FakeSwiftUI.Image(Observable.just("https://placeimg.com/640/480/any"))
                 .aspectRatio(contentMode: .scaleAspectFill)
                 .clipShape(Circle())
                 .overlay(Circle().stroke([.green, .yellow], lineWidth: 4))
