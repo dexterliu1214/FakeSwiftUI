@@ -272,7 +272,7 @@ open class View:UIView {
         return self
     }
     
-    open func layoutClipShape(_ clipShape:FakeSwiftUI.Shape){
+    open func layoutClipShape(_ clipShape:Shape){
         let path:UIBezierPath = clipShape.getClipPath(self)
         let layer:CAShapeLayer = .init()
         layer.path = path.cgPath
