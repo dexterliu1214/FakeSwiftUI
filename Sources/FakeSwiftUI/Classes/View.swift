@@ -529,16 +529,16 @@ extension UIView {
     }
 }
 
-extension UIView
+public extension UIView
 {
     @discardableResult
-    public func append(to superview: UIView) -> Self {
+    func append(to superview: UIView) -> Self {
         superview.addSubview(self)
         return self
     }
     
     @discardableResult
-    public func fillSuperview(_ insets:UIEdgeInsets = .zero) -> Self {
+    func fillSuperview(_ insets:UIEdgeInsets = .zero) -> Self {
         translatesAutoresizingMaskIntoConstraints = false
         topAnchor.constraint(equalTo: superview!.topAnchor, constant: insets.top).isActive = true
         bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -insets.bottom).isActive = true
@@ -548,7 +548,7 @@ extension UIView
     }
     
     @discardableResult
-    public func fillSafeArea(_ insets:UIEdgeInsets = .zero) -> Self {
+    func fillSafeArea(_ insets:UIEdgeInsets = .zero) -> Self {
         translatesAutoresizingMaskIntoConstraints = false
         topAnchor.constraint(equalTo: superview!.safeAreaLayoutGuide.topAnchor, constant: insets.top).isActive = true
         bottomAnchor.constraint(equalTo: superview!.safeAreaLayoutGuide.bottomAnchor, constant: -insets.bottom).isActive = true
