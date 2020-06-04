@@ -456,7 +456,7 @@ open class View:UIView {
         let blurEffect = UIBlurEffect(style: style)
         let blurView = UIVisualEffectView(effect: blurEffect)
         blurView.translatesAutoresizingMaskIntoConstraints = false
-        blurView.append(to: self).fillSuperview()
+        blurView.append(to: self).fillSuperview()        
         return self
     }
     

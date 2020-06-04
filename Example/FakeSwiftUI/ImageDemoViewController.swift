@@ -32,11 +32,12 @@ class ImageDemoViewController: UIViewController {
         view.backgroundColor = .white
         
         ZStack(
-            FakeSwiftUI.Image(Observable.just("https://placeimg.com/640/480/any"))
+            Image(Observable.just("https://placeimg.com/640/480/any"))
                 .aspectRatio(contentMode: .scaleAspectFill)
                 .clipShape(Circle())
                 .overlay(Circle().stroke([.green, .yellow], lineWidth: 4))
                 .shadow(color: .black, radius: 10)
+                .blur()
                 .fill()
         )
             .frame(width: 200, height: 200)
