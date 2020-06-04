@@ -43,6 +43,7 @@ class ImageDemoViewController: UIViewController {
             .shadow(radius: 10)
             .centerX(offset: 0)
             .centerY(offset: 0)
+            .draggable()
             .on(view)
     }
 }

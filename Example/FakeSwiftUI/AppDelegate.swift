@@ -18,8 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow()
 //        window?.rootViewController = TextDemoViewController()
 //        window?.rootViewController = GradientTextDemoViewController()
-//        window?.rootViewController = ImageDemoViewController()
-        window?.rootViewController = GridDemoViewController()
+        window?.rootViewController = ImageDemoViewController()
+//        window?.rootViewController = GridDemoViewController()
         window?.makeKeyAndVisible()        // Override point for customization after application launch.
         return true
     }

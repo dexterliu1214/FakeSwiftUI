@@ -18,7 +18,7 @@ struct TextDemoViewController_Previews: PreviewProvider {
     static var previews: some SwiftUI.View {
         ViewControllerView{
             TextDemoViewController()
-        }
+        }            .previewDevice(PreviewDevice(rawValue: "iPhone XS Max"))
     }
 }
 #endif
@@ -36,6 +36,8 @@ class TextDemoViewController: UIViewController {
             .background([UIColor.red, .blue])
             .centerX(offset: 0)
             .centerY(offset: 0)
+//            .top(offset: 0)
+            .blur()
             .on(view)
     }
 }

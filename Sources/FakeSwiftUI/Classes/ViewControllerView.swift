@@ -7,6 +7,7 @@
 //
 
 import Foundation
+#if targetEnvironment(simulator)
 import SwiftUI
 
 @available(iOS 13.0.0, *)
@@ -28,3 +29,4 @@ public struct ViewControllerView<T:UIViewController>: UIViewControllerRepresenta
     
     public typealias UIViewControllerType = T
 }
+#endif
