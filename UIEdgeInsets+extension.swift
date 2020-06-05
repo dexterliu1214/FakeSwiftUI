@@ -8,24 +8,24 @@
 import Foundation
 import UIKit
 
-extension UIEdgeInsets
+public extension UIEdgeInsets
 {
-    public enum Side {
+    enum Side {
         case top
         case right
         case bottom
         case left
     }
     
-    public static func all(_ constant:CGFloat) -> UIEdgeInsets {
+    static func all(_ constant:CGFloat) -> UIEdgeInsets {
         return UIEdgeInsets(top: constant, left: constant, bottom: constant, right: constant)
     }
     
-    public static func symmetric(_ vertical:CGFloat, _ horizontal:CGFloat) -> UIEdgeInsets {
+    static func symmetric(_ vertical:CGFloat, _ horizontal:CGFloat) -> UIEdgeInsets {
         return UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
     }
     
-    public static func only(_ side:Side, _ constant:CGFloat) -> UIEdgeInsets {
+    static func only(_ side:Side, _ constant:CGFloat) -> UIEdgeInsets {
         switch side {
             case Side.top:
                 return UIEdgeInsets(top: constant, left: 0, bottom: 0, right: 0)
