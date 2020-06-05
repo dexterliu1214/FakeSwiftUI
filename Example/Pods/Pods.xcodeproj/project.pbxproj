@@ -864,9 +864,9 @@
 		8A05DD5024888BE400302EE3 /* LoadingIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingIndicator.swift; sourceTree = "<group>"; };
 		8A05DD5124888BE400302EE3 /* Text.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
 		8A05DD5224888BE400302EE3 /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
-		8A1BB3452489E974005143A0 /* Edges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edges.swift; sourceTree = "<group>"; };
-		8A1BB3472489E9A9005143A0 /* UIEdgeInsets+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIEdgeInsets+extension.swift"; sourceTree = "<group>"; };
-		8A1BB3492489EA12005143A0 /* AnimatedSink+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AnimatedSink+extension.swift"; sourceTree = "<group>"; };
+		8A1BB3452489E974005143A0 /* Edges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Edges.swift; path = Sources/FakeSwiftUI/Classes/Edges.swift; sourceTree = "<group>"; };
+		8A1BB3472489E9A9005143A0 /* UIEdgeInsets+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIEdgeInsets+extension.swift"; path = "Sources/FakeSwiftUI/Classes/UIEdgeInsets+extension.swift"; sourceTree = "<group>"; };
+		8A1BB3492489EA12005143A0 /* AnimatedSink+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AnimatedSink+extension.swift"; path = "Sources/FakeSwiftUI/Classes/AnimatedSink+extension.swift"; sourceTree = "<group>"; };
 		8A4628D5732183451408A2AC43F876D3 /* Pods-FakeSwiftUI_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FakeSwiftUI_Example-Info.plist"; sourceTree = "<group>"; };
 		8A6C2BA18C574458669D3239E6F894B8 /* Differentiator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Differentiator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A6DCF69C4C6A159EB856596657C59CD /* VirtualTimeConverterType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VirtualTimeConverterType.swift; path = RxSwift/Schedulers/VirtualTimeConverterType.swift; sourceTree = "<group>"; };
