@@ -78,7 +78,6 @@ open class View:UIView {
     @discardableResult
     open func edgesIgnoringSafeArea(_ edges:Edges) -> Self {
         ignoringSafeEdges = edges
-        print(edges)
         return self
     }
     

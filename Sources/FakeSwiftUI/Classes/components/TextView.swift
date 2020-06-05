@@ -185,6 +185,12 @@ open class TextView:View {
         submitCallback = callback
         return self
     }
+    
+    @discardableResult
+    public func autoCorrectionType(_ type:UITextAutocorrectionType) -> Self {
+        textView.autocorrectionType = type
+        return self
+    }
 }
 
 extension Reactive where Base: UITextView {
