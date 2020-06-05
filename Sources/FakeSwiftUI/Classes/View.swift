@@ -21,7 +21,7 @@ open class View:UIView {
     open var view:UIView!
 
     public let disposeBag:DisposeBag = .init()
-    var overlayShapes = [Shape]()
+    var overlayShapes$ = BehaviorRelay(value:[Shape]())
     var clipShape:Shape?
     typealias LayoutParam = (constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)
     var centerXParams:LayoutParam?
@@ -74,12 +74,29 @@ open class View:UIView {
         return self
     }
     
+    var ignoringSafeEdges:Edges?
+    @discardableResult
+    open func edgesIgnoringSafeArea(_ edges:Edges) -> Self {
+        ignoringSafeEdges = edges
+        print(edges)
+        return self
+    }
+    
     open func setupConstraint(){
-        bindConstraint(topAnchor, to: superview!.topAnchor, params: topParams, compare: "==")
-        bindConstraint(bottomAnchor, to: superview!.bottomAnchor, params: bottomParams, compare: "==")
-        bindConstraint(trailingAnchor, to: superview!.trailingAnchor, params: trailingParams, compare: "==")
-        bindConstraint(trailingAnchor, to: superview!.trailingAnchor, params: trailingLessThanOrEqualParams, compare: "<=")
-        bindConstraint(leadingAnchor, to: superview!.leadingAnchor, params: leadingParams, compare: "==")
+        let otherTopAnchor = (ignoringSafeEdges?.contains(.top) ?? false) ? superview!.topAnchor : superview!.safeAreaLayoutGuide.topAnchor
+        bindConstraint(topAnchor, to: otherTopAnchor, params: topParams, compare: "==")
+        
+        let otherBottomAnchor = (ignoringSafeEdges?.contains(.bottom) ?? false) ? superview!.bottomAnchor : superview!.safeAreaLayoutGuide.bottomAnchor
+        bindConstraint(bottomAnchor, to: otherBottomAnchor, params: bottomParams, compare: "==")
+        
+        let otherTrailingAnchor = (ignoringSafeEdges?.contains(.trailing) ?? false) ? superview!.trailingAnchor : superview!.safeAreaLayoutGuide.trailingAnchor
+        bindConstraint(trailingAnchor, to: otherTrailingAnchor, params: trailingParams, compare: "==")
+        
+        let otherTrailingLessThanOrEqualAnchor = (ignoringSafeEdges?.contains(.trailing) ?? false) ? superview!.trailingAnchor : superview!.safeAreaLayoutGuide.trailingAnchor
+        bindConstraint(trailingAnchor, to: otherTrailingLessThanOrEqualAnchor, params: trailingLessThanOrEqualParams, compare: "<=")
+        
+        let otherLeadingAnchor = (ignoringSafeEdges?.contains(.leading) ?? false) ? superview!.leadingAnchor : superview!.safeAreaLayoutGuide.leadingAnchor
+        bindConstraint(leadingAnchor, to: otherLeadingAnchor, params: leadingParams, compare: "==")
         
         self.centerXConstraint = bindConstraint(centerXAnchor, to: superview!.centerXAnchor, params: centerXParams, compare: "==")
         self.centerYConstraint = bindConstraint(centerYAnchor, to: superview!.centerYAnchor, params: centerYParams, compare: "==")
@@ -241,10 +258,17 @@ open class View:UIView {
     override open func layoutSubviews() {
         super.layoutSubviews()
         
-        overlayShapes.enumerated().forEach{ (i, shape) in
-           shape.name = "overlay\(i)"
-           layoutOverlay(shape)
-        }
+        overlayShapes$.asDriver().drive(onNext:{[weak self] shapes in
+            self?.layer.sublayers?.forEach{
+                if let name = $0.name, name.starts(with: "overlay") {
+                    $0.removeFromSuperlayer()
+                }
+            }
+            shapes.enumerated().forEach{[weak self] (i, shape) in
+                shape.name = "overlay\(i)"
+                self?.layoutOverlay(shape)
+            }
+        }) ~ disposeBag
          
         if let clipShape = clipShape {
             layoutClipShape(clipShape)
@@ -269,7 +293,6 @@ open class View:UIView {
     }
     
     open func layoutOverlay(_ overlayShape:Shape){
-        layer.sublayers?.first{ $0.name == overlayShape.name }?.removeFromSuperlayer()
         let path:UIBezierPath = overlayShape.getOverlayPath(self)
         let borderLayer:CAShapeLayer = .init()
         borderLayer.name = overlayShape.name
@@ -297,7 +320,19 @@ open class View:UIView {
     
     @discardableResult
     public func overlay(_ shape:Shape) -> Self {
-        self.overlayShapes.append(shape)
+        self.overlayShapes$.accept(self.overlayShapes$.value + [shape])
+        return self
+    }
+    
+    @discardableResult
+    public func overlay(_ shapes:[Shape]) -> Self {
+        self.overlayShapes$.accept(shapes)
+        return self
+    }
+    
+    @discardableResult
+    public func overlay(_ shape$:Observable<[Shape]>) -> Self {
+        shape$ ~> self.overlayShapes$ ~ disposeBag
         return self
     }
      
