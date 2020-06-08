@@ -17,9 +17,12 @@ open class Toggle:View
 {
     let switchView = UISwitch()
     
-    public init(isOn:BehaviorRelay<Bool>){
+    public init(_ label:String, isOn:BehaviorRelay<Bool>){
         super.init()
-        view = switchView
+        view = HStack(
+            Text(label),
+            switchView
+        )
         view.translatesAutoresizingMaskIntoConstraints = false
         view.append(to: self).fillSuperview()
         isOn <~> switchView.rx.isOn ~ disposeBag
@@ -35,4 +38,3 @@ open class Toggle:View
         return self
     }
 }
-

@@ -15,7 +15,7 @@ import RxGesture
 
 open class ZStack:View
 {
-    public init(_ subviews:View...) {
+    public init(_ subviews:UIView...) {
         super.init()
         view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -23,7 +23,7 @@ open class ZStack:View
         subviews.forEach{[weak self] in
             guard let self = self, let view = self.view else { return }
             let v = $0
-            v.on(view)
+            v.append(to: view)
         }
     }
     
@@ -33,7 +33,7 @@ open class ZStack:View
 }
 
 open class VStack:Stack {
-    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: View...) {
+    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 8, _ subviews: UIView...) {
         super.init(alignment: alignment, spacing:spacing, subviews:subviews)
         self.stackView.axis = .vertical
     }
@@ -44,7 +44,7 @@ open class VStack:Stack {
 }
 
 open class HStack:Stack {
-    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 0, _ subviews: View...) {
+    public init(alignment: UIStackView.Alignment = .center, spacing:CGFloat = 8, _ subviews: UIView...) {
         super.init(alignment: alignment, spacing:spacing, subviews:subviews)
         self.stackView.axis = .horizontal
     }
@@ -57,7 +57,7 @@ open class HStack:Stack {
 open class Stack:View {
     let stackView = UIStackView()
         
-    public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[View]) {
+    public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[UIView]) {
         super.init()
         view = stackView
 
