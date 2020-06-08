@@ -75,12 +75,14 @@ open class Stack:View {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @discardableResult
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = insets
         return self
     }
     
+    @discardableResult
     public func distribution(_ type:UIStackView.Distribution) -> Self {
         stackView.distribution = type
         return self

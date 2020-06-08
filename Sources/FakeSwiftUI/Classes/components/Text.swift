@@ -84,22 +84,26 @@ open class Text:View {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @discardableResult
     public func padding(_ padding:UIEdgeInsets = .symmetric(4, 8)) -> Self {
         labelView.padding(padding)
         return self
     }
     
+    @discardableResult
     public func font(_ style:UIFont.TextStyle) -> Self {
         labelView.font = UIFont.preferredFont(forTextStyle: style)
         return self
     }
     
+    @discardableResult
     public func font(_ size:CGFloat) -> Self {
         fontSize = size
         labelView.font = generateFont()
         return self
     }
     
+    @discardableResult
     public func bold() -> Self {
         isBold = true
         labelView.font = generateFont()
@@ -114,16 +118,19 @@ open class Text:View {
         return UIFont.systemFont(ofSize: fontSize)
     }
     
+    @discardableResult
     public func color(_ color: UIColor) -> Self {
         labelView.textColor = color
         return self
     }
     
+    @discardableResult
     public func color(_ color$: Observable<UIColor>) -> Self {
         color$ ~> labelView.rx.textColor ~ disposeBag
         return self
     }
     
+    @discardableResult
     public func resizeToFit() -> Self {
         labelView.adjustsFontSizeToFitWidth = true
         labelView.minimumScaleFactor = 0.1
@@ -131,16 +138,19 @@ open class Text:View {
         return self
     }
     
+    @discardableResult
     public func lineLimit(_ number:Int) -> Self {
         labelView.numberOfLines = number
         return self
     }
     
+    @discardableResult
     public func lineBreakMode(_ mode:NSLineBreakMode) -> Self {
         labelView.lineBreakMode = mode
         return self
     }
     
+    @discardableResult
     public func textAlignment(_ type:NSTextAlignment) -> Self {
         labelView.textAlignment = type
         return self

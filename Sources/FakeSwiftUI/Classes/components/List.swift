@@ -147,6 +147,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
        return self
     }
     
+    @discardableResult
     public func itemDeleted(_ callback:@escaping(IndexPath) -> ()) -> Self {
        tableView.rx.itemDeleted
            .subscribe(onNext:{

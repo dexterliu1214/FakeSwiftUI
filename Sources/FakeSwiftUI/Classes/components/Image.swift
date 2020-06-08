@@ -51,6 +51,7 @@ open class Image:View {
         fatalError("init(coder:) has not been implemented")
     }
 
+    @discardableResult
     public func aspectRatio(contentMode:ContentMode) -> Self {
         imageView.contentMode = contentMode
         return self

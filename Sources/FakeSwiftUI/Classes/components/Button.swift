@@ -60,25 +60,30 @@ open class Button:View
         fatalError("init(coder:) has not been implemented")
     }
     
+    @discardableResult
     public func image(_ image:UIImage?, for state:UIControl.State = .normal) -> Self {
         button.setImage(image, for: state)
         return self
     }
     
+    @discardableResult
     public func color(_ color:UIColor, for state:UIControl.State = .normal) -> Self {
         return self.color(Observable.just(color), for: state)
     }
     
+    @discardableResult
     public func color(_ color$:Observable<UIColor>, for state:UIControl.State = .normal) -> Self {
         color$ ~> button.rx.titleColor(for:state) ~ disposeBag
         return self
     }
     
+    @discardableResult
     public func disabled(_ value$:Observable<Bool>) -> Self {
         value$ ~> button.rx.isDisabled ~ disposeBag
         return self
     }
     
+    @discardableResult
     public func enabled(_ value$:Observable<Bool>) -> Self {
         value$ ~> button.rx.isEnabled ~ disposeBag
         return self
