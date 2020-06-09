@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow()
-        window?.rootViewController = InviteViewController(point: "30")
+        window?.rootViewController = TextDemoViewController()
 //        window?.rootViewController = GradientTextDemoViewController()
 //        window?.rootViewController = ImageDemoViewController()
 //        window?.rootViewController = GridDemoViewController()

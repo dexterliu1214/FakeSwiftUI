@@ -17,13 +17,11 @@ open class ZStack:View
 {
     public init(_ subviews:UIView...) {
         super.init()
-        view = UIView()
+        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.append(to: self).fillSuperview()
-        subviews.forEach{[weak self] in
-            guard let self = self, let view = self.view else { return }
-            let v = $0
-            v.append(to: view)
+        subviews.forEach{
+            $0.append(to: view)
         }
     }
     
