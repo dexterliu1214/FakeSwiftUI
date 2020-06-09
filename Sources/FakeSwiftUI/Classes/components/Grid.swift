@@ -27,14 +27,13 @@ open class Grid<CellType:UICollectionViewCell>:View
         self.columns = columns
         collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        view = collectionView
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
 
         self.collectionView.backgroundView = UIView()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.append(to: self).fillSuperview()
         collectionView.backgroundColor = .clear
         collectionView.register(CellType.self, forCellWithReuseIdentifier: "CELL")
         items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> collectionView.backgroundView!.rx.isShow ~ disposeBag
@@ -58,7 +57,6 @@ open class Grid<CellType:UICollectionViewCell>:View
         self.columns = columns
         collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        view = collectionView
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
         layout.headerReferenceSize = CGSize(width: 200, height: 40)
@@ -67,8 +65,8 @@ open class Grid<CellType:UICollectionViewCell>:View
 
         self.collectionView.backgroundView = UIView()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.append(to: self).fillSuperview()
         collectionView.backgroundColor = .clear
         collectionView.register(CellType.self, forCellWithReuseIdentifier: "CELL")
         collectionView.register(HeaderType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Section")

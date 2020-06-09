@@ -33,36 +33,32 @@ open class TextView:View {
         self.text$ = text$
         super.init()
         textView.delegate = self
-        view = textView
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.append(to: self).fillSuperview()
         textView.backgroundColor = .clear
         text$ <~> textView.rx.text ~ disposeBag
     }
     
     public init(_ text$:Observable<String?>) {
         super.init()
-        view = textView
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.append(to: self).fillSuperview()
         textView.backgroundColor = .clear
         text$ ~> textView.rx.text ~ disposeBag
     }
     
     public init(_ text:String) {
         super.init()
-        view = textView
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.append(to: self).fillSuperview()
         textView.backgroundColor = .clear
         self.textView.text = text
     }
     
     public init(_ attributedText:NSAttributedString) {
         super.init()
-        view = textView
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.append(to: self).fillSuperview()
         textView.backgroundColor = .clear
         self.textView.attributedText = attributedText
     }

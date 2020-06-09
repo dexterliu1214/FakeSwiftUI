@@ -49,11 +49,12 @@ open class Button:View
     
     override public init (){        
         super.init()
-        view = button
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.append(to: self).fillSuperview()
+        
         button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.contentEdgeInsets = .all(8)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
     }
     
     required public init?(coder: NSCoder) {

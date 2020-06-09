@@ -18,8 +18,6 @@ open class View:UIView {
         return CAGradientLayer.classForCoder()
     }
     
-    open var view:UIView!
-
     public let disposeBag:DisposeBag = .init()
     var overlayShapes$ = BehaviorRelay(value:[Shape]())
     var clipShape:Shape?
@@ -276,10 +274,10 @@ open class View:UIView {
         self.mask = self.masker
     }
     
-    open func mask(_ view:UIView) -> Self {
-        addSubview(view)
-        view.fillSuperview()
-        self.masker = view
+    open func mask(_ maskView:UIView) -> Self {
+        addSubview(maskView)
+        maskView.fillSuperview()
+        self.masker = maskView
         return self
     }
     

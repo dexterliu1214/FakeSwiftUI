@@ -23,12 +23,12 @@ open class Toggle:View
         
         super.init()
        
-        view = HStack(
+        let stack = HStack(
             labelText,
             switchView
         )
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.append(to: self).fillSuperview()
         isOn <~> switchView.rx.isOn ~ disposeBag
        
     }

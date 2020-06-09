@@ -75,9 +75,8 @@ open class Text:View {
     
     public override init (){
         super.init()
-        view = labelView
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        labelView.translatesAutoresizingMaskIntoConstraints = false
+        labelView.append(to: self).fillSuperview()
     }
     
     required public init?(coder: NSCoder) {

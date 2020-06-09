@@ -22,9 +22,8 @@ open class Image:View {
     public init(image:UIImage?) {
         imageView = UIImageView(image:image)
         super.init()
-        view = imageView
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.append(to: self).fillSuperview()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
     }

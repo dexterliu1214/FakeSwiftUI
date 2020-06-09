@@ -14,7 +14,7 @@ import RxGesture
 open class Seperator:View {
     public override init() {
         super.init()
-        view = UIView()
+        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.append(to: self).fillSuperview()
     }

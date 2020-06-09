@@ -42,12 +42,11 @@ open class TextField:View
     
     public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
         super.init()
-        view = textInputView
         textInputView.placeholder = placeholder
             textInputView.autocapitalizationType = .none
 
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        textInputView.translatesAutoresizingMaskIntoConstraints = false
+        textInputView.append(to: self).fillSuperview()
         if let limit = limit {
             text ~> textInputView.rx.text ~ disposeBag
             textInputView.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text ~ disposeBag

@@ -19,11 +19,10 @@ open class Slider:View
 
     public init(_ value$:BehaviorRelay<Float>, min:Float = 0.0, max:Float = 100.0, step:Float = 1.0) {
         super.init()
-        view = slider
         slider.minimumValue = min
         slider.maximumValue = max
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        slider.translatesAutoresizingMaskIntoConstraints = false
+        slider.append(to: self).fillSuperview()
         value$ ~> slider.rx.value ~ disposeBag
         slider.rx.value.map{ round($0/step) * step } ~> value$ ~ disposeBag
     }

@@ -20,10 +20,10 @@ open class ScalableImage:View
 
     public init(_ image$:Driver<UIImage?>) {
         super.init()
-        view = scrollView
         scrollView.delegate = self
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.append(to: self).fillSuperview()
+        
         imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
         imageView.append(to: scrollView)
         
@@ -70,7 +70,7 @@ open class ScalableImage:View
     
     func setZoomScale() {
         let imageViewSize = imageView.bounds.size
-        let scrollViewSize = view.bounds.size
+        let scrollViewSize = scrollView.bounds.size
         let widthScale = scrollViewSize.width / imageViewSize.width
         let heightScale = scrollViewSize.height / imageViewSize.height
             

@@ -24,12 +24,11 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     public init<ModelType>(items:Observable<[ModelType]>, _ builder:@escaping(CellType, ModelType, Int, UITableView) -> UITableViewCell) {
         tableView = .init()
         super.init()
-        view = tableView
         tableView.rowHeight = UITableView.automaticDimension
         tableView.register(CellType.self, forCellReuseIdentifier: "CELL")
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.append(to: self).fillSuperview()
         tableView.backgroundColor = .clear
         self.tableView.backgroundView = UIView()
         self.tableView.tableFooterView = UIView()
@@ -53,11 +52,10 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     public init<ModelType>(items:Observable<[SectionModel<String, ModelType>]>, style:UITableView.Style = .plain, _ builder:@escaping(CellType, IndexPath, ModelType) -> UITableViewCell) {
         tableView = .init(frame: .zero, style: style)
         super.init()
-        view = tableView
         tableView.rowHeight = UITableView.automaticDimension
         tableView.register(CellType.self, forCellReuseIdentifier: "CELL")
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.append(to: self).fillSuperview()
         tableView.backgroundColor = .clear
         self.tableView.backgroundView = UIView()
         self.tableView.tableFooterView = UIView()

@@ -21,7 +21,6 @@ open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlo
     public init<T>(vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[T]>, _ builder:@escaping(C, T, Int) -> (C)) {
         collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
-        view = collectionView
         let _ = collectionView.rx.setDelegate(self)
         collectionView.isScrollEnabled = false
         layout.minimumInteritemSpacing = hSpacing
@@ -29,8 +28,8 @@ open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlo
         
         self.collectionView.backgroundView = UIView()
         
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.append(to: self).fillSuperview()
         collectionView.backgroundColor = .clear
         collectionView.register(C.self, forCellWithReuseIdentifier: "CELL")
         

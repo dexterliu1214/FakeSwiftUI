@@ -18,9 +18,8 @@ open class SearchBar:View {
     
     public init(placeholder:String, _ text$:BehaviorRelay<String?>) {        
         super.init()
-        view = searchBar
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.append(to: self).fillSuperview()
         searchBar.placeholder = placeholder
         text$ <~> searchBar.rx.text ~ disposeBag
     }

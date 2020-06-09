@@ -59,13 +59,11 @@ open class Stack:View {
         
     public init(alignment:UIStackView.Alignment = .center, spacing:CGFloat, subviews:[UIView]) {
         super.init()
-        view = stackView
-
         stackView.alignment = alignment
         stackView.distribution = .fill
         stackView.spacing = spacing
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.append(to: self).fillSuperview()
         subviews.forEach{
             stackView.addArrangedSubview($0)
         }
@@ -92,7 +90,7 @@ open class Stack:View {
 open class Spacer:View {
     public init(axis:NSLayoutConstraint.Axis = .horizontal) {
         super.init()
-        view = UIView()
+        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.setContentHuggingPriority(.defaultLow, for: axis)
         view.append(to: self).fillSuperview()

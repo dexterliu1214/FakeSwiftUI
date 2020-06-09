@@ -22,9 +22,8 @@ open class SegmentedControl:View
         segmentedControl.selectedSegmentIndex = defaultIndex
 
         super.init()
-        view = segmentedControl
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.append(to: self).fillSuperview()
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        segmentedControl.append(to: self).fillSuperview()
     }
     
     public required init?(coder: NSCoder) {
