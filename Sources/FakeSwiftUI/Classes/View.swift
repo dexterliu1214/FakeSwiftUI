@@ -38,7 +38,12 @@ open class View:UIView {
     var centerXConstraint:NSLayoutConstraint?
     
     var masker: UIView?
-
+    
+    open override var intrinsicContentSize: CGSize {
+        guard let widthConstraint = self.widthConstraint, let heightConstraint = self.heightConstraint else { return .zero }
+        return CGSize(width: widthConstraint.constant, height: heightConstraint.constant)
+    }
+    
     public init(){
         super.init(frame:.zero)
         self.translatesAutoresizingMaskIntoConstraints = false
