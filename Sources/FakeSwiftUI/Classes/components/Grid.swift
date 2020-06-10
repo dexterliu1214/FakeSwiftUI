@@ -23,7 +23,13 @@ open class Grid<CellType:UICollectionViewCell>:View
     var scrollToIndexPath:(IndexPath, UICollectionView.ScrollPosition, Bool)?
     var ratio:CGFloat?
     
-    public init<ModelType>(columns:Int = 1, vSpacing:CGFloat = 8, hSpacing:CGFloat = 8, items:Observable<[ModelType]>, _ builder:@escaping(CellType, ModelType, Int, UICollectionView) -> UICollectionViewCell) {
+    public init<ModelType>(
+        columns:Int = 1,
+        vSpacing:CGFloat = 8,
+        hSpacing:CGFloat = 8,
+        items:Observable<[ModelType]>,
+        _ builder:@escaping(CellType, ModelType, Int, UICollectionView
+    ) -> UICollectionViewCell) {
         self.columns = columns
         collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
