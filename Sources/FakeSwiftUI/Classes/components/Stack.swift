@@ -15,9 +15,10 @@ import RxGesture
 
 open class ZStack:View
 {
+    let view = UIView()
+
     public init(_ subviews:UIView...) {
         super.init()
-        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.append(to: self).fillSuperview()
         subviews.forEach{
@@ -86,9 +87,10 @@ open class Stack:View {
 }
 
 open class Spacer:View {
+    let view = UIView()
+
     public init(axis:NSLayoutConstraint.Axis = .horizontal) {
         super.init()
-        let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.setContentHuggingPriority(.defaultLow, for: axis)
         view.append(to: self).fillSuperview()

@@ -17,15 +17,15 @@ import RxAnimated
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
     
-    let imageView:UIImageView
+    let imageView = UIImageView(image:nil)
 
     public init(image:UIImage?) {
-        imageView = UIImageView(image:image)
         super.init()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.append(to: self).fillSuperview()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
+        imageView.image = image
     }
     
     public convenience init(_ name:String) {
