@@ -13,6 +13,31 @@ import RxSwift
 import RxCocoa
 import RxBinding
 
+open class Scrollable:View
+{
+    let view = UIScrollView()
+    
+    public init(_ subview:UIView) {
+        super.init()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.append(to: self).fillSuperview()
+        
+        self.view.addSubview(subview)
+        
+    }
+    
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            self.view.contentSize = self.view.subviews.first!.frame.size
+        }
+    }
+}
+
 open class ScalableImage:View
 {
     let scrollView = UIScrollView()
