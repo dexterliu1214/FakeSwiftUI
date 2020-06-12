@@ -53,8 +53,8 @@ open class Button:View
         button.translatesAutoresizingMaskIntoConstraints = false
         button.append(to: self).fillSuperview()
         
-        button.titleLabel?.adjustsFontSizeToFitWidth = true
-        button.contentEdgeInsets = .all(8)
+//        button.titleLabel?.adjustsFontSizeToFitWidth = true
+//        button.contentEdgeInsets = .all(8)
     }
     
     required public init?(coder: NSCoder) {
