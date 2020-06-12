@@ -138,4 +138,13 @@ open class TextField:View
         self.textInputView.keyboardType = type
         return self
     }
+    
+    @discardableResult
+    public func focus(_ trigger$:Observable<()>) -> Self {
+        trigger$.asDriver(onErrorJustReturn: ())
+            .drive(onNext:{[weak self] in
+                self?.textInputView.becomeFirstResponder()
+            }) ~ disposeBag
+        return self
+    }
 }
