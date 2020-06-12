@@ -81,6 +81,7 @@ open class Button:View
     @discardableResult
     public func disabled(_ value$:Observable<Bool>) -> Self {
         value$ ~> button.rx.isDisabled ~ disposeBag
+        value$.map{ $0 ? 0.5 : 1 } ~> rx.alpha ~ disposeBag
         return self
     }
     
