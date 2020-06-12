@@ -39,8 +39,10 @@ open class TextInput: UITextField {
 open class TextField:View
 {
     let textInputView = TextInput()
+    let text$:BehaviorRelay<String?>
     
     public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
+        self.text$ = text
         super.init()
         textInputView.placeholder = placeholder
             textInputView.autocapitalizationType = .none
@@ -62,11 +64,6 @@ open class TextField:View
             onCommit()
         }) ~ disposeBag
     }
-    
-//    public override init (){
-//        super.init()
-//        _init()
-//    }
     
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -145,6 +142,19 @@ open class TextField:View
             .drive(onNext:{[weak self] in
                 self?.textInputView.becomeFirstResponder()
             }) ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func range(_ mininum:Int, _ maximum:Int) -> Self {
+        self.textInputView.rx.text
+            .compactMap{ $0 }
+            .compactMap{ Int($0) }
+            .map{ max(mininum, min($0, maximum)) }
+            .map{ "\($0)" }
+            ~> text$ ~ disposeBag
+        
+        text$ ~> textInputView.rx.text ~ disposeBag
         return self
     }
 }
