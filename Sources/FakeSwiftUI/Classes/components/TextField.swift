@@ -157,4 +157,16 @@ open class TextField:View
         text$ ~> textInputView.rx.text ~ disposeBag
         return self
     }
+    
+    @discardableResult
+    public func font(_ size:CGFloat) -> Self {
+        self.textInputView.font = UIFont.systemFont(ofSize: size)
+        return self
+    }
+    
+    @discardableResult
+    public func textAlignment(_ alignment:NSTextAlignment) -> Self {
+        self.textInputView.textAlignment = alignment
+        return self
+    }
 }
