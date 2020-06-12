@@ -126,4 +126,10 @@ open class TextField:View
         self.textInputView.tintColor = color
         return self
     }
+    
+    @discardableResult
+    public func color(_ color:UIColor) -> Self {
+        self.textInputView.textColor = color
+        return self
+    }
 }
