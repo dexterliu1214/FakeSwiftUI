@@ -132,4 +132,10 @@ open class TextField:View
         self.textInputView.textColor = color
         return self
     }
+    
+    @discardableResult
+    public func keyboardType(_ type:UIKeyboardType) -> Self {
+        self.textInputView.keyboardType = type
+        return self
+    }
 }
