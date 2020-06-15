@@ -39,11 +39,6 @@ open class View:UIView {
     
     var masker: UIView?
     
-//    open override var intrinsicContentSize: CGSize {
-//        guard let widthConstraint = self.widthConstraint, let heightConstraint = self.heightConstraint else { return .zero }
-//        return CGSize(width: widthConstraint.constant, height: heightConstraint.constant)
-//    }
-    
     public init(){
         super.init(frame:.zero)
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -434,27 +429,31 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func draggable() -> Self {
+    open func draggable(axis:Axis = .both, _ callback:((CGPoint) -> ())? = nil) -> Self {
         var beginPos = CGPoint.zero
         
         self.rx.panGesture().when(.began)
             .asTranslation()
-            .subscribe(onNext:{translation, _ in
-                if let centerY = self.centerYConstraint, let centerX = self.centerXConstraint {
-                    beginPos = CGPoint(x:centerX.constant, y:centerY.constant)
-                }
+            .subscribe(onNext:{ _ in
+                guard let centerY = self.centerYConstraint, let centerX = self.centerXConstraint else { return }
+                beginPos = CGPoint(x:centerX.constant, y:centerY.constant)
             }) ~ disposeBag
         
         self.rx.panGesture().when(.changed)
             .asTranslation()
-            .subscribe(onNext:{[unowned self] translation, _ in
-                if let centerY = self.centerYConstraint, let centerX = self.centerXConstraint {
+            .subscribe(onNext:{[weak self] translation, _ in
+                guard let self = self, let centerY = self.centerYConstraint, let centerX = self.centerXConstraint else { return }
+                if axis.contains(.horizontal) {
                     centerX.constant = beginPos.x + translation.x
+                }
+                if axis.contains(.vertical) {
                     centerY.constant = beginPos.y + translation.y
-                    UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1, delay: 0, options: .curveLinear, animations: {
-                        self.superview!.layoutIfNeeded()
-                    }, completion: nil)
-                }                
+                }
+                
+                callback?(CGPoint(x: centerX.constant, y: centerY.constant))
+                UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.1, delay: 0, options: .curveLinear, animations: {
+                    self.superview?.layoutIfNeeded()
+                }, completion: nil)
             }) ~ disposeBag
         
         return self
@@ -509,6 +508,19 @@ open class View:UIView {
         
         return self
     }
+}
+
+public struct Axis : OptionSet {
+    public let rawValue: UInt
+    
+    public init(rawValue: UInt) {
+        self.rawValue = rawValue
+    }
+    public static let horizontal = Axis(rawValue: 1 << 0)
+    
+    public static let vertical = Axis(rawValue: 1 << 1)
+    
+    public static let both:Axis = [.horizontal, .vertical]
 }
 
 extension Reactive where Base : UIView {
