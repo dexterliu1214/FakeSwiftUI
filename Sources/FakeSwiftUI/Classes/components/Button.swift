@@ -52,9 +52,6 @@ open class Button:View
         
         button.translatesAutoresizingMaskIntoConstraints = false
         button.append(to: self).fillSuperview()
-        
-//        button.titleLabel?.adjustsFontSizeToFitWidth = true
-//        button.contentEdgeInsets = .all(8)
     }
     
     required public init?(coder: NSCoder) {
@@ -88,6 +85,12 @@ open class Button:View
     @discardableResult
     public func enabled(_ value$:Observable<Bool>) -> Self {
         value$ ~> button.rx.isEnabled ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func contentEdgeInsets(_ insets:UIEdgeInsets) -> Self {
+        button.contentEdgeInsets = insets
         return self
     }
 }
