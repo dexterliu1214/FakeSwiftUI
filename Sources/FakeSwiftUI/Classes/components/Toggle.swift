@@ -34,4 +34,10 @@ open class Toggle:View
         switchView.onTintColor = color
         return self
     }
+    
+    @discardableResult
+    public func thumbTintColor(_ color:UIColor) -> Self {
+        switchView.thumbTintColor = color
+        return self
+    }
 }

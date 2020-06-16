@@ -14,6 +14,20 @@ import RxBinding
 import RxGesture
 import RxAnimated
 
+extension UIImageView
+{
+    public convenience init(url:String) {
+        self.init()
+        
+        URLSession.shared.dataTask(with: URL(string: url)!) { (data, response, error) in
+            guard let data = data else { return }
+            DispatchQueue.main.async {
+                self.image = UIImage(data:data)
+            }
+        }.resume()
+    }
+}
+
 open class Image:View {
     public static var urlSession:URLSession = URLSession.shared
     
