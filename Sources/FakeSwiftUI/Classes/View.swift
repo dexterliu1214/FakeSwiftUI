@@ -429,7 +429,7 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func draggable(axis:Axis = .both, _ callback:((CGPoint) -> ())? = nil) -> Self {
+    open func draggable(axis:Axis = .both, limit:CGRect? = nil, _ callback:((CGPoint) -> ())? = nil) -> Self {
         var beginPos = CGPoint.zero
         
         self.rx.panGesture().when(.began)
@@ -444,10 +444,18 @@ open class View:UIView {
             .subscribe(onNext:{[weak self] translation, _ in
                 guard let self = self, let centerY = self.centerYConstraint, let centerX = self.centerXConstraint else { return }
                 if axis.contains(.horizontal) {
-                    centerX.constant = beginPos.x + translation.x
+                    var constant = beginPos.x + translation.x
+                    if let limit = limit {
+                        constant = max(limit.minX, min(limit.width, constant))
+                    }
+                    centerX.constant = constant
                 }
                 if axis.contains(.vertical) {
-                    centerY.constant = beginPos.y + translation.y
+                    var constant = beginPos.y + translation.y
+                    if let limit = limit {
+                        constant = max(limit.minY, min(limit.height, constant))
+                    }
+                    centerY.constant = constant
                 }
                 
                 callback?(CGPoint(x: centerX.constant, y: centerY.constant))
