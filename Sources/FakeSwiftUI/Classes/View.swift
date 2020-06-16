@@ -429,7 +429,7 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func draggable(axis:Axis = .both, limit:CGRect? = nil, _ callback:((CGPoint) -> ())? = nil) -> Self {
+    open func draggable(axis:Axis = .both, limit:Observable<CGRect?> = Observable.just(nil), _ callback:((CGPoint) -> ())? = nil) -> Self {
         var beginPos = CGPoint.zero
         
         self.rx.panGesture().when(.began)
@@ -439,9 +439,11 @@ open class View:UIView {
                 beginPos = CGPoint(x:centerX.constant, y:centerY.constant)
             }) ~ disposeBag
         
-        self.rx.panGesture().when(.changed)
-            .asTranslation()
-            .subscribe(onNext:{[weak self] translation, _ in
+        Observable.combineLatest(
+            self.rx.panGesture().when(.changed).asTranslation().map{ $0.0 },
+            limit
+        )
+            .subscribe(onNext:{[weak self] translation, limit in
                 guard let self = self, let centerY = self.centerYConstraint, let centerX = self.centerXConstraint else { return }
                 if axis.contains(.horizontal) {
                     var constant = beginPos.x + translation.x
