@@ -36,8 +36,22 @@ open class Toggle:View
     }
     
     @discardableResult
-    public func thumbTintColor(_ color:UIColor) -> Self {
-        switchView.thumbTintColor = color
+    public func thumbTintColor(_ color$:Observable<UIColor>) -> Self {
+        color$ ~> switchView.rx.thumbTintColor ~ disposeBag
         return self
+    }
+    
+    @discardableResult
+    public func thumbTintColor(_ color:UIColor) -> Self {
+        self.thumbTintColor(Observable.just(color))
+        return self
+    }
+}
+
+extension Reactive where Base: UISwitch {
+    public var thumbTintColor: Binder<UIColor> {
+        return Binder(self.base) { control, value in
+            control.thumbTintColor = value
+        }
     }
 }
