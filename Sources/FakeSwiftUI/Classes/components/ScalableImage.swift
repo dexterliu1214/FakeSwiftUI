@@ -32,7 +32,7 @@ open class Scrollable:View
     
     open override func layoutSubviews() {
         super.layoutSubviews()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.view.contentSize = self.view.subviews.first!.frame.size
         }
     }
