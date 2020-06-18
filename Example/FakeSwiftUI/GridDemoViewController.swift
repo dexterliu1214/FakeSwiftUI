@@ -83,8 +83,8 @@ class GridDemoViewController: UIViewController {
                 .trailing(offset: 0)
                 .bottom(isShowColorMenu$.map{$0 ? 0 : UIScreen.main.bounds.height / 2}, startValue: UIScreen.main.bounds.height / 2, duration: 0.5)
                 .height(offset: UIScreen.main.bounds.height / 2)
-                .itemSelected{
-                    selectedColorString$.accept(colors[$0.row])
+                .itemSelected{ model, index in
+                    selectedColorString$.accept(model)
                     isShowColorMenu$.accept(false)
                 }
         ).fill().on(view)

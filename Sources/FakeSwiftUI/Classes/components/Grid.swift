@@ -14,16 +14,15 @@ import RxBinding
 import RxGesture
 import RxDataSources
 
-open class Grid<CellType:UICollectionViewCell>:View
+open class Grid<CellType:UICollectionViewCell, ModelType>:View
 {
-    let collectionView:UICollectionView
-  
     var columns:Int
-    let layout:UICollectionViewFlowLayout = .init()
+    let layout = UICollectionViewFlowLayout()
+    lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
     var scrollToIndexPath:(IndexPath, UICollectionView.ScrollPosition, Bool)?
     var ratio:CGFloat?
     
-    public init<ModelType>(
+    public init(
         columns:Int = 1,
         vSpacing:CGFloat = 8,
         hSpacing:CGFloat = 8,
@@ -31,7 +30,6 @@ open class Grid<CellType:UICollectionViewCell>:View
         _ builder:@escaping(CellType, ModelType, Int, UICollectionView
     ) -> UICollectionViewCell) {
         self.columns = columns
-        collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
@@ -51,7 +49,7 @@ open class Grid<CellType:UICollectionViewCell>:View
         } ~ disposeBag
     }
     
-    public init<ModelType, HeaderType:UICollectionReusableView, FooterType:UICollectionReusableView>(
+    public init<HeaderType:UICollectionReusableView, FooterType:UICollectionReusableView>(
         columns:Int = 1,
         vSpacing:CGFloat = 8,
         hSpacing:CGFloat = 8,
@@ -61,7 +59,6 @@ open class Grid<CellType:UICollectionViewCell>:View
         _ builder:@escaping(CellType, ModelType, Int) -> UICollectionViewCell
     ) {
         self.columns = columns
-        collectionView = .init(frame: .zero, collectionViewLayout: layout)
         super.init()
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
@@ -214,9 +211,13 @@ open class Grid<CellType:UICollectionViewCell>:View
     }
     
     @discardableResult
-    public func itemSelected(_ callback:@escaping(IndexPath) -> ()) -> Self {
-        collectionView.rx.itemSelected.subscribe(onNext:{
-            callback($0)
+    public func itemSelected(_ callback:@escaping(ModelType, IndexPath) -> ()) -> Self {
+        Observable.zip(
+            collectionView.rx.modelSelected(ModelType.self),
+            collectionView.rx.itemSelected
+        )
+        .subscribe(onNext:{
+            callback($0, $1)
         }) ~ disposeBag
         return self
     }

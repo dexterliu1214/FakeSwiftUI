@@ -29,38 +29,37 @@ open class TextView:View {
     var submitCallback:((_ text:String) -> ())?
     var text$:BehaviorRelay<String?>? = nil
     
-    public init(_ text$:BehaviorRelay<String?>) {
-        self.text$ = text$
+    public override init(){
         super.init()
-        textView.delegate = self
+        
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.append(to: self).fillSuperview()
         textView.backgroundColor = .clear
+    }
+    
+    public convenience init(_ text$:BehaviorRelay<String?>) {
+        self.init()
+        self.text$ = text$
+        textView.delegate = self
         text$ <~> textView.rx.text ~ disposeBag
     }
     
-    public init(_ text$:Observable<String?>) {
-        super.init()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.append(to: self).fillSuperview()
-        textView.backgroundColor = .clear
+    public convenience init(_ text$:Observable<String?>) {
+        self.init()
         text$ ~> textView.rx.text ~ disposeBag
     }
     
-    public init(_ text:String) {
-        super.init()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.append(to: self).fillSuperview()
-        textView.backgroundColor = .clear
-        self.textView.text = text
+    public convenience init(_ text:String) {
+        self.init(Observable.just(text))
     }
     
-    public init(_ attributedText:NSAttributedString) {
-        super.init()
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        textView.append(to: self).fillSuperview()
-        textView.backgroundColor = .clear
-        self.textView.attributedText = attributedText
+    public convenience init(_ attributedText$:Observable<NSAttributedString?>) {
+        self.init()
+        attributedText$ ~> textView.rx.attributedText ~ disposeBag
+    }
+    
+    public convenience init(_ attributedText:NSAttributedString) {
+        self.init(Observable.just(attributedText))
     }
     
     required public init?(coder: NSCoder) {
