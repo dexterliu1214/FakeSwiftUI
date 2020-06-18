@@ -130,7 +130,7 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         }
         
         let hSpacing:CGFloat = layout.minimumInteritemSpacing
-        let totalWidth = min(self.bounds.width,self.bounds.height)
+        let totalWidth = self.bounds.width
         let width:CGFloat = (totalWidth - collectionView.contentInset.left - collectionView.contentInset.right - (CGFloat(columns - 1) * hSpacing)) / CGFloat(columns)
         
         if let ratio:CGFloat = ratio {
