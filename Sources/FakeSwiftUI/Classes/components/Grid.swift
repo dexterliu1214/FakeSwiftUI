@@ -16,30 +16,35 @@ import RxDataSources
 
 open class Grid<CellType:UICollectionViewCell, ModelType>:View
 {
-    var columns:Int
+    var columns:Int?
     let layout = UICollectionViewFlowLayout()
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
     var scrollToIndexPath:(IndexPath, UICollectionView.ScrollPosition, Bool)?
     var ratio:CGFloat?
     
-    public init(
-        columns:Int = 1,
-        vSpacing:CGFloat = 8,
-        hSpacing:CGFloat = 8,
-        items:Observable<[ModelType]>,
-        _ builder:@escaping(CellType, ModelType, Int, UICollectionView
-    ) -> UICollectionViewCell) {
-        self.columns = columns
+    override init() {
         super.init()
-        layout.minimumInteritemSpacing = hSpacing
-        layout.minimumLineSpacing = vSpacing
-
         self.collectionView.backgroundView = UIView()
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.append(to: self).fillSuperview()
         collectionView.backgroundColor = .clear
         collectionView.register(CellType.self, forCellWithReuseIdentifier: "CELL")
+    }
+    
+    public convenience init(
+        itemSize:CGSize,
+        vSpacing:CGFloat = 8,
+        hSpacing:CGFloat = 8,
+        items:Observable<[ModelType]>,
+        _ builder:@escaping(CellType, ModelType, Int, UICollectionView
+        ) -> UICollectionViewCell) {
+        self.init()
+        
+        layout.itemSize = itemSize
+        layout.minimumInteritemSpacing = hSpacing
+        layout.minimumLineSpacing = vSpacing
+        
         items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> collectionView.backgroundView!.rx.isShow ~ disposeBag
         
         items.asDriver(onErrorJustReturn: []).drive(collectionView.rx.items) { (cv:UICollectionView, row:Int, element:ModelType) in
@@ -49,8 +54,30 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         } ~ disposeBag
     }
     
-    public init<HeaderType:UICollectionReusableView, FooterType:UICollectionReusableView>(
-        columns:Int = 1,
+    public convenience init(
+        columns:Int,
+        vSpacing:CGFloat = 8,
+        hSpacing:CGFloat = 8,
+        items:Observable<[ModelType]>,
+        _ builder:@escaping(CellType, ModelType, Int, UICollectionView
+    ) -> UICollectionViewCell) {
+        self.init()
+        
+        self.columns = columns
+        layout.minimumInteritemSpacing = hSpacing
+        layout.minimumLineSpacing = vSpacing
+
+        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> collectionView.backgroundView!.rx.isShow ~ disposeBag
+        
+        items.asDriver(onErrorJustReturn: []).drive(collectionView.rx.items) { (cv:UICollectionView, row:Int, element:ModelType) in
+            let indexPath:IndexPath = .init(row: row, section: 0)
+            let cell:CellType = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: indexPath) as! CellType
+            return builder(cell, element, row, cv)
+        } ~ disposeBag
+    }
+    
+    public convenience init<HeaderType:UICollectionReusableView, FooterType:UICollectionReusableView>(
+        columns:Int,
         vSpacing:CGFloat = 8,
         hSpacing:CGFloat = 8,
         items:Observable<[SectionModel<String, ModelType>]>,
@@ -58,20 +85,16 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         footerBuilder:@escaping((FooterType, UICollectionView, IndexPath, String) -> UICollectionReusableView),
         _ builder:@escaping(CellType, ModelType, Int) -> UICollectionViewCell
     ) {
+        self.init()
+        
         self.columns = columns
-        super.init()
+        
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
         layout.headerReferenceSize = CGSize(width: 200, height: 40)
         layout.footerReferenceSize = CGSize(width: 200, height: 40)
         layout.sectionInset = .symmetric(8, 0)
 
-        self.collectionView.backgroundView = UIView()
-        
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.append(to: self).fillSuperview()
-        collectionView.backgroundColor = .clear
-        collectionView.register(CellType.self, forCellWithReuseIdentifier: "CELL")
         collectionView.register(HeaderType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Section")
         collectionView.register(FooterType.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Section")
 
@@ -99,6 +122,13 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     
     override public func layoutSubviews() {
         super.layoutSubviews()
+        guard let columns = columns else {
+            let itemCount = floor((bounds.width) / (layout.itemSize.width + layout.minimumInteritemSpacing))
+            let margin:CGFloat =  (bounds.width - (itemCount * layout.itemSize.width) - ((itemCount - 1) * layout.minimumInteritemSpacing)) / 2
+            collectionView.contentInset = .init(top: collectionView.contentInset.top, left: margin, bottom: collectionView.contentInset.bottom, right: margin)
+            return
+        }
+        
         let hSpacing:CGFloat = layout.minimumInteritemSpacing
         let width:CGFloat = (self.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right - (CGFloat(columns - 1) * hSpacing)) / CGFloat(columns)
         

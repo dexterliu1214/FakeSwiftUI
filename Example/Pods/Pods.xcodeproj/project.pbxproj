@@ -232,6 +232,7 @@
 		8A1BB3462489E975005143A0 /* Edges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1BB3452489E974005143A0 /* Edges.swift */; };
 		8A1BB3482489E9A9005143A0 /* UIEdgeInsets+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1BB3472489E9A9005143A0 /* UIEdgeInsets+extension.swift */; };
 		8A1BB34A2489EA12005143A0 /* AnimatedSink+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1BB3492489EA12005143A0 /* AnimatedSink+extension.swift */; };
+		8AE634C4249B06FC005472F0 /* Scrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE634C3249B06FC005472F0 /* Scrollable.swift */; };
 		8CBC885FF0497759AD9C60966586C4B6 /* OperationQueueScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBD21E251022FFF80E26E60992EF628 /* OperationQueueScheduler.swift */; };
 		8CD8C70539938B61EB3A5193D7A23501 /* BehaviorRelay+Driver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB855A2E04D14A7A092B2A9A378C141 /* BehaviorRelay+Driver.swift */; };
 		8D880D6DCEEBF0534791BE6CDC62996B /* DispatchQueueConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13FA46C1032210B297CEC89E94FBA425 /* DispatchQueueConfiguration.swift */; };
@@ -870,6 +871,7 @@
 		8A4628D5732183451408A2AC43F876D3 /* Pods-FakeSwiftUI_Example-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-FakeSwiftUI_Example-Info.plist"; sourceTree = "<group>"; };
 		8A6C2BA18C574458669D3239E6F894B8 /* Differentiator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Differentiator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A6DCF69C4C6A159EB856596657C59CD /* VirtualTimeConverterType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = VirtualTimeConverterType.swift; path = RxSwift/Schedulers/VirtualTimeConverterType.swift; sourceTree = "<group>"; };
+		8AE634C3249B06FC005472F0 /* Scrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scrollable.swift; sourceTree = "<group>"; };
 		8BA99731D69A399AF9EF62EAE7139DF9 /* KeyPathBinder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = KeyPathBinder.swift; path = RxCocoa/Common/KeyPathBinder.swift; sourceTree = "<group>"; };
 		8BD2BCC8CAA68C9670AB01B14EAD97BD /* ItemEvents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ItemEvents.swift; path = RxCocoa/iOS/Events/ItemEvents.swift; sourceTree = "<group>"; };
 		8C180950352CDC29DDE4EF5D4EE8639A /* AnimatableSectionModelType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnimatableSectionModelType.swift; path = Sources/Differentiator/AnimatableSectionModelType.swift; sourceTree = "<group>"; };
@@ -1540,6 +1542,7 @@
 				8A05DD4724888BE400302EE3 /* SearchBar.swift */,
 				8A05DD4824888BE400302EE3 /* Seperator.swift */,
 				8A05DD4F24888BE400302EE3 /* Slider.swift */,
+				8AE634C3249B06FC005472F0 /* Scrollable.swift */,
 				8A05DD4A24888BE400302EE3 /* Toggle.swift */,
 				8A05DD4B24888BE400302EE3 /* TextField.swift */,
 				8A05DD4D24888BE400302EE3 /* TextView.swift */,
@@ -2555,6 +2558,7 @@
 				F5AB1DFAA91780530D97726DBC382F05 /* FakeSwiftUI-dummy.m in Sources */,
 				8A1BB34A2489EA12005143A0 /* AnimatedSink+extension.swift in Sources */,
 				8A05DD5924888BE500302EE3 /* List.swift in Sources */,
+				8AE634C4249B06FC005472F0 /* Scrollable.swift in Sources */,
 				8A05DD5324888BE500302EE3 /* Stack.swift in Sources */,
 				8A1BB3462489E975005143A0 /* Edges.swift in Sources */,
 				8A05DD5F24888BE500302EE3 /* Slider.swift in Sources */,
