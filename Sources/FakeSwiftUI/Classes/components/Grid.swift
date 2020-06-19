@@ -166,11 +166,15 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
             }
         }
         
-        guard let viewDidLayoutSubview$ = viewDidLayoutSubview$, let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath  else { return }
-        viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
-            .drive(onNext:{[weak self] in
-                self?.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
-            }) ~ disposeBag
+//        guard let viewDidLayoutSubview$ = viewDidLayoutSubview$ else { return }
+        guard let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath  else { return }
+//        viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
+//            .drive(onNext:{[weak self] in
+//                self?.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
+//            }) ~ disposeBag
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
+        }
     }
     
     @discardableResult
