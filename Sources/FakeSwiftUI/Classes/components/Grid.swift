@@ -123,8 +123,7 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     override public func layoutSubviews() {
         super.layoutSubviews()
         
-        collectionView.contentInset = .all(8)
-        
+        collectionView.contentInset = contentInset
         guard let _columns = columns else {
             let itemCount = floor((bounds.width) / (layout.itemSize.width + layout.minimumInteritemSpacing))
             let margin:CGFloat =  (bounds.width - (itemCount * layout.itemSize.width) - ((itemCount - 1) * layout.minimumInteritemSpacing)) / 2
@@ -166,15 +165,12 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
             }
         }
         
-//        guard let viewDidLayoutSubview$ = viewDidLayoutSubview$ else { return }
+        guard let viewDidLayoutSubview$ = viewDidLayoutSubview$ else { return }
         guard let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath  else { return }
-//        viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
-//            .drive(onNext:{[weak self] in
-//                self?.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
-//            }) ~ disposeBag
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
-        }
+        viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
+            .drive(onNext:{[weak self] in
+                self?.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
+            }) ~ disposeBag
     }
     
     @discardableResult
@@ -195,9 +191,10 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         return self
     }
     
+    var contentInset = UIEdgeInsets.all(0)
     @discardableResult
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
-        collectionView.contentInset = insets
+        contentInset = insets
         return self
     }
     
