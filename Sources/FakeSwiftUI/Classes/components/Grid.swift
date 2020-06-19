@@ -122,16 +122,21 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     
     override public func layoutSubviews() {
         super.layoutSubviews()
-        guard let columns = columns else {
+        
+        collectionView.contentInset = .all(8)
+        
+        guard let _columns = columns else {
             let itemCount = floor((bounds.width) / (layout.itemSize.width + layout.minimumInteritemSpacing))
             let margin:CGFloat =  (bounds.width - (itemCount * layout.itemSize.width) - ((itemCount - 1) * layout.minimumInteritemSpacing)) / 2
             collectionView.contentInset = .init(top: collectionView.contentInset.top, left: margin, bottom: collectionView.contentInset.bottom, right: margin)
             return
         }
         
+        let columns = CGFloat(_columns)
+        
         let hSpacing:CGFloat = layout.minimumInteritemSpacing
-        let totalWidth = self.bounds.width
-        let width:CGFloat = (totalWidth - collectionView.contentInset.left - collectionView.contentInset.right - (CGFloat(columns - 1) * hSpacing)) / CGFloat(columns)
+        let totalWidth = min(self.bounds.width, self.bounds.height)
+        let width:CGFloat = (totalWidth - collectionView.contentInset.left - collectionView.contentInset.right - (columns - 1) * hSpacing) / columns
         
         if let ratio:CGFloat = ratio {
             layout.itemSize = CGSize(width: width, height: width / ratio)
@@ -142,8 +147,12 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
             if width <= 0 {
                 return
             }
-            
             layout.itemSize = CGSize(width: width, height: width)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                let columns = floor((self.bounds.width - self.collectionView.contentInset.left) / (self.layout.itemSize.width + hSpacing))
+                let margin:CGFloat = (self.bounds.width - (columns * self.layout.itemSize.width) - ((columns - 1) * hSpacing)) / 2
+                self.collectionView.contentInset = .init(top: self.collectionView.contentInset.top, left: margin, bottom: self.collectionView.contentInset.bottom, right: margin)
+            }
         } else {
             if columns == 1 && collectionView.isPagingEnabled {
                 let height:CGFloat =  self.bounds.height
