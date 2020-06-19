@@ -148,11 +148,14 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
                 return
             }
             layout.itemSize = CGSize(width: width, height: width)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                let columns = floor((self.bounds.width - self.collectionView.contentInset.left) / (self.layout.itemSize.width + hSpacing))
-                let margin:CGFloat = (self.bounds.width - (columns * self.layout.itemSize.width) - ((columns - 1) * hSpacing)) / 2
-                self.collectionView.contentInset = .init(top: self.collectionView.contentInset.top, left: margin, bottom: self.collectionView.contentInset.bottom, right: margin)
-            }
+            guard let viewDidLayoutSubview$ = viewDidLayoutSubview$ else { return }
+            viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
+                .drive(onNext:{[weak self] in
+                    guard let self = self else { return }
+                    let columns = floor((self.bounds.width - self.collectionView.contentInset.left) / (self.layout.itemSize.width + hSpacing))
+                    let margin:CGFloat = (self.bounds.width - (columns * self.layout.itemSize.width) - ((columns - 1) * hSpacing)) / 2
+                    self.collectionView.contentInset = .init(top: self.collectionView.contentInset.top, left: margin, bottom: self.collectionView.contentInset.bottom, right: margin)
+                }) ~ disposeBag
         } else {
             if columns == 1 && collectionView.isPagingEnabled {
                 let height:CGFloat =  self.bounds.height
@@ -163,11 +166,11 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
             }
         }
         
-        if let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
-            }
-        }
+        guard let viewDidLayoutSubview$ = viewDidLayoutSubview$, let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath  else { return }
+        viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
+            .drive(onNext:{[weak self] in
+                self?.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
+            }) ~ disposeBag
     }
     
     @discardableResult
@@ -259,6 +262,13 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         .subscribe(onNext:{
             callback($0, $1)
         }) ~ disposeBag
+        return self
+    }
+    
+    var viewDidLayoutSubview$:Observable<Void>?
+    @discardableResult
+    public func viewDidLayoutSubview(_ trigger$:Observable<Void>) -> Self {
+        viewDidLayoutSubview$ = trigger$
         return self
     }
 }
