@@ -41,8 +41,8 @@ open class TextField:View
     let textInputView = TextInput()
     let text$:BehaviorRelay<String?>
     
-    public init(_ placeholder:String, text$:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
-        self.text$ = text$
+    public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
+        self.text$ = text
         super.init()
         
         textInputView.translatesAutoresizingMaskIntoConstraints = false
