@@ -55,6 +55,15 @@ open class Text:View {
         labelView.append(to: self).fillSuperview()
     }
     
+    public convenience init(_ stream$:Observable<String>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+        self.init()
+        guard let animationSink = animationSink else {
+            stream$.asDriver(onErrorJustReturn: "") ~> labelView.rx.text ~ disposeBag
+            return
+        }
+        stream$.asDriver(onErrorJustReturn: "") ~> animationSink(labelView.rx.animated).text ~ disposeBag
+    }
+    
     public convenience init(_ stream$:Observable<String?>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
         self.init()
         guard let animationSink = animationSink else {

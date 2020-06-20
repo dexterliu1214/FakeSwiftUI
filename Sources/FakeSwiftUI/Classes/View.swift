@@ -326,7 +326,12 @@ open class View:UIView {
     
     @discardableResult
     open func background(_ color:UIColor) -> Self {
-        self.backgroundColor = color
+        self.background(.just(color))
+    }
+    
+    @discardableResult
+    open func background(_ color:Observable<UIColor>) -> Self {
+        color ~> self.rx.backgroundColor ~ disposeBag
         return self
     }
     
