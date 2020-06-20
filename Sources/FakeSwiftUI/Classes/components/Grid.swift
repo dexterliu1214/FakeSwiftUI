@@ -16,7 +16,6 @@ import RxDataSources
 
 open class Grid<CellType:UICollectionViewCell, ModelType>:View
 {
-    var columns:Int?
     let layout = UICollectionViewFlowLayout()
     lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
     var scrollToIndexPath:(IndexPath, UICollectionView.ScrollPosition, Bool)?
@@ -33,29 +32,7 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     }
     
     public convenience init(
-        itemSize:CGSize,
-        vSpacing:CGFloat = 8,
-        hSpacing:CGFloat = 8,
-        items:Observable<[ModelType]>,
-        _ builder:@escaping(CellType, ModelType, Int, UICollectionView
-        ) -> UICollectionViewCell) {
-        self.init()
-        
-        layout.itemSize = itemSize
-        layout.minimumInteritemSpacing = hSpacing
-        layout.minimumLineSpacing = vSpacing
-        
-        items.map{ $0.count == 0 }.asDriver(onErrorJustReturn: true) ~> collectionView.backgroundView!.rx.isShow ~ disposeBag
-        
-        items.asDriver(onErrorJustReturn: []).drive(collectionView.rx.items) { (cv:UICollectionView, row:Int, element:ModelType) in
-            let indexPath:IndexPath = .init(row: row, section: 0)
-            let cell:CellType = cv.dequeueReusableCell(withReuseIdentifier: "CELL", for: indexPath) as! CellType
-            return builder(cell, element, row, cv)
-        } ~ disposeBag
-    }
-    
-    public convenience init(
-        columns:Int,
+        columns:Observable<Int>,
         vSpacing:CGFloat = 8,
         hSpacing:CGFloat = 8,
         items:Observable<[ModelType]>,
@@ -63,7 +40,14 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     ) -> UICollectionViewCell) {
         self.init()
         
-        self.columns = columns
+        Observable.combineLatest(
+            columns,
+            layoutSubviews$
+        ).asDriver(onErrorJustReturn: (1, ()))
+            .drive(onNext:{[weak self] in
+                self?.updateItemSize(columns: $0.0)
+            }) ~ disposeBag
+        
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
 
@@ -77,7 +61,7 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     }
     
     public convenience init<HeaderType:UICollectionReusableView, FooterType:UICollectionReusableView>(
-        columns:Int,
+        columns:Observable<Int>,
         vSpacing:CGFloat = 8,
         hSpacing:CGFloat = 8,
         items:Observable<[SectionModel<String, ModelType>]>,
@@ -87,7 +71,13 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     ) {
         self.init()
         
-        self.columns = columns
+        Observable.combineLatest(
+            columns,
+            layoutSubviews$
+        ).asDriver(onErrorJustReturn: (1, ()))
+            .drive(onNext:{[weak self] in
+                self?.updateItemSize(columns: $0.0)
+            }) ~ disposeBag
         
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
@@ -120,21 +110,16 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         fatalError("init(coder:) has not been implemented")
     }
     
+    let layoutSubviews$ = PublishSubject<()>()
     override public func layoutSubviews() {
         super.layoutSubviews()
-        
-        collectionView.contentInset = contentInset
-        guard let _columns = columns else {
-            let itemCount = floor((bounds.width) / (layout.itemSize.width + layout.minimumInteritemSpacing))
-            let margin:CGFloat =  (bounds.width - (itemCount * layout.itemSize.width) - ((itemCount - 1) * layout.minimumInteritemSpacing)) / 2
-            collectionView.contentInset = .init(top: collectionView.contentInset.top, left: margin, bottom: collectionView.contentInset.bottom, right: margin)
-            return
-        }
-        
-        let columns = CGFloat(_columns)
-        
+        layoutSubviews$.onNext(())
+    }
+    
+    func updateItemSize(columns:Int){
         let hSpacing:CGFloat = layout.minimumInteritemSpacing
         let totalWidth = min(self.bounds.width, self.bounds.height)
+        let columns = CGFloat(columns)
         let width:CGFloat = (totalWidth - collectionView.contentInset.left - collectionView.contentInset.right - (columns - 1) * hSpacing) / columns
         
         if let ratio:CGFloat = ratio {
@@ -147,14 +132,6 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
                 return
             }
             layout.itemSize = CGSize(width: width, height: width)
-            guard let viewDidLayoutSubview$ = viewDidLayoutSubview$ else { return }
-            viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
-                .drive(onNext:{[weak self] in
-                    guard let self = self else { return }
-                    let columns = floor((self.bounds.width - self.collectionView.contentInset.left) / (self.layout.itemSize.width + hSpacing))
-                    let margin:CGFloat = (self.bounds.width - (columns * self.layout.itemSize.width) - ((columns - 1) * hSpacing)) / 2
-                    self.collectionView.contentInset = .init(top: self.collectionView.contentInset.top, left: margin, bottom: self.collectionView.contentInset.bottom, right: margin)
-                }) ~ disposeBag
         } else {
             if columns == 1 && collectionView.isPagingEnabled {
                 let height:CGFloat =  self.bounds.height
@@ -164,13 +141,6 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
                 layout.itemSize = CGSize(width: width, height: width)
             }
         }
-        
-        guard let viewDidLayoutSubview$ = viewDidLayoutSubview$ else { return }
-        guard let (scrollToIndexPath, scrollPosition, animated) = self.scrollToIndexPath  else { return }
-        viewDidLayoutSubview$.asDriver(onErrorJustReturn: ())
-            .drive(onNext:{[weak self] in
-                self?.collectionView.scrollToItem(at: scrollToIndexPath, at: scrollPosition, animated: animated)
-            }) ~ disposeBag
     }
     
     @discardableResult
@@ -187,14 +157,13 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
 
     @discardableResult
     public func emptyView(_ view:@escaping () -> View) -> Self {
-        view().centerX(offset: 0).centerY(offset: 0).on(self.collectionView.backgroundView!)
+        view().centerX(.just(0)).centerY(.just(0)).on(self.collectionView.backgroundView!)
         return self
     }
     
-    var contentInset = UIEdgeInsets.all(0)
     @discardableResult
     public func padding(_ insets:UIEdgeInsets = .all(8)) -> Self {
-        contentInset = insets
+        collectionView.contentInset = insets
         return self
     }
     
@@ -249,8 +218,11 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     }
     
     @discardableResult
-    public func scrollToItem(at indexPath:IndexPath, at scrollPosition:UICollectionView.ScrollPosition, animated:Bool) -> Self {
-        scrollToIndexPath = (indexPath, scrollPosition, animated)
+    public func scrollToItem(_ trigger$:Observable<Void>, _ callback:@escaping() -> (indexPath:IndexPath, scrollPosition:UICollectionView.ScrollPosition, animated:Bool)) -> Self {
+        trigger$.asDriver(onErrorJustReturn: ()).drive(onNext:{[weak self] in
+            let (indexPath, scrollPosition, animated) = callback()
+            self?.collectionView.scrollToItem(at: indexPath, at: scrollPosition, animated: animated)
+        }) ~ disposeBag
         return self
     }
     
@@ -263,13 +235,6 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         .subscribe(onNext:{
             callback($0, $1)
         }) ~ disposeBag
-        return self
-    }
-    
-    var viewDidLayoutSubview$:Observable<Void>?
-    @discardableResult
-    public func viewDidLayoutSubview(_ trigger$:Observable<Void>) -> Self {
-        viewDidLayoutSubview$ = trigger$
         return self
     }
 }

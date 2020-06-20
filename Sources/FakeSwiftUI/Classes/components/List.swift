@@ -21,17 +21,23 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     var sectionViewHeightCalculator:((Int) -> CGFloat)?
     var isAutoDeselect = false
     
-    public init<ModelType>(items:Observable<[ModelType]>, _ builder:@escaping(CellType, ModelType, Int, UITableView) -> UITableViewCell) {
-        tableView = .init()
-        super.init()
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.register(CellType.self, forCellReuseIdentifier: "CELL")
+    public init(style:UITableView.Style) {
+        self.tableView = .init(frame:.zero, style:style)
         
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.append(to: self).fillSuperview()
-        tableView.backgroundColor = .clear
+        super.init()
+        
+        self.tableView.rowHeight = UITableView.automaticDimension
+        self.tableView.register(CellType.self, forCellReuseIdentifier: "CELL")
+        self.tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.tableView.backgroundColor = .clear
         self.tableView.backgroundView = UIView()
         self.tableView.tableFooterView = UIView()
+        self.tableView.append(to: self).fillSuperview()
+    }
+    
+    public convenience init<ModelType>(items:Observable<[ModelType]>, style:UITableView.Style = .plain, _ builder:@escaping(CellType, ModelType, Int, UITableView) -> UITableViewCell) {
+        self.init(style: style)
+        
         items.map{ $0.count > 0 } ~> tableView.backgroundView!.rx.isHidden ~ disposeBag
         
         items.asDriver(onErrorJustReturn: []).drive(tableView.rx.items) { (view, row, element) in
@@ -49,16 +55,8 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
             }) ~ disposeBag
     }
 
-    public init<ModelType>(items:Observable<[SectionModel<String, ModelType>]>, style:UITableView.Style = .plain, _ builder:@escaping(CellType, IndexPath, ModelType) -> UITableViewCell) {
-        tableView = .init(frame: .zero, style: style)
-        super.init()
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.register(CellType.self, forCellReuseIdentifier: "CELL")
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.append(to: self).fillSuperview()
-        tableView.backgroundColor = .clear
-        self.tableView.backgroundView = UIView()
-        self.tableView.tableFooterView = UIView()
+    public convenience init<ModelType>(items:Observable<[SectionModel<String, ModelType>]>, style:UITableView.Style = .plain, _ builder:@escaping(CellType, IndexPath, ModelType) -> UITableViewCell) {
+        self.init(style: style)
         
         let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, ModelType>>(configureCell: { ds, tv, ip, model in
             let cell = tv.dequeueReusableCell(withIdentifier: "CELL", for: ip) as! CellType
@@ -101,7 +99,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     
     @discardableResult
     public func emptyView(_ view:@escaping () -> View) -> Self {
-        view().centerX(offset: 0).centerY(offset: 0).on(self.tableView.backgroundView!)
+        view().centerX(.just(0)).centerY(.just(0)).on(self.tableView.backgroundView!)
         return self
     }
     
@@ -128,19 +126,13 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     }
     
     @discardableResult
-    public func onModelSelected<T>(_ callback:@escaping(T) -> ()) -> Self {
-        tableView.rx.modelSelected(T.self)
-            .subscribe(onNext:{
-                callback($0)
-            }) ~ disposeBag
-        return self
-    }
-    
-    @discardableResult
-    public func itemSelected(_ callback:@escaping(IndexPath) -> ()) -> Self {
-       tableView.rx.itemSelected
+    public func itemSelected<T>(_ callback:@escaping(IndexPath, T) -> ()) -> Self {
+        Observable.zip(
+            tableView.rx.itemSelected,
+            tableView.rx.modelSelected(T.self)
+        )
            .subscribe(onNext:{
-                callback($0)
+                callback($0, $1)
            }) ~ disposeBag
        return self
     }

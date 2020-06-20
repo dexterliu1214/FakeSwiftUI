@@ -12,6 +12,7 @@ import RxSwift
 import RxBinding
 import RxGesture
 import RxCocoa
+import RxAnimated
 
 open class View:UIView {
     override open class var layerClass: AnyClass {
@@ -55,20 +56,23 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func frame(width:CGFloat?, height:CGFloat?) -> Self {
+    open func frame(width:Observable<CGFloat>?, height:Observable<CGFloat>?) -> Self {
         if let width = width {
-            self.width(offset:width)
+            self.width(width)
         }
         
         if let height = height {
-            self.height(offset:height)
+            self.height(height)
         }
         return self
     }
     
     @discardableResult
     open func fill(padding:UIEdgeInsets = .all(0)) -> Self {
-        leading(offset:padding.left).trailing(offset: -padding.right).top(offset: padding.top).bottom(offset: -padding.bottom)
+        self.leading(.just(padding.left))
+            .trailing(.just(-padding.right))
+            .top(.just(padding.top))
+            .bottom(.just(-padding.bottom))
         return self
     }
     
@@ -151,20 +155,8 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func height(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        heightParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
     open func width(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
         widthParams = (constant$: constant$, startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
-    open func width(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        widthParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
@@ -175,32 +167,14 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func leading(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        leadingParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
     open func trailing(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
         trailingParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
     
     @discardableResult
-    open func trailing(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        trailingParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
     open func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
         trailingLessThanOrEqualParams = (constant$: constant$, startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
-    open func trailingLessThanOrEqual(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        trailingLessThanOrEqualParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
 
@@ -211,20 +185,8 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func bottom(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        bottomParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
     open func top(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
         topParams = (constant$: constant$, startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
-    open func top(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        topParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
@@ -233,22 +195,10 @@ open class View:UIView {
         centerYParams = (constant$: constant$, startValue: startValue, duration: duration)
         return self
     }
-    
-    @discardableResult
-    open func centerY(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        centerYParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
-        return self
-    }
 
     @discardableResult
     open func centerX(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
         centerXParams = (constant$: constant$, startValue: startValue, duration: duration)
-        return self
-    }
-    
-    @discardableResult
-    open func centerX(offset:CGFloat, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        centerXParams = (constant$: Observable.just(offset), startValue: startValue, duration: duration)
         return self
     }
     
@@ -316,18 +266,6 @@ open class View:UIView {
     }
     
     @discardableResult
-    public func overlay(_ shape:Shape) -> Self {
-        self.overlayShapes$.accept(self.overlayShapes$.value + [shape])
-        return self
-    }
-    
-    @discardableResult
-    public func overlay(_ shapes:[Shape]) -> Self {
-        self.overlayShapes$.accept(shapes)
-        return self
-    }
-    
-    @discardableResult
     public func overlay(_ shape$:Observable<[Shape]>) -> Self {
         shape$ ~> self.overlayShapes$ ~ disposeBag
         return self
@@ -345,7 +283,6 @@ open class View:UIView {
         layer.shadowRadius = radius
         layer.shadowColor = color.cgColor
         layer.shadowOffset = CGSize(width: x, height: y)
-//        layer.masksToBounds = false
         return self
     }
     
@@ -356,41 +293,24 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func hidden(_ stream$:Observable<Bool>) -> Self {
-        stream$.asDriver(onErrorJustReturn: true) ~> rx.isHidden ~ disposeBag
-        return self
-    }
-    
-    @discardableResult
-    open func hidden(_ value:Bool) -> Self {
-        self.isHidden = value
-        return self
-    }
-    
-    @discardableResult
-    open func fade(_ stream$:Observable<Bool>, duration:TimeInterval) -> Self {
-        stream$.asDriver(onErrorJustReturn: true) ~> rx.animated.fade(duration: duration).isHidden ~ disposeBag
+    open func hidden(_ stream$:Observable<Bool>, animationSink:((AnimatedSink<Self>) -> (AnimatedSink<Self>))?) -> Self {
+        guard let animationSink = animationSink else {
+            stream$.asDriver(onErrorJustReturn: true) ~> rx.isHidden ~ disposeBag
+            return self
+        }
+        stream$.asDriver(onErrorJustReturn: true) ~> animationSink(rx.animated).isHidden ~ disposeBag
         return self
     }
     
     @discardableResult
     open func background(_ color:UIColor) -> Self {
-        return self.background([color, color])
+        self.backgroundColor = color
+        return self
     }
     
     @discardableResult
-    open func background(_ color$:Observable<UIColor>) -> Self {
-        return self.background(color$.map{ [$0, $0] })
-    }
-    
-    @discardableResult
-    open func background(_ colors:[UIColor], degree:Double = 0, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
-        return self.background(Observable.just(colors), degree$: Observable.just(degree), locations: locations, type: type)
-    }
-    
-    @discardableResult
-    open func background(_ colors:[UIColor], degree$:Observable<Double>, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
-        return self.background(Observable.just(colors), degree$: degree$, locations: locations, type: type)
+    open func background(_ colors:[UIColor], degree$:Observable<Double> = Observable.just(0), locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+        self.background(.just(colors), degree$:degree$, locations:locations, type:type)
     }
     
     @discardableResult

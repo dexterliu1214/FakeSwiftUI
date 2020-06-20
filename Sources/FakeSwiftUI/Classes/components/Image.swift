@@ -33,31 +33,39 @@ open class Image:View {
     
     let imageView = UIImageView(image:nil)
 
-    public init(image:UIImage?) {
+    public override init() {
         super.init()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.append(to: self).fillSuperview()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.image = image
     }
     
-    public convenience init(_ name:String) {
-        self.init(image:UIImage(named: name))
+    public convenience init(_ url$:Observable<String>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+        self.init()
+        url$.distinctUntilChanged().flatMapLatest{ $0.get$(urlSession:Image.urlSession).catchErrorJustReturn(Data()) }
+            .map{UIImage(data:$0)}.asDriver(onErrorJustReturn: nil) ~> imageView.rx.image ~ disposeBag
     }
     
-    public convenience init(_ url$:Observable<String>, fadeDuration duration:TimeInterval = 0) {
-        let image$:Observable<UIImage?> = url$.flatMapLatest{
-            $0.get$(urlSession:Image.urlSession).catchErrorJustReturn(Data())
+    public convenience init(_ url:String, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+        self.init(.just(url), animationSink:animationSink)
+    }
+    
+    public convenience init(_ image$:Observable<UIImage?>, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
+        self.init()
+        guard let animationSink = animationSink else {
+            image$.asDriver(onErrorJustReturn: nil) ~> imageView.rx.image ~ disposeBag
+            return
         }
-        .map{UIImage(data:$0)}
-        
-        self.init(image$, fadeDuration:duration)
+        image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> animationSink(imageView.rx.animated).image ~ disposeBag
     }
     
-    public convenience init(_ image$:Observable<UIImage?>, fadeDuration duration:TimeInterval = 0) {
-        self.init(image:nil)
-        image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> imageView.rx.animated.fadeIn(duration:duration).image ~ disposeBag
+    public convenience init(_ image:UIImage?, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
+        self.init(.just(image), animationSink:animationSink)
+    }
+    
+    public convenience init(name:String, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
+        self.init(.just(UIImage(named: name)), animationSink:animationSink)
     }
     
     required public init?(coder: NSCoder) {
@@ -87,8 +95,6 @@ extension String
                 }
             }
             let task:URLSessionDataTask = urlSession.dataTask(with: url) { (data:Data?, response:URLResponse?, error:Error?) in
-                print("\(url.absoluteString) \(error?.localizedDescription ?? "")")
-//                print(response)
                 guard let data:Data = data else {
                     observer.on(.error(error ?? RequestError.Unknow))
                     return

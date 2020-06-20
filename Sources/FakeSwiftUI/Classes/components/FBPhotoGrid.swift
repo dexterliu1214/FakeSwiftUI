@@ -48,7 +48,7 @@ open class FBPhotoGrid<C:UICollectionViewCell>:View, UICollectionViewDelegateFlo
     
     @discardableResult
     public func emptyView(_ view:@escaping () -> View) -> Self {
-        view().centerX(offset: 0).centerY(offset: 0).on(collectionView.backgroundView!)
+        view().centerX(.just(0)).centerY(.just(0)).on(collectionView.backgroundView!)
         return self
     }
     

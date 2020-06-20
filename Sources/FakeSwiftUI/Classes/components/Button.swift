@@ -18,16 +18,10 @@ open class Button:View
     let button = UIButton()
     
     public convenience init(_ title:String, _ action:@escaping(Button) -> ()) {
-        self.init()
-        
-        self.button.setTitle(title, for: .normal)
-        button.rx.tap
-            .subscribe(onNext:{[unowned self] _ in
-                action(self)
-            }) ~ disposeBag
+        self.init(.just(title), action)
     }
     
-    public convenience init(_ title$:Observable<String>, _ action:@escaping(Button) -> ()) {
+    public convenience init(_ title$:Observable<String?>, _ action:@escaping(Button) -> ()) {
         self.init()
         title$ ~> self.button.rx.title(for: .normal) ~ disposeBag
         button.rx.tap
@@ -36,18 +30,19 @@ open class Button:View
             }) ~ disposeBag
     }
     
-    public convenience init(action:@escaping(Button) -> (), label:() -> View) {
+    public convenience init(action:@escaping(Button) -> (), viewBuilder:() -> View) {
         self.init()
         
-        let label = label()
-        label.append(to:self)
-        label.rx.tapGesture().when(.recognized)
-        .subscribe(onNext:{[unowned self] _ in
+        let view = viewBuilder()
+        view.append(to:self).fillSuperview()
+        view.rx.tapGesture().when(.recognized)
+        .subscribe(onNext:{[weak self] _ in
+            guard let self = self else { return }
             action(self)
         }) ~ disposeBag
    }
     
-    override public init (){        
+    override public init (){
         super.init()
         
         button.translatesAutoresizingMaskIntoConstraints = false

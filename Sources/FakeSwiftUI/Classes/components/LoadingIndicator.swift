@@ -21,6 +21,7 @@ open class LoadingIndicator:View
         indicatorView.translatesAutoresizingMaskIntoConstraints = false
         indicatorView.append(to: self).fillSuperview()
         indicatorView.style = style
+        indicatorView.hidesWhenStopped = true
         isAnimating.asDriver(onErrorJustReturn: false) ~> indicatorView.rx.isAnimating ~ disposeBag
     }
     

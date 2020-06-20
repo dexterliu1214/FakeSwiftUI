@@ -11,6 +11,7 @@ import RxSwift
 import RxCocoa
 import RxBinding
 import RxGesture
+import RxAnimated
 
 open class Label: UILabel {
     var insets = UIEdgeInsets.all(0)
@@ -48,37 +49,34 @@ open class Text:View {
     var fontSize:CGFloat = UIFont.systemFontSize
     var isBold:Bool = false
     
-    public convenience init(_ stream$:Observable<String>) {
-        self.init()
-        stream$.asDriver(onErrorJustReturn: "") ~> labelView.rx.text ~ disposeBag
-    }
-    
-    public convenience init(_ stream$:Observable<String?>) {
-        self.init()
-        stream$.asDriver(onErrorJustReturn: nil) ~> labelView.rx.text ~ disposeBag
-    }
-    
-    public convenience init(_ stream$:BehaviorRelay<String?>) {
-        self.init()
-        stream$.asDriver(onErrorJustReturn: nil) ~> labelView.rx.text ~ disposeBag
-    }
-    
-    public convenience init(_ stream$:Observable<NSAttributedString?>) {
-        self.init()
-        stream$ ~> labelView.rx.attributedText ~ disposeBag
-    }
-    
-    public convenience init(_ text:String) {
-        self.init()
-        self.labelView.text = text
-    }
-    
     public override init (){
         super.init()
         labelView.translatesAutoresizingMaskIntoConstraints = false
         labelView.append(to: self).fillSuperview()
     }
     
+    public convenience init(_ stream$:Observable<String?>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+        self.init()
+        guard let animationSink = animationSink else {
+            stream$.asDriver(onErrorJustReturn: nil) ~> labelView.rx.text ~ disposeBag
+            return
+        }
+        stream$.map{ $0 ?? ""}.asDriver(onErrorJustReturn: "") ~> animationSink(labelView.rx.animated).text ~ disposeBag
+    }
+    
+    public convenience init(_ text:String?, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+        self.init(.just(text), animationSink:animationSink)
+    }
+    
+    public convenience init(_ stream$:Observable<NSAttributedString?>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+        self.init()
+        guard let animationSink = animationSink else {
+            stream$.asDriver(onErrorJustReturn: nil) ~> labelView.rx.attributedText ~ disposeBag
+            return
+        }
+        stream$.map{ $0 ?? NSAttributedString() }.asDriver(onErrorJustReturn: NSAttributedString()) ~> animationSink(labelView.rx.animated).attributedText ~ disposeBag
+    }
+        
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

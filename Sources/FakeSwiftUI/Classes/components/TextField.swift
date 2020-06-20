@@ -39,21 +39,21 @@ open class TextInput: UITextField {
 open class TextField:View
 {
     let textInputView = TextInput()
-    let text$:BehaviorRelay<String?>
     
-    public init(_ placeholder:String, text:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
-        self.text$ = text
+    public init(_ placeholder:String, text$:BehaviorRelay<String?>, limit:Int? = nil, onEditingChange:@escaping(_ editing:Bool) -> () = { _ in } , onCommit: @escaping () -> Void = {}) {
         super.init()
-        textInputView.placeholder = placeholder
-            textInputView.autocapitalizationType = .none
-
+        
         textInputView.translatesAutoresizingMaskIntoConstraints = false
         textInputView.append(to: self).fillSuperview()
+        
+        textInputView.placeholder = placeholder
+        textInputView.autocapitalizationType = .none
+
         if let limit = limit {
-            text ~> textInputView.rx.text ~ disposeBag
-            textInputView.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text ~ disposeBag
+            text$ ~> textInputView.rx.text ~ disposeBag
+            textInputView.rx.text.compactMap{ $0 }.map{ "\($0.prefix(limit))" } ~> text$ ~ disposeBag
         } else {
-            text <~> textInputView.rx.text ~ disposeBag
+            text$ <~> textInputView.rx.text ~ disposeBag
         }
         
         textInputView.rx.controlEvent([.editingChanged]).subscribe(onNext:{

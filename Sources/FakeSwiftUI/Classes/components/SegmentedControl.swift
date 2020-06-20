@@ -16,14 +16,16 @@ import RxGesture
 open class SegmentedControl:View
 {
     let segmentedControl:UISegmentedControl
-    
-    public init(_ items:[Any], defaultIndex:Int = 0) {
-        segmentedControl = UISegmentedControl(items: items)
-        segmentedControl.selectedSegmentIndex = defaultIndex
+    var attributes = [NSAttributedString.Key:Any]()
+    var selectedAttributes = [NSAttributedString.Key:Any]()
 
+    public init(_ items:[Any]?, defaultIndex:Int = 0) {
+        segmentedControl = UISegmentedControl(items: items)
         super.init()
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.append(to: self).fillSuperview()
+        
+        segmentedControl.selectedSegmentIndex = defaultIndex
     }
     
     public required init?(coder: NSCoder) {
@@ -40,13 +42,31 @@ open class SegmentedControl:View
     
     @discardableResult
     public func font(_ size:CGFloat) -> Self {
-        segmentedControl.backgroundColor = 0x4F3D6A.color
-        segmentedControl.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: size), .foregroundColor: UIColor.white ], for: .normal)
+        attributes[.font] = UIFont.systemFont(ofSize: size)
+        self.updateTitleAttributes()
+        return self
+    }
+    
+    var textColor:UIColor = .black
+    @discardableResult
+    public func textColor(_ color:UIColor) -> Self {
+        attributes[.foregroundColor] = color
+        self.updateTitleAttributes()
+        return self
+    }
+    
+    func updateTitleAttributes(){
+        segmentedControl.setTitleTextAttributes(attributes, for: .normal)
+    }
+    
+    public func tintColor(_ color:UIColor) -> Self {
         if #available(iOS 13.0, *) {
-            segmentedControl.selectedSegmentTintColor = UIColor.white.withAlphaComponent(0.4)
+            segmentedControl.selectedSegmentTintColor = color
         } else {
             segmentedControl.tintColor = .clear
-            segmentedControl.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: size), .foregroundColor: UIColor.white, .backgroundColor: UIColor.white.withAlphaComponent(0.4) ], for: .selected)
+            selectedAttributes[.backgroundColor] = color
+            selectedAttributes.merge(attributes, uniquingKeysWith: { (_, new) in new })
+            segmentedControl.setTitleTextAttributes(selectedAttributes, for: .selected)
         }
         return self
     }
