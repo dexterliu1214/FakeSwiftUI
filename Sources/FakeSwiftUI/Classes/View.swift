@@ -324,6 +324,11 @@ open class View:UIView {
     }
     
     @discardableResult
+    open func background(_ colors:[UIColor], degree:Double = 0, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
+        self.background(.just(colors), degree$:.just(degree), locations:locations, type:type)
+    }
+    
+    @discardableResult
     open func background(_ colors$:Observable<[UIColor]>, degree$:Observable<Double> = Observable.just(0), locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
         func calc(_ x:Double, _ y:Double) -> Double {
             return pow(sin((2.0 * .pi * ((x + y) / 2.0))),2.0)
