@@ -68,6 +68,18 @@ open class View:UIView {
     }
     
     @discardableResult
+    open func center(_ x:Observable<CGFloat>?, _ y:Observable<CGFloat>?) -> Self {
+        if let x = x {
+            self.centerX(x)
+        }
+        
+        if let y = y {
+            self.centerY(y)
+        }
+        return self
+    }
+    
+    @discardableResult
     open func fill(padding:UIEdgeInsets = .all(0)) -> Self {
         self.leading(.just(padding.left))
             .trailing(.just(-padding.right))
