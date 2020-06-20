@@ -68,15 +68,8 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func center(_ x:Observable<CGFloat>?, _ y:Observable<CGFloat>?) -> Self {
-        if let x = x {
-            self.centerX(x)
-        }
-        
-        if let y = y {
-            self.centerY(y)
-        }
-        return self
+    open func center(_ x:Observable<CGFloat> = .just(0), _ y:Observable<CGFloat> = .just(0)) -> Self {
+        self.centerX(x).centerY(y)
     }
     
     @discardableResult
