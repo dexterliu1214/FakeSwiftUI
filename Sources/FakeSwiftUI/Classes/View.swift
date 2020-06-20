@@ -270,6 +270,16 @@ open class View:UIView {
         shape$ ~> self.overlayShapes$ ~ disposeBag
         return self
     }
+    
+    @discardableResult
+    public func overlay(_ shapes:[Shape]) -> Self {
+        self.overlay(Observable.just(shapes))
+    }
+    
+    @discardableResult
+    public func overlay(_ shape:Shape) -> Self {
+        self.overlay(Observable.just([shape]))
+    }
      
     @discardableResult
     public func clipShape(_ shape:Shape) -> Self {
