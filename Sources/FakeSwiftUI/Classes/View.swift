@@ -302,13 +302,12 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func shown(_ stream$:Observable<Bool>) -> Self {
-        stream$.asDriver(onErrorJustReturn: false) ~> rx.isShow ~ disposeBag
-        return self
+    open func shown(_ stream$:Observable<Bool>, _ animationSink:((AnimatedSink<Self>) -> (AnimatedSink<Self>))?) -> Self {
+        self.hidden(stream$.map{!$0}, animationSink)
     }
     
     @discardableResult
-    open func hidden(_ stream$:Observable<Bool>, animationSink:((AnimatedSink<Self>) -> (AnimatedSink<Self>))?) -> Self {
+    open func hidden(_ stream$:Observable<Bool>, _ animationSink:((AnimatedSink<Self>) -> (AnimatedSink<Self>))?) -> Self {
         guard let animationSink = animationSink else {
             stream$.asDriver(onErrorJustReturn: true) ~> rx.isHidden ~ disposeBag
             return self
