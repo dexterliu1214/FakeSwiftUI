@@ -308,11 +308,8 @@ open class View:UIView {
     
     @discardableResult
     open func hidden(_ stream$:Observable<Bool>, _ animationSink:((AnimatedSink<Self>) -> (AnimatedSink<Self>))?) -> Self {
-        guard let animationSink = animationSink else {
-            stream$.asDriver(onErrorJustReturn: true) ~> rx.isHidden ~ disposeBag
-            return self
-        }
-        stream$.asDriver(onErrorJustReturn: true) ~> animationSink(rx.animated).isHidden ~ disposeBag
+        let animationSink = animationSink?(rx.animated) ?? rx.animated.fade(duration: 0)
+        stream$.asDriver(onErrorJustReturn: true) ~> animationSink.isHidden ~ disposeBag
         return self
     }
     

@@ -24,7 +24,6 @@ open class ScalableImage:View
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.append(to: self).fillSuperview()
         
-        imageView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
         imageView.append(to: scrollView)
         
         imageView.rx.tapGesture() { gesture, _ in
@@ -43,8 +42,8 @@ open class ScalableImage:View
                 guard let self = self else { return }
                 self.imageView.image = $0
                 guard let size = $0?.size else { return }
-                self.scrollView.contentSize = CGSize(width: size.width, height: size.height)
                 self.imageView.frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+                self.scrollView.contentSize = self.imageView.bounds.size                
                 self.setZoomScale()
                
                 if size.width >= size.height {
@@ -68,6 +67,15 @@ open class ScalableImage:View
         fatalError("init(coder:) has not been implemented")
     }
     
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        if imageView.image == nil {
+            return
+        }
+        self.setZoomScale()
+        self.recenterImage()
+    }
+    
     func setZoomScale() {
         let imageViewSize = imageView.bounds.size
         let scrollViewSize = scrollView.bounds.size
@@ -78,6 +86,14 @@ open class ScalableImage:View
         scrollView.maximumZoomScale = max(widthScale, heightScale)
         scrollView.zoomScale = heightScale
     }
+    
+    func recenterImage(){
+        let scrollViewSize = scrollView.bounds.size
+        let imageViewSize = imageView.frame.size
+        let hs = imageViewSize.width < scrollViewSize.width ? (scrollViewSize.width - imageViewSize.width) / 2.0 : 0
+        let vs = imageViewSize.height < scrollViewSize.height ? (scrollViewSize.height - imageViewSize.height) / 2.0 : 0
+        scrollView.contentInset = .init(top: vs, left: hs, bottom: vs, right: hs)
+    }
 }
 
 extension ScalableImage:UIScrollViewDelegate
@@ -87,8 +103,6 @@ extension ScalableImage:UIScrollViewDelegate
     }
 
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
-        let xCenter = scrollView.contentSize.width > scrollView.frame.size.width ? scrollView.contentSize.width/2 : scrollView.center.x
-        let yCenter = scrollView.contentSize.height > scrollView.frame.size.height ? scrollView.contentSize.height/2 : scrollView.center.y;
-        imageView.center = CGPoint(x: xCenter, y: yCenter)
+        recenterImage()
     }
 }

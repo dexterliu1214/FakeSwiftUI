@@ -41,23 +41,21 @@ open class Image:View {
         imageView.clipsToBounds = true
     }
     
-    public convenience init(_ url$:Observable<String>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+    public convenience init(_ url$:Observable<String>, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
         self.init()
+        let animationSink = animationSink?(imageView.rx.animated) ?? imageView.rx.animated.fade(duration: 0)
         url$.distinctUntilChanged().flatMapLatest{ $0.get$(urlSession:Image.urlSession).catchErrorJustReturn(Data()) }
-            .map{UIImage(data:$0)}.asDriver(onErrorJustReturn: nil) ~> imageView.rx.image ~ disposeBag
+            .map{UIImage(data:$0)}.asDriver(onErrorJustReturn: nil) ~> animationSink.image ~ disposeBag
     }
     
-    public convenience init(_ url:String, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+    public convenience init(_ url:String, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
         self.init(.just(url), animationSink:animationSink)
     }
     
     public convenience init(_ image$:Observable<UIImage?>, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
         self.init()
-        guard let animationSink = animationSink else {
-            image$.asDriver(onErrorJustReturn: nil) ~> imageView.rx.image ~ disposeBag
-            return
-        }
-        image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> animationSink(imageView.rx.animated).image ~ disposeBag
+        let animationSink = animationSink?(imageView.rx.animated) ?? imageView.rx.animated.fade(duration: 0)
+        image$.distinctUntilChanged().asDriver(onErrorJustReturn: nil) ~> animationSink.image ~ disposeBag
     }
     
     public convenience init(_ image:UIImage?, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
