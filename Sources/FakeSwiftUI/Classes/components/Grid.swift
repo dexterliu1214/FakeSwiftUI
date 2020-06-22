@@ -118,7 +118,7 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     
     func updateItemSize(columns:Int){
         let hSpacing:CGFloat = layout.minimumInteritemSpacing
-        let totalWidth = min(self.bounds.width, self.bounds.height)
+        let totalWidth = self.bounds.width
         let columns = CGFloat(columns)
         let width:CGFloat = (totalWidth - collectionView.contentInset.left - collectionView.contentInset.right - (columns - 1) * hSpacing) / columns
         
