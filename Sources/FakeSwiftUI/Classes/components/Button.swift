@@ -21,6 +21,15 @@ open class Button:View
         self.init(.just(title), action)
     }
     
+    public convenience init(_ title$:Observable<String>, _ action:@escaping(Button) -> ()) {
+        self.init()
+        title$ ~> self.button.rx.title(for: .normal) ~ disposeBag
+        button.rx.tap
+            .subscribe(onNext:{[unowned self] _ in
+                action(self)
+            }) ~ disposeBag
+    }
+    
     public convenience init(_ title$:Observable<String?>, _ action:@escaping(Button) -> ()) {
         self.init()
         title$ ~> self.button.rx.title(for: .normal) ~ disposeBag
