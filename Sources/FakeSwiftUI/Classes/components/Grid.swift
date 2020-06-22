@@ -72,6 +72,8 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
     ) {
         self.init()
         
+        columns ~> columns$ ~ disposeBag
+
         layout.minimumInteritemSpacing = hSpacing
         layout.minimumLineSpacing = vSpacing
         layout.headerReferenceSize = CGSize(width: 200, height: 40)
