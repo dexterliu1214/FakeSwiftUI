@@ -328,11 +328,6 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func background(_ colors:[UIColor], degree$:Observable<Double> = Observable.just(0), locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
-        self.background(.just(colors), degree$:degree$, locations:locations, type:type)
-    }
-    
-    @discardableResult
     open func background(_ colors:[UIColor], degree:Double = 0, locations:[NSNumber]? = nil, type:CAGradientLayerType = .axial) -> Self {
         self.background(.just(colors), degree$:.just(degree), locations:locations, type:type)
     }
