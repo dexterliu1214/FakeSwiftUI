@@ -55,25 +55,25 @@ open class Text:View {
         labelView.append(to: self).fillSuperview()
     }
     
-    public convenience init(_ stream$:Observable<String>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+    public convenience init(_ stream$:Observable<String>, animationSink:((Label) -> (AnimatedSink<Label>))? = nil) {
         self.init()
         guard let animationSink = animationSink else {
             stream$.asDriver(onErrorJustReturn: "") ~> labelView.rx.text ~ disposeBag
             return
         }
-        stream$.asDriver(onErrorJustReturn: "") ~> animationSink(labelView.rx.animated).text ~ disposeBag
+        stream$.asDriver(onErrorJustReturn: "") ~> animationSink(labelView).text ~ disposeBag
     }
     
-    public convenience init(_ stream$:Observable<String?>, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+    public convenience init(_ stream$:Observable<String?>, animationSink:((Label) -> (AnimatedSink<Label>))? = nil) {
         self.init()
         guard let animationSink = animationSink else {
             stream$.asDriver(onErrorJustReturn: nil) ~> labelView.rx.text ~ disposeBag
             return
         }
-        stream$.map{ $0 ?? ""}.asDriver(onErrorJustReturn: "") ~> animationSink(labelView.rx.animated).text ~ disposeBag
+        stream$.map{ $0 ?? ""}.asDriver(onErrorJustReturn: "") ~> animationSink(labelView).text ~ disposeBag
     }
     
-    public convenience init(_ text:String?, animationSink:((AnimatedSink<Label>) -> (AnimatedSink<Label>))? = nil) {
+    public convenience init(_ text:String?, animationSink:((Label) -> (AnimatedSink<Label>))? = nil) {
         self.init(.just(text), animationSink:animationSink)
     }
     
