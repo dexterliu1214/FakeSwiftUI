@@ -25,6 +25,7 @@ extension TextView:UITextViewDelegate
 }
 
 open class TextView:View {
+    let placeholderLabel = UILabel()
     let textView = UITextView()
     var submitCallback:((_ text:String) -> ())?
     var text$:BehaviorRelay<String?>? = nil
@@ -68,7 +69,6 @@ open class TextView:View {
     
     @discardableResult
     public func placeholder(_ text$:Observable<String?>) -> Self {
-        let placeholderLabel = UILabel()
         placeholderLabel.translatesAutoresizingMaskIntoConstraints = false
         placeholderLabel.numberOfLines = 0
         placeholderLabel.textColor = .lightGray
@@ -125,6 +125,7 @@ open class TextView:View {
     @discardableResult
     public func font(_ size:CGFloat) -> Self {
         textView.font = UIFont.systemFont(ofSize: size)
+        placeholderLabel.font = UIFont.systemFont(ofSize: size)
         return self
     }
     
