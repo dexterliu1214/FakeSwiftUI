@@ -31,59 +31,33 @@ class ImageDemoViewController: UIViewController {
         
         view.backgroundColor = .white
         
+//        let height$ = BehaviorRelay<CGFloat>(value: -40)
 //        ZStack(
-//            Image(Observable.just("https://placeimg.com/640/480/any"))
-//                .aspectRatio(contentMode: .scaleAspectFill)
-//                .clipShape(Circle())
-//                .overlay(Circle().stroke([.green, .yellow], lineWidth: 4))
-//                .shadow(color: .black, radius: 10)
-//                .blur()
-//                .fill()
+//            VStack(alignment: .fill,
+//                   List(items: Observable.just(["1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2","1", "2"]), { (cell:UITableViewCell, model, row, tv) -> UITableViewCell in
+//                    cell.textLabel?.text = model
+//                    return cell
+//                   })
+//                        .height(height$.map{ UIScreen.main.bounds.height / 2 - $0 - 30 })
+//            )
+//                .bottom(offset: 0)
+//                .leading(offset: 0)
+//                .trailing(offset: 0),
+//            View()
+//                .background(.red)
+//                .width(offset: 40)
+//                .height(offset: 40)
+//                .centerX(offset: 0)
+//                .centerY(height$.asObservable())
+//                .draggable(axis: .vertical, limit:Observable.just(CGRect(x: 0, y: -100, width: 0, height: 200))){
+//                    print($0)
+//                    height$.accept($0.y)
+//            }
 //        )
-//            .frame(width: 200, height: 200)
-//            .shadow(radius: 10)
-//            .centerX(offset: 0)
-//            .centerY(offset: 0)
-//            .draggable()
+//            .fill()
 //            .on(view)
-        VStack(alignment: .fill, spacing: 0,
-               HStack(alignment: .center, spacing: 0,
-                      View().background(["38386C", "DEDEDE"].map{ $0.hex!.color }, degree: 90).height(offset: 2),
-                      Text("禮物盒").color(.white).textAlignment(.center).font(20),
-                      View().background(["DEDEDE", "38386C"].map{ $0.hex!.color }, degree: 90).height(offset: 2)
-               )
-                .padding()
-                .distribution(.fillProportionally),
-            Grid(columns:5, items:Observable.just([1])) {(cell:HougongGiftCell, model, row, view) in
-                print(model)
-                return cell
-            }.ratio(0.9)
-        )
-            .background(["1D1D46", "6666AD", "202052"].map{ $0.hex!.color }, degree: 30)
-            .fill().on(view)
-    }
-}
-
-class HougongGiftCell:UICollectionViewCell
-{
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        contentView.backgroundColor = UIColor.white.withAlphaComponent(0.09)
-        
-        VStack(alignment: .fill, spacing: 0,
-               Image(Observable.just("https://placeimg.com/640/480/any")),
-               HStack(alignment: .center, spacing: 0,
-                      Image(Observable.just("https://placeimg.com/640/480/any")),
-                      Text("100")
-                        .color(.white)
-                )//.padding()
-                .distribution(.fillEqually)
-        )
-        //.padding()
-            .fill().on(contentView)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        let url = "https://placeimg.com/20/20/any"
+        let color = UIColor(patternImage: UIImage(data: try! Data(contentsOf: URL(string: url)!))!)
+        Toggle(isOn: BehaviorRelay(value:true)).thumbTintColor(color).centerX(.just(0)).centerY(.just(0)).on(view)
     }
 }

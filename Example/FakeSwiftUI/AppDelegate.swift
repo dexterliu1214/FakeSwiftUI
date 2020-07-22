@@ -16,10 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow()
-        window?.rootViewController = TextDemoViewController()
+//        window?.rootViewController = TextDemoViewController()
 //        window?.rootViewController = GradientTextDemoViewController()
 //        window?.rootViewController = ImageDemoViewController()
-//        window?.rootViewController = GridDemoViewController()
+        window?.rootViewController = GridDemoViewController()
         window?.makeKeyAndVisible()        // Override point for customization after application launch.
         return true
     }

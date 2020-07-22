@@ -37,18 +37,18 @@ class GradientTextDemoViewController: UIViewController {
         ZStack(
             View()
                 .mask(
-                    Text("FakeSwiftUI Rocks")
+                    Text(.just("FakeSwiftUI Rocks"))
                         .font(40)
                         .padding(.symmetric(4, 16))
             )
-                .background([UIColor.red, .blue], degree$: degree$)
+                .background(.just([UIColor.red, .blue]), degree$: degree$)
                 .fill()
         )
-            .background(.black)
+            .background(.just([.black]))
             .clipShape(Circle())
-            .overlay(Circle().stroke([.green, .yellow], degree$: degree$, lineWidth: 4))
-            .centerX(offset: 0)
-            .centerY(offset: 0)
+            .overlay(.just([Circle().stroke([.green, .yellow], degree$: degree$, lineWidth: 4)]))
+            .centerX(.just(0))
+            .centerY(.just(0))
             .on(view)
     }
 }

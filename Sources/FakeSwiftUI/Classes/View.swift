@@ -22,7 +22,7 @@ open class View:UIView {
     public let disposeBag:DisposeBag = .init()
     var overlayShapes$ = BehaviorRelay(value:[Shape]())
     var clipShape:Shape?
-    typealias LayoutParam = (constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval)
+    typealias LayoutParam = (constant$:Observable<CGFloat>, startValue:CGFloat, duration:TimeInterval, isActive$:Observable<Bool>)
     var centerXParams:LayoutParam?
     var centerYParams:LayoutParam?
     var bottomParams:LayoutParam?
@@ -140,9 +140,10 @@ open class View:UIView {
                 }
         }
         
-        constraint.isActive = true
         params.constant$.asDriver(onErrorJustReturn: params.startValue)
             ~> constraint.rx.animated.layout(duration: params.duration).constant ~ disposeBag
+        
+        params.isActive$.asDriver(onErrorJustReturn: false) ~> constraint.rx.animated.layout(duration: params.duration).isActive ~ disposeBag
         return constraint
     }
     
@@ -154,56 +155,56 @@ open class View:UIView {
     }
     
     @discardableResult
-    open func height(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        heightParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func height(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        heightParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
     
     @discardableResult
-    open func width(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        widthParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func width(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        widthParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
     
     @discardableResult
-    open func leading(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        leadingParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func leading(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        leadingParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
     
     @discardableResult
-    open func trailing(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        trailingParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func trailing(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        trailingParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
     
     @discardableResult
-    open func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        trailingLessThanOrEqualParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func trailingLessThanOrEqual(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        trailingLessThanOrEqualParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
 
     @discardableResult
-    open func bottom(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        bottomParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func bottom(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        bottomParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
     
     @discardableResult
-    open func top(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        topParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func top(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        topParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
     
     @discardableResult
-    open func centerY(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        centerYParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func centerY(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        centerYParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
 
     @discardableResult
-    open func centerX(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0) -> Self {
-        centerXParams = (constant$: constant$, startValue: startValue, duration: duration)
+    open func centerX(_ constant$:Observable<CGFloat>, startValue:CGFloat = 0, duration:TimeInterval = 0, isActive$:Observable<Bool> = .just(true)) -> Self {
+        centerXParams = (constant$: constant$, startValue: startValue, duration: duration, isActive$:isActive$)
         return self
     }
     

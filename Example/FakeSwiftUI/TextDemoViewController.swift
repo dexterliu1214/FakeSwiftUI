@@ -24,27 +24,19 @@ struct TextDemoViewController_Previews: PreviewProvider {
 #endif
 
 class TextDemoViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        let time$ = Observable<Int>.timer(.seconds(1), period: .seconds(1), scheduler: MainScheduler.instance)
-        let overlay$ = time$.map{
-             $0 % 2 == 0 ? [Circle().stroke([.blue, .yellow], lineWidth: 4)] : []
-        }
-        ZStack(
-            Text(time$.map{ "FakeSwiftUI Rocks\($0)"})
-                .font(40)
-                .clipShape(Circle())
-                .overlay(overlay$)
-                .padding(.symmetric(4, 16))
-                .background([UIColor.red, .blue])
-                .centerX(offset: 0)
-                .centerY(offset: 0)
-        )
-            .background(.red)
+        
+        Scrollable(
+            VStack(
+               
+            )
+//                .centerX(offset: 0)
+//                .top(offset: 0)
+//                .bottom(offset: 0)
             .fill()
-            .edgesIgnoringSafeArea(.all)
-//            .blur()
-            .on(view)
+        )
+            .fill().on(view)
     }
 }
