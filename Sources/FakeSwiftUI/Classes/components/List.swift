@@ -20,6 +20,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     var sectionViewBuilder:((Int) -> UIView?)?
     var sectionViewHeightCalculator:((Int) -> CGFloat)?
     var isAutoDeselect = false
+    let contentOffset = BehaviorRelay(value:CGPoint(x: 0, y: 0))
     
     public init(style:UITableView.Style) {
         self.tableView = .init(frame:.zero, style:style)
@@ -33,6 +34,11 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         self.tableView.backgroundView = UIView()
         self.tableView.tableFooterView = UIView()
         self.tableView.append(to: self).fillSuperview()
+        
+        tableView.rx.contentOffset.asObservable()
+            .subscribe(onNext:{
+                print($0)
+            }) ~ disposeBag
     }
     
     public convenience init<ModelType>(items:Observable<[ModelType]>, style:UITableView.Style = .plain, _ builder:@escaping(CellType, ModelType, Int, UITableView) -> UITableViewCell) {
@@ -87,6 +93,10 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return sectionViewHeightCalculator?(section) ?? 0
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        contentOffset.accept(scrollView.contentOffset) 
     }
     
     @discardableResult
@@ -181,6 +191,20 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
         }) ~ disposeBag
         return self
     }
+    
+    @discardableResult
+    public func scrollToTop(_ event$:Observable<()>) -> Self {
+        event$.asDriver(onErrorJustReturn: ()).drive(onNext:{[weak self] in
+            self?.tableView.scrollToTop()
+        }) ~ disposeBag
+        return self
+    }
+    
+    @discardableResult
+    public func contentOffset(_ stream$:BehaviorRelay<CGPoint> ) -> Self {
+        contentOffset ~> stream$
+        return self
+    }
 }
 
 extension UITableView {
@@ -191,5 +215,9 @@ extension UITableView {
         let lastSection = numberOfSections - 1
         let lastRow = numberOfRows(inSection: lastSection) - 1
         scrollToRow(at: IndexPath(row: lastRow, section: lastSection), at: .bottom, animated: animated)
+    }
+    
+    public func scrollToTop(animated:Bool = true){
+        scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: animated)
     }
 }
