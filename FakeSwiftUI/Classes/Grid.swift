@@ -164,8 +164,8 @@ open class Grid<CellType:UICollectionViewCell>:View
         let refreshControl:UIRefreshControl = .init()
         refreshControl.tintColor = .white
         refreshControl.rx.controlEvent(.valueChanged).subscribe(onNext:{
-            async {
-                try? await(callback())
+			AwaitKit.async {
+                try? `await`(callback())
                 DispatchQueue.main.async {
                     refreshControl.endRefreshing()
                 }
