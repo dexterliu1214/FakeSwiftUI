@@ -16,7 +16,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 </tr>
 <tr>
 <td>
-   <img src="https://raw.githubusercontent.com/dexterliu1214/FakeSwiftUI/master/%E5%9C%96%E7%89%87.png"/>
+   <img src="https://raw.githubusercontent.com/dexterliu1214/FakeSwiftUI/master/pic.png"/>
 </td>
 <td>
     
