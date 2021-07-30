@@ -25,7 +25,8 @@ open class Button:View
         self.init()
         title$ ~> self.button.rx.title(for: .normal) ~ disposeBag
         button.rx.tap
-            .subscribe(onNext:{[unowned self] _ in
+            .subscribe(onNext:{[weak self] _ in
+				guard let self = self else { return }
                 action(self)
             }) ~ disposeBag
     }
@@ -34,7 +35,8 @@ open class Button:View
         self.init()
         title$ ~> self.button.rx.title(for: .normal) ~ disposeBag
         button.rx.tap
-            .subscribe(onNext:{[unowned self] _ in
+            .subscribe(onNext:{[weak self] _ in
+				guard let self = self else { return }
                 action(self)
             }) ~ disposeBag
     }

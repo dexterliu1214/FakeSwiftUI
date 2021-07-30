@@ -40,7 +40,8 @@ open class SearchBar:View {
     
     public func onSearch(_ callback:@escaping(String?) -> ()) -> Self {
         searchBar.rx.searchButtonClicked
-            .subscribe(onNext:{[unowned self] in
+            .subscribe(onNext:{[weak self] in
+				guard let self = self else { return }
                 callback(self.searchBar.text)
             }) ~ disposeBag
         return self
