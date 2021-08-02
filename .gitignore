@@ -1,3 +1,9 @@
+
+## SPM Generated
+*.xcodeproj
+*.resolved
+.swiftpm/
+
 # OS X
 .DS_Store
 
