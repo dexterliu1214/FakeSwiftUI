@@ -44,7 +44,7 @@ open class Image:View {
     public convenience init(_ url$:Observable<String>, animationSink:((AnimatedSink<UIImageView>) -> (AnimatedSink<UIImageView>))? = nil) {
         self.init()
         let animationSink = animationSink?(imageView.rx.animated) ?? imageView.rx.animated.fade(duration: 0)
-        url$.distinctUntilChanged().flatMapLatest{ $0.get$(urlSession:Image.urlSession).catchErrorJustReturn(Data()) }
+		url$.distinctUntilChanged().flatMapLatest{ $0.get$(urlSession:Image.urlSession).catchAndReturn(Data()) }
             .map{UIImage(data:$0)}.asDriver(onErrorJustReturn: nil) ~> animationSink.image ~ disposeBag
     }
     

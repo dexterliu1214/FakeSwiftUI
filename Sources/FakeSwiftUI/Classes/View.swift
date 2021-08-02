@@ -310,7 +310,9 @@ open class View:UIView {
     
     @discardableResult
     open func hidden(_ stream$:Observable<Bool>) -> Self {
-        stream$.asDriver(onErrorJustReturn: false) ~> rx.isHidden ~ disposeBag
+		stream$.asDriver(onErrorJustReturn: false).drive(onNext:{[weak self] in
+			self?.isHidden = $0
+		}) ~ disposeBag
         return self
     }
     
@@ -336,7 +338,9 @@ open class View:UIView {
     
     @discardableResult
     open func background(_ color:Observable<UIColor>) -> Self {
-        color ~> self.rx.backgroundColor ~ disposeBag
+		color.observe(on: MainScheduler.instance).subscribe(onNext:{[weak self] in
+			self?.backgroundColor = $0
+		}) ~ disposeBag
         return self
     }
     

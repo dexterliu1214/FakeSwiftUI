@@ -57,7 +57,7 @@ open class ScalableImage:View
     
     public convenience init(_ url$:Observable<String>) {
         let image$ = url$
-                .flatMapLatest{ $0.get$().catchErrorJustReturn(Data()) }
+			.flatMapLatest{ $0.get$().catchAndReturn(Data()) }
                 .map{UIImage(data:$0)}
                 .asDriver(onErrorJustReturn: nil)
         self.init(image$)

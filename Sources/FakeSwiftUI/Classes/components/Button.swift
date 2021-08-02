@@ -84,7 +84,9 @@ open class Button:View
     @discardableResult
     public func disabled(_ value$:Observable<Bool>) -> Self {
         value$ ~> button.rx.isDisabled ~ disposeBag
-        value$.map{ $0 ? 0.5 : 1 } ~> rx.alpha ~ disposeBag
+		value$.map{ $0 ? 0.5 : 1 }.observe(on: MainScheduler.instance).subscribe(onNext:{[weak self] in
+			self?.alpha = $0
+		}) ~ disposeBag
         return self
     }
     
