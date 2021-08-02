@@ -35,7 +35,7 @@ open class Grid<CellType:UICollectionViewCell, ModelType>:View
         )
         .subscribe(onNext:{[weak self] _, column in
             self?.updateItemSize(columns: column)
-        })
+		}) ~ disposeBag
     }
     
     public convenience init(

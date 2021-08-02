@@ -202,7 +202,7 @@ open class List<CellType:UITableViewCell>:View,UITableViewDelegate {
     
     @discardableResult
     public func contentOffset(_ stream$:BehaviorRelay<CGPoint> ) -> Self {
-        contentOffset ~> stream$
+        contentOffset ~> stream$ ~ disposeBag
         return self
     }
 }
