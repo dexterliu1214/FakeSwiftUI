@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "5.0.0"),
         .package(url: "https://github.com/dexterliu1214/RxBinding.git", .branch("master")),
         .package(url: "https://github.com/RxSwiftCommunity/RxAnimated.git", from: "0.8.1"),
-        .package(url: "https://github.com/RxSwiftCommunity/RxGesture.git", from: "3.0.3"),
+		.package(url: "https://github.com/RxSwiftCommunity/RxGesture.git", .exact("3.0.2")),
         .package(url: "https://github.com/RxSwiftCommunity/RxDataSources.git", from: "4.0.1"),
     ],
     targets: [
@@ -30,11 +30,14 @@ let package = Package(
             name: "FakeSwiftUI",
             dependencies: [
                 "RxSwift",
-				"RxCocoa",
+				.product(name: "RxCocoa", package: "RxSwift"),
                 "RxBinding",
                 "RxAnimated",
                 "RxGesture",
                 "RxDataSources",
             ]),
+		.testTarget(
+			name: "FakeSwiftUITests",
+			dependencies: ["FakeSwiftUI"]),
     ]
 )
