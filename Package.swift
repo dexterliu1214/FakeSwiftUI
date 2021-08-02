@@ -30,6 +30,7 @@ let package = Package(
             name: "FakeSwiftUI",
             dependencies: [
                 "RxSwift",
+				"RxCocoa",
                 "RxBinding",
                 "RxAnimated",
                 "RxGesture",
